@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body">
+                <h3><i class="fas fa-chart-line me-2"></i>Climate Dashboard</h3>
+                <p class="mb-0">Welcome back, {{ current_user.username }}! Here's your climate analytics overview.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-xl-3 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Normal Rainfall</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ "%.1f"|format(baseline.rain_mean) }} mm</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tint fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-xl-3 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Normal Temperature</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ "%.1f"|format(baseline.temp_mean) }} °C</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-temperature-high fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-xl-3 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Normal Humidity</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ "%.1f"|format(baseline.hum_mean) }} %</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-smog fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-xl-3 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Climate Variability</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ "%.1f"|format(baseline.rain_std) }} mm SD</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>6-Month Climate Forecast</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="forecastTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Month</th>
+                                <th>Rainfall (mm)</th>
+                                <th>Temperature (°C)</th>
+                                <th>Humidity (%)</th>
+                                <th>CES Score</th>
+                                <th>Condition</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for idx in range(forecast_df|length) %}
+                            <tr>
+                                <td><strong>{{ forecast_df.iloc[idx]['Month'] }}</strong></td>
+                                <td>{{ "%.1f"|format(forecast_df.iloc[idx]['Rainfall']) }}</td>
+                                <td>{{ "%.1f"|format(forecast_df.iloc[idx]['Temp_mean']) }}</td>
+                                <td>{{ "%.1f"|format(forecast_df.iloc[idx]['Humidity']) }}</td>
+                                <td>
+                                    {% set ces_value = ces_df.iloc[idx]['CES'] %}
+                                    <span class="badge {% if ces_value >= 2 %}bg-danger{% elif ces_value >= 1 %}bg-warning{% else %}bg-success{% endif %}">
+                                        {{ "%.2f"|format(ces_value) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% set condition = ces_df.iloc[idx]['Climate_Condition'] %}
+                                    <span class="badge {% if condition == 'Extreme' %}bg-danger{% elif condition == 'Moderate' %}bg-warning{% else %}bg-success{% endif %}">
+                                        {{ condition }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Predictions</h5>
+            </div>
+            <div class="card-body">
+                {% if history and history|length > 0 %}
+                    <div class="list-group">
+                        {% for pred in history[:5] %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">{{ pred[5][:16] if pred[5] else 'Recent' }}</small><br>
+                                        <strong>CES: {{ "%.2f"|format(pred[3]) }}</strong>
+                                        <span class="badge {% if pred[4] == 'Extreme' %}bg-danger{% elif pred[4] == 'Moderate' %}bg-warning{% else %}bg-success{% endif %} ms-2">
+                                            {{ pred[4] }}
+                                        </span>
+                                    </div>
+                                    <div class="text-end">
+                                        <small><i class="fas fa-tint text-primary"></i> {{ "%.0f"|format(pred[0]) }} mm</small><br>
+                                        <small><i class="fas fa-temperature-high text-danger"></i> {{ "%.1f"|format(pred[1]) }}°C</small><br>
+                                        <small><i class="fas fa-smog text-info"></i> {{ "%.0f"|format(pred[2]) }}%</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if history|length > 5 %}
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('history') }}" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-eye me-1"></i>View All ({{ history|length }})
+                            </a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No predictions yet. Make your first prediction!</p>
+                        <a href="{{ url_for('predict') }}" class="btn btn-primary">
+                            <i class="fas fa-brain me-2"></i>Make Prediction
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-area me-2"></i>Forecast Visualization</h5>
+            </div>
+            <div class="card-body text-center">
+                {% if img_base64 %}
+                    <img src="data:image/png;base64,{{ img_base64 }}" 
+                         alt="Forecast Analysis Plot" 
+                         class="img-fluid rounded shadow-sm">
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Forecast plot will appear here after generating predictions.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Climate Insights</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="alert alert-info border-0 shadow-sm">
+                            <i class="fas fa-chart-line fa-2x mb-2 d-block text-info"></i>
+                            <strong>Temperature Trend:</strong><br>
+                            Bangalore has experienced a warming trend of approximately 0.8°C since 1980.
+                            <hr class="my-2">
+                            <small class="text-muted">Post-2000 warming accelerated.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="alert alert-warning border-0 shadow-sm">
+                            <i class="fas fa-tint fa-2x mb-2 d-block text-warning"></i>
+                            <strong>Rainfall Pattern:</strong><br>
+                            Increased frequency of extreme rainfall events observed in recent decades.
+                            <hr class="my-2">
+                            <small class="text-muted">Monsoon variability increasing.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="alert alert-success border-0 shadow-sm">
+                            <i class="fas fa-chart-bar fa-2x mb-2 d-block text-success"></i>
+                            <strong>CES Trends:</strong><br>
+                            Climate Extreme Score shows increasing variability post-2000.
+                            <hr class="my-2">
+                            <small class="text-muted">More frequent extreme events.</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats Section -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="alert alert-dark">
+                            <h6><i class="fas fa-chart-simple me-2"></i>Quick Statistics</h6>
+                            <div class="row">
+                                <div class="col-md-3 col-6">
+                                    <small>Data Range:</small>
+                                    <strong>1951-2024</strong>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <small>Analysis Period:</small>
+                                    <strong>73 Years</strong>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <small>Forecast Models:</small>
+                                    <strong>SARIMA</strong>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <small>Variables:</small>
+                                    <strong>3 Climate Variables</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DataTable Script -->
+<script>
+$(document).ready(function() {
+    if ($('#forecastTable').length) {
+        $('#forecastTable').DataTable({
+            pageLength: 6,
+            lengthChange: false,
+            searching: false,
+            ordering: true,
+            info: false,
+            paging: true,
+            language: {
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    }
+    
+    // Auto-refresh dashboard every 5 minutes (optional)
+    setTimeout(function() {
+        location.reload();
+    }, 300000);
+});
+</script>
+
+<style>
+.border-left-primary {
+    border-left: 4px solid #667eea !important;
+}
+.border-left-success {
+    border-left: 4px solid #11998e !important;
+}
+.border-left-info {
+    border-left: 4px solid #3498db !important;
+}
+.border-left-warning {
+    border-left: 4px solid #f39c12 !important;
+}
+.list-group-item:hover {
+    transform: translateX(5px);
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

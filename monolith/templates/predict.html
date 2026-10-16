@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-gradient-primary text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h3 class="mb-0 text-center">
+                    <i class="fas fa-brain me-2"></i>Climate Prediction System
+                </h3>
+                <p class="mb-0 text-center small mt-2">
+                    Enter current climate values to analyze anomalies and future forecasts
+                </p>
+                <p class="mb-0 text-center" style="font-size:0.78rem; opacity:0.85; margin-top:4px;">
+                    Default values are Bangalore averages for <strong>{{ current_month }}</strong>
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('predict') }}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="rainfall" class="form-label">
+                                <i class="fas fa-tint text-primary me-1"></i>Rainfall (mm)
+                            </label>
+                            <input type="number" step="any" class="form-control form-control-lg" 
+                                   id="rainfall" name="rainfall" required 
+                                   placeholder="e.g. {{ default_rain }} ({{ current_month }} average)"
+                                   value="{{ default_rain }}">
+                            <small class="text-muted">Normal range: 0–200mm (Monthly average, Bangalore 1951–2024)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="temperature" class="form-label">
+                                <i class="fas fa-temperature-high text-danger me-1"></i>Mean Temperature (°C)
+                            </label>
+                            <input type="number" step="any" class="form-control form-control-lg" 
+                                   id="temperature" name="temperature" required 
+                                   placeholder="e.g. {{ default_temp }} ({{ current_month }} average)"
+                                   value="{{ default_temp }}">
+                            <small class="text-muted">Normal range: 18–32°C (Monthly average, Bangalore 1951–2024)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="humidity" class="form-label">
+                                <i class="fas fa-smog text-info me-1"></i>Humidity (%)
+                            </label>
+                            <input type="number" step="any" class="form-control form-control-lg" 
+                                   id="humidity" name="humidity" required 
+                                   placeholder="e.g. {{ default_hum }} ({{ current_month }} average)"
+                                   value="{{ default_hum }}">
+                            <small class="text-muted">Normal range: 30–85% (Monthly average, Bangalore 1951–2024)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="forecast_months" class="form-label">
+                                <i class="fas fa-calendar-alt me-1"></i>Forecast Horizon (Months)
+                            </label>
+                            <select class="form-select form-select-lg" id="forecast_months" name="forecast_months">
+                                <option value="3">3 Months (Quarterly)</option>
+                                <option value="6">6 Months (Half-yearly)</option>
+                                <option value="12" selected>12 Months (Yearly)</option>
+                                <option value="18">18 Months</option>
+                                <option value="24">24 Months (2 Years)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-chart-line me-2"></i>
+                        <strong>How it works:</strong> Based on your inputs, the system will:
+                        <ul class="mb-0 mt-2">
+                            <li>Compute Z-scores for anomaly detection</li>
+                            <li>Calculate Climate Extreme Score (CES)</li>
+                            <li>Generate {{ forecast_months }} month climate forecast</li>
+                            <li>Provide detailed visual analysis</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-chart-line me-2"></i>Analyze & Predict
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-undo me-2"></i>Reset Values
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3 bg-light">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle text-info"></i> Understanding the Metrics
+                </h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Z-Score:</strong> Measures deviation from historical average</p>
+                        <p class="mb-1"><small>|Z| &ge;1.300 = Strong anomaly (WMO SPI, 95th percentile)</small></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>CES (Climate Extreme Score):</strong></p>
+                        <p class="mb-1"><small>&ge;1.300 = Extreme (95th percentile) | 1.051&ndash;1.300 = Moderate (84th&ndash;95th percentile) | &lt;1.051 = Normal</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

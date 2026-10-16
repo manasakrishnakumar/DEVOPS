@@ -1,0 +1,43 @@
+{
+ "train_end_year": 2018,
+ "warn_fraction": 0.5,
+ "variables": {
+  "Rainfall": {
+   "months_out_of_sample": 66,
+   "events": 9,
+   "event_rate_per_month": 0.1364,
+   "q_threshold": 7.691,
+   "warn_threshold": 3.845,
+   "mean_norm_error": 1.958,
+   "weibull_shape": 1.029,
+   "weibull_scale_months": 7.53,
+   "median_months_to_next_degradation": 5.27,
+   "age_error_rank_corr": 0.329
+  },
+  "Temp_mean": {
+   "months_out_of_sample": 66,
+   "events": 20,
+   "event_rate_per_month": 0.303,
+   "q_threshold": 3.987,
+   "warn_threshold": 1.993,
+   "mean_norm_error": 1.751,
+   "weibull_shape": 1.293,
+   "weibull_scale_months": 3.6,
+   "median_months_to_next_degradation": 2.71,
+   "age_error_rank_corr": 0.082
+  },
+  "Humidity": {
+   "months_out_of_sample": 66,
+   "events": 11,
+   "event_rate_per_month": 0.1667,
+   "q_threshold": 3.718,
+   "warn_threshold": 1.859,
+   "mean_norm_error": 1.181,
+   "weibull_shape": 1.341,
+   "weibull_scale_months": 6.46,
+   "median_months_to_next_degradation": 4.91,
+   "age_error_rank_corr": -0.079
+  }
+ },
+ "retrain_after_months": 2.7
+}

@@ -1,0 +1,17 @@
+{
+ "rounds": 600,
+ "avg_cost_per_episode": {
+  "bandit": 37.69,
+  "oracle": 25.86,
+  "always_restart_only": 270.0,
+  "always_switch_then_restart": 25.85,
+  "always_tier_switch": 151.48
+ },
+ "best_action_per_fault": {
+  "corrupt": "switch_then_restart"
+ },
+ "weights": {
+  "W_FAIL": 0.3,
+  "W_DEG": 0.05
+ }
+}

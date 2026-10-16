@@ -1,0 +1,114 @@
+{
+ "aging": {
+  "drift": {
+   "ph_alarm_index": {
+    "Humidity": 42,
+    "Rainfall": 27,
+    "Temp_mean": 49
+   },
+   "ph_alert": true,
+   "psi": {
+    "Humidity": 3.0651,
+    "Rainfall": 0.6111,
+    "Temp_mean": 0.3521
+   },
+   "psi_alert": true
+  },
+  "model_age_months": 78,
+  "retrain_after_months": 2.7,
+  "retrain_recommended": true,
+  "variables": {
+   "Humidity": {
+    "age_error_rank_corr": -0.079,
+    "event_rate_per_month": 0.1667,
+    "events": 11,
+    "mean_norm_error": 1.181,
+    "median_months_to_next_degradation": 4.91,
+    "months_out_of_sample": 66,
+    "q_threshold": 3.718,
+    "warn_threshold": 1.859,
+    "weibull_scale_months": 6.46,
+    "weibull_shape": 1.341
+   },
+   "Rainfall": {
+    "age_error_rank_corr": 0.329,
+    "event_rate_per_month": 0.1364,
+    "events": 9,
+    "mean_norm_error": 1.958,
+    "median_months_to_next_degradation": 5.27,
+    "months_out_of_sample": 66,
+    "q_threshold": 7.691,
+    "warn_threshold": 3.845,
+    "weibull_scale_months": 7.53,
+    "weibull_shape": 1.029
+   },
+   "Temp_mean": {
+    "age_error_rank_corr": 0.082,
+    "event_rate_per_month": 0.303,
+    "events": 20,
+    "mean_norm_error": 1.751,
+    "median_months_to_next_degradation": 2.71,
+    "months_out_of_sample": 66,
+    "q_threshold": 3.987,
+    "warn_threshold": 1.993,
+    "weibull_scale_months": 3.6,
+    "weibull_shape": 1.293
+   }
+  }
+ },
+ "drift": {
+  "ph_alarm_index": {
+   "Humidity": 42,
+   "Rainfall": 27,
+   "Temp_mean": 49
+  },
+  "ph_alert": true,
+  "psi": {
+   "Humidity": 3.0651,
+   "Rainfall": 0.6111,
+   "Temp_mean": 0.3521
+  },
+  "psi_alert": true
+ },
+ "energy": [
+  {
+   "energy_aware": "0",
+   "requests": 788.0,
+   "joules_per_request": 3.994,
+   "cpu_s_per_request": 0.2663,
+   "tier_counts": {
+    "lstm": 788.0
+   },
+   "p95_ms": 214.0,
+   "correct_pct": 100.0
+  },
+  {
+   "energy_aware": "1",
+   "requests": 788.0,
+   "joules_per_request": 0.93,
+   "cpu_s_per_request": 0.062,
+   "tier_counts": {
+    "sarima": 788.0
+   },
+   "p95_ms": 101.0,
+   "correct_pct": 100.0
+  }
+ ],
+ "holdout_rmse_2019_2024": {
+  "production_lstm": {
+   "Rainfall": 90.451,
+   "Temp_mean": 1.141,
+   "Humidity": 2.476
+  },
+  "retrain_40ep": {
+   "Rainfall": 90.301,
+   "Temp_mean": 1.161,
+   "Humidity": 2.857
+  },
+  "bad_undertrained_3ep": {
+   "Rainfall": 106.23,
+   "Temp_mean": 2.12,
+   "Humidity": 5.196
+  }
+ }
+}

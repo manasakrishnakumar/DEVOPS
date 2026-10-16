@@ -1,0 +1,80 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata: {name: forecastservices.climate.example.com}
+spec:
+  group: climate.example.com
+  scope: Namespaced
+  names: {kind: ForecastService, plural: forecastservices, singular: forecastservice, shortNames: [fsvc]}
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    subresources: {status: {}}
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              inferenceUrl: {type: string}
+              deployment: {type: string}
+              policy: {type: string, enum: [rules, bandit]}
+              failureThreshold: {type: integer}
+              cooldownSeconds: {type: integer}
+          status: {type: object, x-kubernetes-preserve-unknown-fields: true}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: forecast-operator, namespace: climate}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: forecast-operator, namespace: climate}
+rules:
+- apiGroups: [climate.example.com]
+  resources: [forecastservices, forecastservices/status]
+  verbs: [get, list, watch, patch, update]
+- apiGroups: [apps]
+  resources: [deployments, deployments/scale]
+  verbs: [get, list, patch, update]
+- apiGroups: [""]
+  resources: [events]
+  verbs: [create, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: forecast-operator, namespace: climate}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: forecast-operator}
+subjects: [{kind: ServiceAccount, name: forecast-operator, namespace: climate}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: forecast-operator, namespace: climate}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: forecast-operator}}
+  template:
+    metadata: {labels: {app: forecast-operator}}
+    spec:
+      serviceAccountName: forecast-operator
+      containers:
+      - name: operator
+        image: climate-operator:2
+        imagePullPolicy: Never
+        command: [kopf, run, --standalone, --namespace, climate, /app/forecast_operator.py]
+        volumeMounts: [{name: policy, mountPath: /policy}]
+        resources: {requests: {memory: 64Mi, cpu: 50m}, limits: {memory: 256Mi}}
+      volumes:
+      - name: policy
+        configMap: {name: forecast-policy, optional: true}
+---
+apiVersion: climate.example.com/v1
+kind: ForecastService
+metadata: {name: climate-inference, namespace: climate}
+spec:
+  inferenceUrl: http://inference-api:5001
+  deployment: inference-api
+  policy: rules
+  failureThreshold: 3
+  cooldownSeconds: 60

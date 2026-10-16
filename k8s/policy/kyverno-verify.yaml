@@ -1,0 +1,16 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata: {name: verify-climate-images}
+spec:
+  validationFailureAction: Enforce
+  webhookTimeoutSeconds: 30
+  rules:
+  - name: require-cosign-signature
+    match: {any: [{resources: {kinds: [Pod], namespaces: [climate]}}]}
+    verifyImages:
+    - imageReferences: ["ghcr.io/*/climate-*"]
+      attestors:
+      - entries:
+        - keyless:
+            issuer: https://token.actions.githubusercontent.com
+            subject: "https://github.com/*/*/.github/workflows/ci.yml@*"

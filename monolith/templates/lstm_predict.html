@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .lstm-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: inline-block;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-gradient-primary text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h3 class="mb-0 text-center">
+                    <i class="fas fa-brain me-2"></i>LSTM Climate Prediction System
+                </h3>
+                <p class="mb-0 text-center small mt-2">
+                    Powered by Long Short-Term Memory (LSTM) Neural Networks
+                </p>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>What is LSTM?</strong> Long Short-Term Memory networks are a type of recurrent neural network 
+                    specifically designed to learn long-term dependencies in time series data, making them ideal for climate forecasting.
+                </div>
+                
+                <form method="POST" action="{{ url_for('lstm_predict') }}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="rainfall" class="form-label">
+                                <i class="fas fa-tint text-primary me-1"></i>Rainfall (mm)
+                            </label>
+                            <input type="number" step="any" class="form-control form-control-lg" 
+                                   id="rainfall" name="rainfall" required 
+                                   placeholder="e.g., 120.5"
+                                   value="108.5">
+                            <small class="text-muted">Normal range: 20-200 mm (Monthly average)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="temperature" class="form-label">
+                                <i class="fas fa-temperature-high text-danger me-1"></i>Mean Temperature (°C)
+                            </label>
+                            <input type="number" step="any" class="form-control form-control-lg" 
+                                   id="temperature" name="temperature" required 
+                                   placeholder="e.g., 24.8"
+                                   value="24.8">
+                            <small class="text-muted">Normal range: 18-32°C (Monthly average)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="humidity" class="form-label">
+                                <i class="fas fa-smog text-info me-1"></i>Humidity (%)
+                            </label>
+                            <input type="number" step="any" class="form-control form-control-lg" 
+                                   id="humidity" name="humidity" required 
+                                   placeholder="e.g., 65"
+                                   value="65.0">
+                            <small class="text-muted">Normal range: 30-95% (Monthly average)</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="forecast_months" class="form-label">
+                                <i class="fas fa-calendar-alt me-1"></i>Forecast Horizon (Months)
+                            </label>
+                            <select class="form-select form-select-lg" id="forecast_months" name="forecast_months">
+                                <option value="3">3 Months (Quarterly)</option>
+                                <option value="6">6 Months (Half-yearly)</option>
+                                <option value="12" selected>12 Months (Yearly)</option>
+                                <option value="18">18 Months</option>
+                                <option value="24">24 Months (2 Years)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-brain me-2"></i>
+                        <strong>How LSTM Works:</strong> The LSTM model analyzes historical climate patterns from 1951-2024, 
+                        learns temporal dependencies using memory cells, and generates forecasts by remembering important patterns.
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-chart-line me-2"></i>Run LSTM Analysis
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-undo me-2"></i>Reset Values
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

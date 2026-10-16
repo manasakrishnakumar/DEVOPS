@@ -1,0 +1,43 @@
+{
+ "static": {
+  "false_alarm": 0.0,
+  "detect": {
+   "unit_change_F": 1.0,
+   "scaler_x0.35_temp": 1.0,
+   "rain_x3_plus30": 0.7333333333333333,
+   "shift_temp_+4C": 0.6166666666666667,
+   "shift_hum_-20": 1.0,
+   "swap_temp_hum": 1.0
+  }
+ },
+ "rolling_20y": {
+  "false_alarm": 0.0,
+  "detect": {
+   "unit_change_F": 1.0,
+   "scaler_x0.35_temp": 1.0,
+   "rain_x3_plus30": 0.7333333333333333,
+   "shift_temp_+4C": 0.5,
+   "shift_hum_-20": 0.9333333333333333,
+   "swap_temp_hum": 1.0
+  }
+ },
+ "aci": {
+  "false_alarm": 0.0,
+  "detect": {
+   "unit_change_F": 1.0,
+   "scaler_x0.35_temp": 1.0,
+   "rain_x3_plus30": 0.7333333333333333,
+   "shift_temp_+4C": 0.6166666666666667,
+   "shift_hum_-20": 1.0,
+   "swap_temp_hum": 1.0
+  },
+  "final_alpha_t": 0.013
+ },
+ "meta": {
+  "alpha_target": 0.01,
+  "window_months": 6,
+  "test_windows": 60,
+  "test_from_year": 2019,
+  "aci_gamma": 0.005
+ }
+}

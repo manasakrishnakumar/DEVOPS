@@ -1,0 +1,17 @@
+2026-10-16T02:38:46 == pipeline start: build :4 with checks
+2026-10-16T02:41:06 image :4 built and loaded; probe-script updated
+2026-10-16T02:41:06 pass 1: 5 trials x 8 faults x C4,D4,E4
+2026-10-16T02:57:28 [after_pass1] waiting for pass 1 to finish
+2026-10-16T04:52:23 pass 1 done (rows: 120)
+2026-10-16T04:52:23 healthy soak 10 min per config
+2026-10-16T04:52:30 [after_pass1] pass 1 done -> stopping pipeline for validation
+2026-10-16T04:53:06 [after_pass1] running validation suite
+2026-10-16T04:55:32 [after_pass1] validation finished (see results\validation_report.md); resuming part B
+2026-10-16T04:55:33 == part B start (after pass 1 + validation)
+2026-10-16T04:55:34 healthy soak 10 min per config
+2026-10-16T05:28:55 soak done
+2026-10-16T05:28:55 DoE (hang fault, CCD) on C4
+2026-10-16T06:14:59 DoE done (rows: 30)
+2026-10-16T06:15:06 pass 2: trials 6-10
+2026-10-16T08:27:00 pass 2 done
+2026-10-16T08:27:01 pipeline complete

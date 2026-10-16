@@ -1,0 +1,39 @@
+2026-10-16T07:16:18 [after_partB] waiting for part B
+2026-10-16T08:27:41 == phase 7/8 start
+2026-10-16T08:31:05 images built and loaded
+2026-10-16T08:31:12 operator deployed
+Release "prom" has been upgraded. Happy Helming!
+NAME: prom
+LAST DEPLOYED: Fri Oct 16 08:31:17 2026
+NAMESPACE: monitoring
+STATUS: deployed
+REVISION: 3
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
+prom-prometheus-server.monitoring.svc.cluster.local
+
+
+Get the Prometheus server URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace monitoring -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prom" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace monitoring port-forward $POD_NAME 9090
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Server pod is terminated.                             #####
+#################################################################################
+
+
+
+
+
+For more information on running Prometheus, visit:
+https://prometheus.io/
+2026-10-16T08:31:18 SLO rules applied
+2026-10-16T08:31:18 slo replay
+2026-10-16T09:01:47 == phase 7/8 restart (image :6 threaded worker; direct burn queries; eval interval 5s)
+2026-10-16T09:04:26 image :6 built and loaded
+2026-10-16T09:04:31 prometheus evaluation interval 5s
+2026-10-16T09:04:31 slo replay
+2026-10-16T09:43:27 [short] E4 replay (2 trials) start
+2026-10-16T10:08:46 [short] E4 replay done

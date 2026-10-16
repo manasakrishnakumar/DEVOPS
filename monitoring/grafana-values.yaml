@@ -1,0 +1,14 @@
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - {name: Prometheus, type: prometheus, uid: prom, url: "http://prom-prometheus-server.monitoring.svc", access: proxy, isDefault: true}
+dashboardProviders:
+  dp.yaml:
+    apiVersion: 1
+    providers:
+    - {name: default, folder: "", type: file, options: {path: /var/lib/grafana/dashboards/default}}
+dashboardsConfigMaps:
+  default: climate-dashboard
+adminPassword: admin
+resources: {requests: {memory: 128Mi}}

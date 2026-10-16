@@ -1,0 +1,178 @@
+{
+ "threshold": 0.569500819802019,
+ "threshold_mahalanobis": 4.019967590518201,
+ "healthy_false_alarms_mahalanobis": 1,
+ "healthy_false_alarms": 1,
+ "healthy_minutes": 4.1,
+ "healthy_false_alarms_per_10min": 2.45,
+ "scenarios": {
+  "leak": {
+   "summary": {
+    "trials": 6,
+    "with_failure": 6,
+    "iforest_lead_s": {
+     "early_before_failure": "6/6",
+     "median_lead_s": 69.6
+    },
+    "mahalanobis_lead_s": {
+     "early_before_failure": "6/6",
+     "median_lead_s": 69.6
+    },
+    "memory_threshold_lead_s": {
+     "early_before_failure": "6/6",
+     "median_lead_s": 23.9
+    },
+    "reactive_guard_lead_s": {
+     "early_before_failure": "0/6",
+     "median_lead_s": null
+    }
+   },
+   "trials": [
+    {
+     "trial": "leak_1.csv",
+     "failure_time": 136.0,
+     "inject_t": 60.056211948394775,
+     "iforest_alarm": 65.4,
+     "iforest_lead_s": 70.6,
+     "mahalanobis_lead_s": 70.6,
+     "memory_threshold_lead_s": 25.8,
+     "reactive_guard_lead_s": null
+    },
+    {
+     "trial": "leak_2.csv",
+     "failure_time": 136.5,
+     "inject_t": 60.94738531112671,
+     "iforest_alarm": 69.8,
+     "iforest_lead_s": 66.7,
+     "mahalanobis_lead_s": 66.7,
+     "memory_threshold_lead_s": 23.2,
+     "reactive_guard_lead_s": null
+    },
+    {
+     "trial": "leak_3.csv",
+     "failure_time": 136.4,
+     "inject_t": 61.16329646110535,
+     "iforest_alarm": 66.4,
+     "iforest_lead_s": 70.0,
+     "mahalanobis_lead_s": 70.0,
+     "memory_threshold_lead_s": 25.9,
+     "reactive_guard_lead_s": null
+    },
+    {
+     "trial": "leak_4.csv",
+     "failure_time": 137.3,
+     "inject_t": 61.55807638168335,
+     "iforest_alarm": 67.2,
+     "iforest_lead_s": 70.1,
+     "mahalanobis_lead_s": 70.1,
+     "memory_threshold_lead_s": 24.6,
+     "reactive_guard_lead_s": null
+    },
+    {
+     "trial": "leak_5.csv",
+     "failure_time": 135.1,
+     "inject_t": 60.39194130897522,
+     "iforest_alarm": 65.9,
+     "iforest_lead_s": 69.2,
+     "mahalanobis_lead_s": 69.2,
+     "memory_threshold_lead_s": 21.4,
+     "reactive_guard_lead_s": null
+    },
+    {
+     "trial": "leak_6.csv",
+     "failure_time": 133.8,
+     "inject_t": 60.6313202381134,
+     "iforest_alarm": 68.1,
+     "iforest_lead_s": 65.7,
+     "mahalanobis_lead_s": 65.7,
+     "memory_threshold_lead_s": 22.4,
+     "reactive_guard_lead_s": null
+    }
+   ]
+  },
+  "drift": {
+   "summary": {
+    "trials": 6,
+    "with_failure": 6,
+    "iforest_lead_s": {
+     "early_before_failure": "6/6",
+     "median_lead_s": 23.7
+    },
+    "mahalanobis_lead_s": {
+     "early_before_failure": "6/6",
+     "median_lead_s": 23.7
+    },
+    "memory_threshold_lead_s": {
+     "early_before_failure": "0/6",
+     "median_lead_s": null
+    },
+    "reactive_guard_lead_s": {
+     "early_before_failure": "0/6",
+     "median_lead_s": null
+    }
+   },
+   "trials": [
+    {
+     "trial": "drift_1.csv",
+     "failure_time": 91.1,
+     "inject_t": 62.0845787525177,
+     "iforest_alarm": 67.2,
+     "iforest_lead_s": 23.9,
+     "mahalanobis_lead_s": 23.9,
+     "memory_threshold_lead_s": null,
+     "reactive_guard_lead_s": -4.7
+    },
+    {
+     "trial": "drift_2.csv",
+     "failure_time": 88.9,
+     "inject_t": 61.89740467071533,
+     "iforest_alarm": 67.4,
+     "iforest_lead_s": 21.5,
+     "mahalanobis_lead_s": 21.5,
+     "memory_threshold_lead_s": null,
+     "reactive_guard_lead_s": -6.0
+    },
+    {
+     "trial": "drift_3.csv",
+     "failure_time": 90.8,
+     "inject_t": 61.99593806266785,
+     "iforest_alarm": 66.9,
+     "iforest_lead_s": 23.9,
+     "mahalanobis_lead_s": 23.9,
+     "memory_threshold_lead_s": null,
+     "reactive_guard_lead_s": -4.6
+    },
+    {
+     "trial": "drift_4.csv",
+     "failure_time": 89.5,
+     "inject_t": 60.67892932891846,
+     "iforest_alarm": 66.0,
+     "iforest_lead_s": 23.5,
+     "mahalanobis_lead_s": 23.5,
+     "memory_threshold_lead_s": null,
+     "reactive_guard_lead_s": -4.5
+    },
+    {
+     "trial": "drift_5.csv",
+     "failure_time": 90.3,
+     "inject_t": 61.173465967178345,
+     "iforest_alarm": 66.2,
+     "iforest_lead_s": 24.1,
+     "mahalanobis_lead_s": 24.1,
+     "memory_threshold_lead_s": null,
+     "reactive_guard_lead_s": -4.5
+    },
+    {
+     "trial": "drift_6.csv",
+     "failure_time": 89.5,
+     "inject_t": 60.8271210193634,
+     "iforest_alarm": 68.2,
+     "iforest_lead_s": 21.3,
+     "mahalanobis_lead_s": 21.3,
+     "memory_threshold_lead_s": null,
+     "reactive_guard_lead_s": -4.6
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.db
+uploads/
+**/static/images/forecast_analysis.png
+.ipynb_checkpoints/
+results/batch_*.log
+analysis/bo_result.json
+*.env

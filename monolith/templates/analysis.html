@@ -1,0 +1,1099 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Analysis Page Specific Styles */
+    .analysis-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .analysis-header::before {
+        content: '📊';
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 100px;
+        opacity: 0.1;
+    }
+    
+    .analysis-header::after {
+        content: '🌍';
+        position: absolute;
+        left: 20px;
+        bottom: 20px;
+        font-size: 80px;
+        opacity: 0.1;
+    }
+    
+    .analysis-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .analysis-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    /* Gallery Grid */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+    
+    /* Analysis Card */
+    .analysis-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInUp 0.5s ease-out;
+        position: relative;
+    }
+    
+    .analysis-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Card Header */
+    .card-header-analysis {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 15px 20px;
+        position: relative;
+    }
+    
+    .card-header-analysis h4 {
+        margin: 0;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .card-header-analysis i {
+        font-size: 1.3rem;
+    }
+    
+    /* Image Container */
+    .image-container {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        cursor: pointer;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .analysis-image {
+        width: 100%;
+        height: 300px;
+        object-fit: contain;
+        transition: all 0.5s ease;
+        background: white;
+        padding: 10px;
+    }
+    
+    .analysis-image.loading {
+        opacity: 0;
+    }
+    
+    .analysis-image.loaded {
+        opacity: 1;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .image-placeholder {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .image-placeholder i {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+    
+    .analysis-card:hover .analysis-image {
+        transform: scale(1.02);
+    }
+    
+    /* Overlay Effect */
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+    
+    .image-container:hover .image-overlay {
+        opacity: 1;
+    }
+    
+    .overlay-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .overlay-btn {
+        background: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .overlay-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .overlay-btn.view-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .overlay-btn.download-btn {
+        background: #2c3e50;
+        color: white;
+    }
+    
+    /* Card Footer */
+    .card-footer-analysis {
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .file-name {
+        font-size: 0.75rem;
+        color: #666;
+        font-family: monospace;
+    }
+    
+    .category-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    
+    .badge-trend { background: #3498db; color: white; }
+    .badge-anomaly { background: #e74c3c; color: white; }
+    .badge-seasonal { background: #2ecc71; color: white; }
+    .badge-forecast { background: #f39c12; color: white; }
+    .badge-ces { background: #9b59b6; color: white; }
+    
+    /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border-radius: 20px;
+        padding: 30px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        color: white;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .stat-item {
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        display: block;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    /* Modal for Full Screen View */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.95);
+        animation: fadeInModal 0.3s ease;
+    }
+    
+    @keyframes fadeInModal {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .modal-content {
+        position: relative;
+        margin: auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 1200px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .modal-image {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+    
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10000;
+    }
+    
+    .close-modal:hover {
+        color: #e63946;
+        transform: scale(1.2);
+    }
+    
+    .modal-caption {
+        text-align: center;
+        color: white;
+        margin-top: 15px;
+        font-size: 1.1rem;
+    }
+    
+    /* Filter Section */
+    .filter-section {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .filter-btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 30px;
+        background: #e9ecef;
+        color: #495057;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .filter-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px;
+        background: white;
+        border-radius: 20px;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #c3cfe2;
+        margin-bottom: 20px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .gallery-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .analysis-title {
+            font-size: 1.8rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .modal-content {
+            width: 95%;
+        }
+        
+        .analysis-image {
+            height: 250px;
+        }
+    }
+    
+    /* Loading Spinner */
+    .loading-spinner {
+        text-align: center;
+        padding: 50px;
+    }
+    
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Scroll Top Button */
+    .scroll-top-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+    
+    .scroll-top-btn.visible {
+        opacity: 1;
+    }
+    
+    .scroll-top-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* Retry Button */
+    .retry-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="analysis-header">
+            <h1 class="analysis-title">
+                <i class="fas fa-chart-line me-3"></i>
+                Climate Analysis Gallery
+            </h1>
+            <p class="analysis-subtitle">
+                Complete visualization of Bangalore's climate patterns, trends, and predictions
+            </p>
+            <p class="analysis-subtitle mt-2">
+                <i class="fas fa-calendar-alt me-1"></i> Data Range: 1951-2024 | 
+                <i class="fas fa-chart-line me-1"></i> 73 Years of Climate Analysis
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalImages">0</span>
+                    <span class="stat-label">Analysis Plots</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1951-2024</span>
+                    <span class="stat-label">Data Period</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3+</span>
+                    <span class="stat-label">Climate Variables</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">16</span>
+                    <span class="stat-label">Analysis Types</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="filter-section">
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" data-filter="all">All Plots</button>
+                <button class="filter-btn" data-filter="trend">Trend Analysis</button>
+                <button class="filter-btn" data-filter="anomaly">Anomaly Detection</button>
+                <button class="filter-btn" data-filter="seasonal">Seasonal Analysis</button>
+                <button class="filter-btn" data-filter="forecast">Forecast Results</button>
+                <button class="filter-btn" data-filter="ces">CES Analysis</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gallery Grid -->
+<div class="row">
+    <div class="col-12">
+        <div class="gallery-grid" id="galleryGrid">
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p class="mt-3">Loading analysis plots...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Full Screen View -->
+<div id="imageModal" class="image-modal">
+    <span class="close-modal">&times;</span>
+    <div class="modal-content">
+        <img class="modal-image" id="modalImage">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+</div>
+
+<script>
+// Analysis images with your exact filenames
+const analysisImages = [
+    { name: "Rainfall Trend (1951-2024)", file: "01_rainfall_trend.png", category: "trend", description: "Annual rainfall trend showing variability and extreme events over 73 years" },
+    { name: "Temperature Trend Over Time", file: "02_temperature_trend.png", category: "trend", description: "Mean temperature trend showing significant warming pattern since 1980" },
+    { name: "Humidity Trend Analysis", file: "03_humidity_trend.png", category: "trend", description: "Humidity variations and long-term trends in Bangalore" },
+    { name: "Correlation Heatmap", file: "04_correlation_heatmap.png", category: "trend", description: "Correlation between rainfall, temperature, and humidity variables" },
+    { name: "Data Distributions", file: "05_distributions.png", category: "trend", description: "Statistical distribution of all climate variables" },
+    { name: "Anomaly Z-Scores Analysis", file: "06_anomaly_zscores.png", category: "anomaly", description: "Z-score based anomaly detection for all climate variables" },
+    { name: "Anomaly Evolution (1951-2024)", file: "09_anomaly_evolution.png", category: "anomaly", description: "Evolution of climate anomalies across 73 years - 25+ significant events detected" },
+    { name: "Decade-wise Anomaly Comparison", file: "10_decade_anomaly.png", category: "anomaly", description: "Comparison of anomaly frequency across different decades" },
+    { name: "CES Time Series Analysis", file: "07_ces_timeseries.png", category: "ces", description: "Climate Extreme Score trend showing increasing climate extremeness" },
+    { name: "CES Distribution Analysis", file: "08_ces_distribution.png", category: "ces", description: "Distribution of CES values (Normal, Moderate, Extreme categories)" },
+    { name: "Seasonal Climate Analysis", file: "11_seasonal_analysis.png", category: "seasonal", description: "Seasonal patterns across Winter, Summer, Monsoon, and Post-Monsoon" },
+    { name: "Climate Shift Detection", file: "12_climate_shift.png", category: "anomaly", description: "Detection of significant climate shifts in Bangalore post-1980" },
+    { name: "Actual vs Predicted Comparison", file: "13_actual_vs_predicted.png", category: "forecast", description: "Model performance showing actual vs predicted values" },
+    { name: "Future Climate Forecast", file: "14_future_forecast.png", category: "forecast", description: "12-month future forecast for rainfall, temperature, and humidity" },
+    { name: "Future CES Projections", file: "15_future_ces.png", category: "ces", description: "Future Climate Extreme Score predictions and trends" },
+    { name: "Forecast Results Overview", file: "forecast_results.png", category: "forecast", description: "Comprehensive forecast results and analysis" },
+    { name: "Forecast Analysis Plot", file: "forecast_analysis.png", category: "forecast", description: "Detailed forecast visualization with confidence intervals" }
+];
+
+// Function to load image with retry
+function loadImageWithRetry(imgElement, src, retries = 3) {
+    let attempt = 0;
+    
+    function tryLoad() {
+        attempt++;
+        imgElement.src = src;
+        
+        imgElement.onload = function() {
+            imgElement.classList.remove('loading');
+            imgElement.classList.add('loaded');
+            const placeholder = imgElement.parentElement.querySelector('.image-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+        };
+        
+        imgElement.onerror = function() {
+            if (attempt < retries) {
+                console.log(`Retrying load (${attempt}/${retries}): ${src}`);
+                setTimeout(tryLoad, 500);
+            } else {
+                console.error(`Failed to load image after ${retries} attempts: ${src}`);
+                imgElement.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f8f9fa'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-family='Arial'%3EImage Not Found%3C/text%3E%3C/svg%3E";
+                imgElement.classList.remove('loading');
+                imgElement.classList.add('loaded');
+            }
+        };
+    }
+    
+    tryLoad();
+}
+
+// Function to get category badge class
+function getCategoryBadgeClass(category) {
+    const classes = {
+        'trend': 'badge-trend',
+        'anomaly': 'badge-anomaly',
+        'seasonal': 'badge-seasonal',
+        'forecast': 'badge-forecast',
+        'ces': 'badge-ces'
+    };
+    return classes[category] || 'badge-trend';
+}
+
+// Function to get category icon
+function getCategoryIcon(category) {
+    const icons = {
+        'trend': 'fa-chart-line',
+        'anomaly': 'fa-exclamation-triangle',
+        'seasonal': 'fa-calendar-alt',
+        'forecast': 'fa-chart-line',
+        'ces': 'fa-thermometer-half'
+    };
+    return icons[category] || 'fa-chart-line';
+}
+
+// Function to render gallery
+function renderGallery(filter = 'all') {
+    const galleryGrid = document.getElementById('galleryGrid');
+    
+    // Filter images
+    const filteredImages = filter === 'all' ? analysisImages : analysisImages.filter(img => img.category === filter);
+    
+    // Update total images count
+    document.getElementById('totalImages').textContent = filteredImages.length;
+    
+    if (filteredImages.length === 0) {
+        galleryGrid.innerHTML = `
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>No plots found</h4>
+                    <p>No analysis plots available for this category.</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    // Generate gallery HTML
+    let html = '';
+    filteredImages.forEach((image, index) => {
+        const icon = getCategoryIcon(image.category);
+        const badgeClass = getCategoryBadgeClass(image.category);
+        const categoryName = image.category.charAt(0).toUpperCase() + image.category.slice(1);
+        const imageUrl = "{{ url_for('static', filename='analysis/') }}" + image.file;
+        
+        html += `
+            <div class="analysis-card" data-category="${image.category}" style="animation-delay: ${index * 0.05}s">
+                <div class="card-header-analysis">
+                    <h4>
+                        <i class="fas ${icon}"></i>
+                        ${image.name}
+                    </h4>
+                </div>
+                <div class="image-container" onclick="openModal('${image.file}', '${image.name}', '${image.description.replace(/'/g, "\\'")}')">
+                    <div class="image-placeholder" style="display: flex;">
+                        <i class="fas fa-chart-line fa-spin"></i>
+                        <span style="margin-top: 10px;">Loading...</span>
+                    </div>
+                    <img src="" 
+                         alt="${image.name}"
+                         class="analysis-image loading"
+                         data-src="${imageUrl}"
+                         style="display: block;">
+                </div>
+                <div class="card-footer-analysis">
+                    <span class="file-name">
+                        <i class="fas fa-file-image"></i> ${image.file}
+                    </span>
+                    <span class="category-badge ${badgeClass}">
+                        <i class="fas ${icon}"></i> ${categoryName}
+                    </span>
+                </div>
+            </div>
+        `;
+    });
+    
+    galleryGrid.innerHTML = html;
+    
+    // Load images after rendering
+    setTimeout(() => {
+        document.querySelectorAll('.analysis-image').forEach(img => {
+            const src = img.getAttribute('data-src');
+            if (src) {
+                loadImageWithRetry(img, src, 3);
+            }
+        });
+    }, 100);
+}
+
+// Modal functions
+function openModal(imageFile, imageName, imageDescription) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    const imageUrl = "{{ url_for('static', filename='analysis/') }}" + imageFile;
+    modalImage.src = imageUrl;
+    modalImage.alt = imageName;
+    
+    modalCaption.innerHTML = `
+        <strong><i class="fas fa-chart-line me-2"></i>${imageName}</strong><br>
+        <small>${imageDescription || 'Climate analysis visualization'}</small>
+    `;
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+// Download image function
+function downloadImage(imageFile, imageName) {
+    const imageUrl = "{{ url_for('static', filename='analysis/') }}" + imageFile;
+    fetch(imageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = imageName.replace(/[^a-zA-Z0-9]/g, '_') + '.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Download failed:', error);
+            window.open(imageUrl, '_blank');
+        });
+}
+
+// Filter functionality
+document.querySelectorAll('.filter-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        const filter = this.getAttribute('data-filter');
+        renderGallery(filter);
+    });
+});
+
+// Modal close events
+document.getElementById('imageModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+
+// Scroll to top button
+window.addEventListener('scroll', function() {
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    if (scrollBtn) {
+        if (window.scrollY > 300) {
+            scrollBtn.classList.add('visible');
+        } else {
+            scrollBtn.classList.remove('visible');
+        }
+    }
+});
+
+// Initial render
+document.addEventListener('DOMContentLoaded', function() {
+    renderGallery('all');
+});
+
+// Manual retry function for images
+function retryAllImages() {
+    document.querySelectorAll('.analysis-image').forEach(img => {
+        const src = img.getAttribute('data-src');
+        if (src && (!img.src || img.src.includes('Image Not Found'))) {
+            img.classList.add('loading');
+            loadImageWithRetry(img, src, 3);
+        }
+    });
+}
+</script>
+
+<!-- Scroll to Top Button -->
+<div class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<!-- Retry Button at bottom -->
+<div class="row mt-3">
+    <div class="col-12 text-center">
+        <button onclick="retryAllImages()" class="btn btn-outline-primary" style="border-radius: 30px;">
+            <i class="fas fa-sync-alt me-2"></i>Retry Loading Images
+        </button>
+    </div>
+</div>
+
+{% if findings %}
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 1 — KEY FINDINGS                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<style>
+    .data-section-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #2c3e50;
+        border-left: 5px solid #667eea;
+        padding-left: 15px;
+        margin: 40px 0 20px;
+    }
+    .finding-card {
+        border-radius: 18px;
+        padding: 24px 20px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        height: 100%;
+    }
+    .finding-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.2);
+    }
+    .finding-card .fc-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .finding-card .fc-value { font-size: 2rem; font-weight: 800; line-height: 1.1; }
+    .finding-card .fc-label { font-size: 0.85rem; opacity: 0.9; margin-top: 6px; }
+    .fc-blue   { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .fc-green  { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .fc-orange { background: linear-gradient(135deg, #fa7340 0%, #f9d423 100%); }
+    .fc-red    { background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); }
+    .fc-purple { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
+    .fc-teal   { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .fc-pink   { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .fc-navy   { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); }
+
+    /* Tables */
+    .data-table-wrap {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+    .data-table-wrap table thead th {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: white;
+        font-weight: 600;
+        border: none;
+        padding: 13px 16px;
+    }
+    .data-table-wrap table tbody td {
+        padding: 11px 16px;
+        vertical-align: middle;
+        border-color: #f0f0f0;
+    }
+    .data-table-wrap table tbody tr:hover { background: #f7f9ff; }
+    .ces-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+    .ces-normal   { background: #d4edda; color: #155724; }
+    .ces-moderate { background: #fff3cd; color: #856404; }
+    .ces-extreme  { background: #f8d7da; color: #721c24; }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="data-section-title">
+            <i class="fas fa-lightbulb me-2" style="color:#f39c12"></i>Key Findings (1951–2024)
+        </div>
+    </div>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-orange">
+            <div class="fc-icon">🌡️</div>
+            <div class="fc-value">
+                {% if findings.temp_rise > 0 %}+{% endif %}{{ findings.temp_rise }}°C
+            </div>
+            <div class="fc-label">Temperature Rise<br>(2001–2024 vs 1951–1980)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-blue">
+            <div class="fc-icon">🌧️</div>
+            <div class="fc-value">{{ findings.wettest_year }}</div>
+            <div class="fc-label">Wettest Year on Record</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-green">
+            <div class="fc-icon">☀️</div>
+            <div class="fc-value">{{ findings.driest_year }}</div>
+            <div class="fc-label">Driest Year on Record</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-red">
+            <div class="fc-icon">🔥</div>
+            <div class="fc-value">{{ findings.hottest_year }}</div>
+            <div class="fc-label">Hottest Year (Annual Avg)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-purple">
+            <div class="fc-icon">⚡</div>
+            <div class="fc-value">{{ findings.total_extreme_months }}</div>
+            <div class="fc-label">Total Extreme Months<br>(CES ≥ 1.300)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-pink">
+            <div class="fc-icon">📊</div>
+            <div class="fc-value">{{ findings.extreme_pct }}%</div>
+            <div class="fc-label">of All Months Classified Extreme</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-teal">
+            <div class="fc-icon">📅</div>
+            <div class="fc-value">{{ findings.most_extreme_year }}</div>
+            <div class="fc-label">Most Extreme Year (by count)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="finding-card fc-navy">
+            <div class="fc-icon">🗂️</div>
+            <div class="fc-value">{{ findings.total_months }}</div>
+            <div class="fc-label">Total Months Analysed</div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2 — PERIOD COMPARISON                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+{% if period_stats %}
+<div class="row">
+    <div class="col-12">
+        <div class="data-section-title">
+            <i class="fas fa-columns me-2" style="color:#3498db"></i>Period Comparison
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="data-table-wrap">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Avg Rainfall (mm/month)</th>
+                        <th>Avg Temperature (°C)</th>
+                        <th>Avg Humidity (%)</th>
+                        <th>Avg CES</th>
+                        <th>Extreme Months</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in period_stats %}
+                    <tr>
+                        <td><strong>{{ row.Period }}</strong></td>
+                        <td>{{ row.Avg_Rainfall }}</td>
+                        <td>{{ row.Avg_Temp }}</td>
+                        <td>{{ row.Avg_Humidity }}</td>
+                        <td>
+                            {% set ces = row.Avg_CES %}
+                            {% if ces | abs >= 1.300 %}
+                                <span class="ces-badge ces-extreme">{{ ces }} Extreme</span>
+                            {% elif ces | abs >= 1.051 %}
+                                <span class="ces-badge ces-moderate">{{ ces }} Moderate</span>
+                            {% else %}
+                                <span class="ces-badge ces-normal">{{ ces }} Normal</span>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ row.Extreme_Months }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 3 — DECADE-WISE ANALYSIS                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+{% if decade_stats %}
+<div class="row">
+    <div class="col-12">
+        <div class="data-section-title">
+            <i class="fas fa-calendar-week me-2" style="color:#9b59b6"></i>Decade-wise Climate Trends
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="data-table-wrap">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Decade</th>
+                        <th>Avg Rainfall (mm/month)</th>
+                        <th>Avg Temperature (°C)</th>
+                        <th>Avg Humidity (%)</th>
+                        <th>Avg CES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in decade_stats %}
+                    <tr>
+                        <td><strong>{{ row.Decade }}s</strong></td>
+                        <td>{{ row.Avg_Rainfall }}</td>
+                        <td>{{ row.Avg_Temp }}</td>
+                        <td>{{ row.Avg_Humidity }}</td>
+                        <td>
+                            {% set ces = row.Avg_CES %}
+                            {% if ces | abs >= 1.300 %}
+                                <span class="ces-badge ces-extreme">{{ ces }}</span>
+                            {% elif ces | abs >= 1.051 %}
+                                <span class="ces-badge ces-moderate">{{ ces }}</span>
+                            {% else %}
+                                <span class="ces-badge ces-normal">{{ ces }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 4 — SEASONAL STATISTICS                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+{% if seasonal_stats %}
+<div class="row">
+    <div class="col-12">
+        <div class="data-section-title">
+            <i class="fas fa-leaf me-2" style="color:#2ecc71"></i>Seasonal Climate Statistics
+        </div>
+    </div>
+</div>
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="data-table-wrap">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Season</th>
+                        <th>Avg Rainfall (mm/month)</th>
+                        <th>Avg Temperature (°C)</th>
+                        <th>Avg Humidity (%)</th>
+                        <th>Avg CES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set season_icons = {'Winter':'❄️','Summer':'☀️','Monsoon':'🌧️','Post-Monsoon':'🍂'} %}
+                    {% for row in seasonal_stats %}
+                    <tr>
+                        <td>
+                            <strong>{{ season_icons.get(row.Season, '') }} {{ row.Season }}</strong>
+                        </td>
+                        <td>{{ row.Avg_Rainfall }}</td>
+                        <td>{{ row.Avg_Temp }}</td>
+                        <td>{{ row.Avg_Humidity }}</td>
+                        <td>
+                            {% set ces = row.Avg_CES %}
+                            {% if ces | abs >= 1.300 %}
+                                <span class="ces-badge ces-extreme">{{ ces }}</span>
+                            {% elif ces | abs >= 1.051 %}
+                                <span class="ces-badge ces-moderate">{{ ces }}</span>
+                            {% else %}
+                                <span class="ces-badge ces-normal">{{ ces }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="text-muted" style="font-size:0.8rem; padding-left:6px;">
+            <i class="fas fa-info-circle me-1"></i>
+            CES = Climate Extreme Score. Moderate ≥ 1.051 | Extreme ≥ 1.300 (WMO-No. 1090, 2012).
+            Baseline: full 1951–2024 dataset (882 months).
+        </p>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock %}

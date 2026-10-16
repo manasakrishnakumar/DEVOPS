@@ -1,0 +1,18 @@
+2026-10-15T21:47:32 waiting for baseline batch
+2026-10-15T22:17:51 batch finished; building images
+2026-10-15T22:18:18 images loaded; running config D
+2026-10-15T23:38:39 == restart: building images with checks
+2026-10-15T23:41:39 images built and loaded
+2026-10-15T23:41:41 FAILED: D rollout did not complete
+2026-10-15T23:42:59 == restart: building images with checks
+2026-10-15T23:45:12 images built and loaded
+2026-10-15T23:46:04 inference pod image(s): climate-inference:3
+2026-10-15T23:46:04 removed 11 invalid D rows
+2026-10-15T23:46:04 running config D
+2026-10-16T00:48:15 == restart: building images with checks
+2026-10-16T00:51:26 images built and loaded
+2026-10-16T00:52:09 inference pod image(s): climate-inference:3
+2026-10-16T00:52:09 removed 11 invalid D rows
+2026-10-16T00:52:09 running config D
+2026-10-16T01:21:43 config D done; twin + bandit
+2026-10-16T01:21:43 phase 4 complete

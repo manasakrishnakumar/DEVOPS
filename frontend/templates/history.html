@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-history me-2"></i>Your Prediction History
+                </h4>
+            </div>
+            <div class="card-body">
+                {% if history %}
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="historyTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Date & Time</th>
+                                    <th>Rainfall (mm)</th>
+                                    <th>Temperature (°C)</th>
+                                    <th>Humidity (%)</th>
+                                    <th>CES Score</th>
+                                    <th>Condition</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pred in history %}
+                                <tr>
+                                    <td>{{ pred[5] }}</td>
+                                    <td>{{ "%.1f"|format(pred[0]) }}</td>
+                                    <td>{{ "%.1f"|format(pred[1]) }}</td>
+                                    <td>{{ "%.1f"|format(pred[2]) }}</td>
+                                    <td>
+                                        <span class="badge {% if pred[3] >= 2 %}bg-danger{% elif pred[3] >= 1 %}bg-warning{% else %}bg-success{% endif %}">
+                                            {{ "%.3f"|format(pred[3]) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if pred[4] == 'Extreme' %}bg-danger{% elif pred[4] == 'Moderate' %}bg-warning{% else %}bg-success{% endif %}">
+                                            {{ pred[4] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-chart-line fa-4x text-muted mb-3"></i>
+                        <h5>No predictions yet</h5>
+                        <p>Make your first climate prediction to see history here.</p>
+                        <a href="{{ url_for('predict') }}" class="btn btn-primary">
+                            <i class="fas fa-brain me-2"></i>Make Prediction
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if history %}
+<script>
+$(document).ready(function() {
+    $('#historyTable').DataTable({
+        order: [[0, 'desc']],
+        pageLength: 25,
+        responsive: true,
+        language: {
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries"
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

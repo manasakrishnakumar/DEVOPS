@@ -1,0 +1,67 @@
+# Phase 7: correctness SLO (separate from availability).  Apply:
+#   helm upgrade prom prometheus-community/prometheus -n monitoring --reuse-values -f monitoring/slo-values.yaml
+# SLI = share of SERVED answers that pass the semantic guard (served_valid / (served_valid + served_invalid)).
+# SLO = 99 % -> error budget 1 %.  burn = (bad share) / 0.01.
+serverFiles:
+  alerting_rules.yml:
+    groups:
+    - name: climate-correctness-slo
+      rules:
+      # --- SLIs over several windows
+      - record: climate:served_invalid:ratio_30s
+        expr: sum(rate(served_invalid_total[30s])) / clamp_min(sum(rate(served_valid_total[30s])) + sum(rate(served_invalid_total[30s])), 1e-9)
+      - record: climate:served_invalid:ratio_2m
+        expr: sum(rate(served_invalid_total[2m])) / clamp_min(sum(rate(served_valid_total[2m])) + sum(rate(served_invalid_total[2m])), 1e-9)
+      - record: climate:served_invalid:ratio_5m
+        expr: sum(rate(served_invalid_total[5m])) / clamp_min(sum(rate(served_valid_total[5m])) + sum(rate(served_invalid_total[5m])), 1e-9)
+      - record: climate:served_invalid:ratio_1h
+        expr: sum(rate(served_invalid_total[1h])) / clamp_min(sum(rate(served_valid_total[1h])) + sum(rate(served_invalid_total[1h])), 1e-9)
+      - record: climate:served_invalid:ratio_6h
+        expr: sum(rate(served_invalid_total[6h])) / clamp_min(sum(rate(served_valid_total[6h])) + sum(rate(served_invalid_total[6h])), 1e-9)
+      - record: climate:degraded:ratio_30s
+        expr: sum(rate(predict_tier_total{tier=~"climatology|cache"}[30s])) / clamp_min(sum(rate(predict_tier_total[30s])), 1e-9)
+      # --- burn rates (SLO 99 %)
+      - record: climate:correctness:burn_30s
+        expr: climate:served_invalid:ratio_30s / 0.01
+      - record: climate:correctness:burn_2m
+        expr: climate:served_invalid:ratio_2m / 0.01
+      - record: climate:correctness:burn_5m
+        expr: climate:served_invalid:ratio_5m / 0.01
+      - record: climate:correctness:burn_1h
+        expr: climate:served_invalid:ratio_1h / 0.01
+      # --- one-sided 95 % Wilson lower bound of the correctness SLI over 5 m (n = served requests in window)
+      - record: climate:correctness:wilson_lower_5m
+        expr: |
+          (
+            (1 - climate:served_invalid:ratio_5m)
+            + 1.645^2 / (2 * clamp_min((sum(rate(served_valid_total[5m])) + sum(rate(served_invalid_total[5m]))) * 300, 1))
+            - 1.645 * sqrt(
+                ((1 - climate:served_invalid:ratio_5m) * climate:served_invalid:ratio_5m
+                  + 1.645^2 / (4 * clamp_min((sum(rate(served_valid_total[5m])) + sum(rate(served_invalid_total[5m]))) * 300, 1)))
+                / clamp_min((sum(rate(served_valid_total[5m])) + sum(rate(served_invalid_total[5m]))) * 300, 1))
+          ) / (1 + 1.645^2 / clamp_min((sum(rate(served_valid_total[5m])) + sum(rate(served_invalid_total[5m]))) * 300, 1))
+      # --- alerts
+      - alert: CorrectnessFastBurnDemo        # short windows used by the replay experiment
+        expr: climate:correctness:burn_30s > 14.4 and climate:correctness:burn_2m > 14.4
+        for: 0s
+        labels: {severity: page}
+      - alert: CorrectnessFastBurn            # production-style multi-window
+        expr: climate:correctness:burn_5m > 14.4 and climate:correctness:burn_1h > 14.4
+        for: 2m
+        labels: {severity: page}
+      - alert: CorrectnessSlowBurn
+        expr: (sum(rate(served_invalid_total[30m])) / clamp_min(sum(rate(served_valid_total[30m])) + sum(rate(served_invalid_total[30m])), 1e-9)) / 0.01 > 6 and climate:served_invalid:ratio_6h / 0.01 > 6
+        for: 5m
+        labels: {severity: ticket}
+      - alert: DegradedServing                 # guard is protecting users but full quality is lost
+        expr: climate:degraded:ratio_30s > 0.5
+        for: 30s
+        labels: {severity: ticket}
+      - alert: OutputScoreShift               # distribution of served output scores moved vs its own start-up reference
+        expr: max(output_score_shift_ks) > 0.5
+        for: 1m
+        labels: {severity: ticket}
+      - alert: SemanticRejectsRising
+        expr: sum(increase(semantic_reject_total[5m])) > 0
+        for: 1m
+        labels: {severity: ticket}

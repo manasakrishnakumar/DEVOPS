@@ -1,0 +1,28 @@
+2026-10-16T18:28:01 == phase 11-13 start
+2026-10-16T18:28:01 START adaptive conformal (offline)
+2026-10-16T18:28:06 END adaptive conformal (offline) (exit 0)
+2026-10-16T18:28:06 START make candidates (host, TF)
+2026-10-16T18:28:46 END make candidates (host, TF) (exit 1)
+2026-10-16T18:30:08 image :8 built and loaded
+2026-10-16T18:30:08 START phase 11 shadow gate in cluster
+2026-10-16T18:30:58 END phase 11 shadow gate in cluster (exit 0)
+2026-10-16T18:30:58 START phase 12 cluster
+2026-10-16T18:35:15 == phase 11-13 start
+2026-10-16T18:35:15 START adaptive conformal (offline)
+2026-10-16T18:35:21 END adaptive conformal (offline) (exit 0)
+2026-10-16T18:35:21 START make candidates (host, TF)
+2026-10-16T18:37:49 END make candidates (host, TF) (exit 0)
+2026-10-16T18:39:06 image :8 built and loaded
+2026-10-16T18:39:06 START phase 11 shadow gate in cluster
+2026-10-16T18:40:00 END phase 11 shadow gate in cluster (exit 0)
+2026-10-16T18:40:00 START phase 12 cluster
+2026-10-16T18:43:28 == restart from phase 11 (kubectl cp fix; candidates and image :8 already built)
+2026-10-16T18:43:28 START phase 11 shadow gate in cluster
+2026-10-16T20:00:57 END phase 11 shadow gate in cluster (exit 0)
+2026-10-16T20:00:57 START phase 12 cluster
+2026-10-16T20:09:22 END phase 12 cluster (exit 0)
+2026-10-16T20:09:22 START phase 13b model family
+2026-10-16T21:35:55 END phase 13b model family (exit 0)
+2026-10-16T21:35:55 START summarize
+2026-10-16T21:35:55 END summarize (exit 0)
+2026-10-16T21:35:56 == phase 11-13 complete (documents and PDF updated)

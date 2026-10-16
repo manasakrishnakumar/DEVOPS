@@ -1,0 +1,91 @@
+{
+ "X04_lstm_autoencoder": {
+  "healthy_alarms_in_test_half": 79,
+  "scenarios": {
+   "leak": {
+    "early": "6/6",
+    "median_lead_s": 69.6
+   },
+   "drift": {
+    "early": "6/6",
+    "median_lead_s": 23.7
+   }
+  }
+ },
+ "X27_supervised_f1_leave_one_run_out": {
+  "plain": {
+   "mean_f1": 0.972,
+   "runs": 12
+  },
+  "class_weight": {
+   "mean_f1": 0.96,
+   "runs": 12
+  },
+  "smote": {
+   "mean_f1": 0.961,
+   "runs": 12
+  }
+ },
+ "X23_attribution_score_drop_when_feature_neutralised": {
+  "leak": {
+   "lat_ms": 0.0842,
+   "cpu_rate": 0.0769,
+   "rss_mb": 0.0152,
+   "rss_slope": 0.0124,
+   "score_lstm": 0.0,
+   "score_slope": 0.0,
+   "shift_ks": 0.0
+  },
+  "drift": {
+   "lat_ms": 0.1615,
+   "cpu_rate": 0.1397,
+   "rss_mb": 0.0352,
+   "rss_slope": 0.0028,
+   "score_lstm": 0.0,
+   "score_slope": 0.0,
+   "shift_ks": 0.0
+  }
+ },
+ "X25_granger_to_latency": {
+  "leak": {
+   "rss_mb": {
+    "runs_tested": 6,
+    "significant_runs": 0
+   },
+   "rss_slope": {
+    "runs_tested": 6,
+    "significant_runs": 1
+   },
+   "cpu_rate": {
+    "runs_tested": 6,
+    "significant_runs": 3
+   }
+  },
+  "drift": {
+   "rss_mb": {
+    "runs_tested": 4,
+    "significant_runs": 1
+   },
+   "rss_slope": {
+    "runs_tested": 4,
+    "significant_runs": 0
+   },
+   "score_lstm": {
+    "runs_tested": 6,
+    "significant_runs": 1
+   },
+   "score_slope": {
+    "runs_tested": 6,
+    "significant_runs": 1
+   },
+   "cpu_rate": {
+    "runs_tested": 6,
+    "significant_runs": 3
+   },
+   "shift_ks": {
+    "runs_tested": 6,
+    "significant_runs": 1
+   }
+  }
+ }
+}

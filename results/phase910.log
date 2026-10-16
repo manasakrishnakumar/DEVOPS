@@ -1,0 +1,12 @@
+2026-10-16T14:10:19 == waiting for phase 8
+2026-10-16T16:14:20 phase 8 finished -> starting phase 9/10
+2026-10-16T16:15:50 image :7 built and loaded
+2026-10-16T16:15:50 phase 9: validating tuned probe settings (image :4, config C4)
+2026-10-16T16:35:04 phase 9 validation done
+2026-10-16T16:35:04 phase 10: telemetry smoke test (image :7, config E4)
+2026-10-16T16:35:31 smoke ok -> collecting telemetry
+2026-10-16T17:43:33 telemetry collected
+2026-10-16T17:43:54 == phase 9/10 complete (documents and PDF updated)
+2026-10-16T17:44:20 [after910] phase 9/10 finished -> running probe-validation controls
+2026-10-16T17:59:54 [after910] controls done
+2026-10-16T17:59:57 [after910] documents and PDF updated

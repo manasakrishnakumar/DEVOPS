@@ -1,0 +1,119 @@
+{
+ "X11_X32_accuracy_vs_energy_Jan_Jun_2024": {
+  "Rainfall": {
+   "sarima_rmse": 47.389,
+   "lstm_rmse": 71.316,
+   "climatology_rmse": 64.993
+  },
+  "Temp_mean": {
+   "sarima_rmse": 0.779,
+   "lstm_rmse": 1.22,
+   "climatology_rmse": 1.258
+  },
+  "Humidity": {
+   "sarima_rmse": 0.972,
+   "lstm_rmse": 1.774,
+   "climatology_rmse": 2.033
+  },
+  "energy_J_per_request": {
+   "lstm(energy_aware=0)": 3.994,
+   "sarima(energy_aware=1)": 0.93
+  }
+ },
+ "X20_hedge": {
+  "months": 66,
+  "cumulative_loss": {
+   "lstm": 33.538,
+   "climatology": 28.786,
+   "persistence": 48.265,
+   "hedge": 30.247,
+   "uniform": 36.863
+  },
+  "final_weights": {
+   "lstm": 0.009,
+   "climatology": 0.991,
+   "persistence": 0.0
+  }
+ },
+ "X19_input_guard": {
+  "false_alarm_holdout": 0.061,
+  "threshold": 0.6071,
+  "detection": {
+   "rain_x5": 0.576,
+   "temp_in_F": 0.394,
+   "humidity_gt_100": 0.409,
+   "negative_rain": 0.0,
+   "all_zero": 1.0
+  }
+ },
+ "X21_intervals": {
+  "half_width_90": {
+   "Rainfall": [
+    92.31,
+    94.17,
+    93.72,
+    93.05,
+    94.05,
+    89.38
+   ],
+   "Temp_mean": [
+    1.52,
+    1.53,
+    1.53,
+    1.52,
+    1.52,
+    1.51
+   ],
+   "Humidity": [
+    3.1,
+    3.18,
+    3.17,
+    3.18,
+    3.21,
+    3.17
+   ]
+  },
+  "heldout_coverage_2019_2024": {
+   "Rainfall": [
+    0.75,
+    0.75,
+    0.75,
+    0.75,
+    0.75,
+    0.717
+   ],
+   "Temp_mean": [
+    0.85,
+    0.85,
+    0.833,
+    0.833,
+    0.833,
+    0.883
+   ],
+   "Humidity": [
+    0.817,
+    0.8,
+    0.8,
+    0.783,
+    0.8,
+    0.833
+   ]
+  }
+ },
+ "X18_gbm_rmse_Jan_Jun_2024": {
+  "Rainfall": 65.282,
+  "Temp_mean": 1.036,
+  "Humidity": 1.462
+ },
+ "X18_vote_lstm_disagreement": {
+  "threshold": 1.0,
+  "scores": {
+   "3_members|healthy": 0.077,
+   "3_members|scaler_x0.35": 2.589,
+   "3_members|subtle_bias_+1.2C": 0.138,
+   "4_members|healthy": 0.172,
+   "4_members|scaler_x0.35": 2.702,
+   "4_members|subtle_bias_+1.2C": 0.227
+  }
+ }
+}

@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: climate
+      POSTGRES_PASSWORD: climate_pw
+      POSTGRES_DB: climate
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U climate"]
+      interval: 5s
+      retries: 10
+
+  inference-api:
+    build: ./inference-api
+    image: climate-inference:2
+    restart: unless-stopped
+    mem_limit: 2500m
+    environment:
+      FAULT_INJECTION: "1"
+    ports: ["5001:5001"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:5001/health/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  frontend:
+    build: ./frontend
+    image: climate-frontend:2
+    restart: unless-stopped
+    ports: ["5000:5000"]
+    environment:
+      SECRET_KEY: change-me-in-k8s-secret
+      DATABASE_URL: postgresql://climate:climate_pw@postgres:5432/climate
+      INFERENCE_URL: http://inference-api:5001
+      SAVE_PLOT_FILES: "0"
+    depends_on:
+      postgres: {condition: service_healthy}
+      inference-api: {condition: service_healthy}
+
+  # Config A: the original single-process app (start with: docker compose --profile mono up monolith)
+  monolith:
+    profiles: ["mono"]
+    build: ./monolith
+    image: climate-monolith:1
+    restart: unless-stopped
+    mem_limit: 3500m
+    environment:
+      SECRET_KEY: change-me
+      FAULT_INJECTION: "1"
+    ports: ["5002:5000"]
+
+volumes:
+  pgdata:
