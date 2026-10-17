@@ -241,3 +241,6 @@ Deadline/load-aware degradation (image :12, config H4, env DEADLINE_MS) fixes th
 
 ## 12. Addendum 2026-10-17 (metamorphic probe, prior art)
 Image :13 adds the opt-in metamorphic probe (METAMORPHIC=1, off by default); final cluster state: probe off, golden on, deadline 800 ms. Prior-art search shows golden-output, conformal monitoring, runtime SLO guards and tiered fallback exist in the literature; novelty is empirical/systems-level (see NOVELTY_AND_PRIOR_ART.md). Read arXiv 2607.09992 (Trusted Floors) before writing.
+
+## 13. Addendum 2026-10-17 (five contributions)
+New studies: TESTING 3.22 (baselines, cost-coverage), 3.23 (HBW/MTTC), 3.24 (compound faults). Note: golden/test-vector check alone detects all injected faults on a deterministic model (subsumes other layers for detection) but costs about 182 ms per check; the recommended design is cheap per-request checks plus periodic golden.

@@ -1,0 +1,146 @@
+{
+ "E4|bitflip+flatline": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 6
+ },
+ "E4|bitflip+stale": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 6
+ },
+ "E4|scaler+unitchange": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 5
+ },
+ "E4|bitflip+delay": {
+  "wrong_pct": 100.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "lstm": 25
+  },
+  "p95_ms": 2465
+ },
+ "E4|corrupt+delay": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 3
+ },
+ "E4|scaler+flatline": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 6
+ },
+ "G4|bitflip+flatline": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 5
+ },
+ "G4|bitflip+stale": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 3
+ },
+ "G4|scaler+unitchange": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 3
+ },
+ "G4|bitflip+delay": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "sarima": 25
+  },
+  "p95_ms": 1615
+ },
+ "G4|corrupt+delay": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 7
+ },
+ "G4|scaler+flatline": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 5
+ },
+ "H4|bitflip+flatline": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 3
+ },
+ "H4|bitflip+stale": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 3
+ },
+ "H4|scaler+unitchange": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 2
+ },
+ "H4|bitflip+delay": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 768
+ },
+ "H4|corrupt+delay": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 9
+ },
+ "H4|scaler+flatline": {
+  "wrong_pct": 0.0,
+  "failed_pct": 0.0,
+  "tiers": {
+   "climatology": 25
+  },
+  "p95_ms": 4
+ }
+}

@@ -21,7 +21,7 @@ sys.path.insert(0, HERE)
 import c1, c2, c4, c5, c6, c7  # noqa: E402
 
 TEMPLATE = r'C:/Users/manas/Downloads/AIML- Project Report.docx'
-OUT = os.path.join(HERE, 'Project_Report_v2.docx')
+OUT = os.path.join(HERE, 'Project_Report_v3.docx')
 PAGES = json.load(open(sys.argv[1])) if len(sys.argv) > 1 and os.path.exists(sys.argv[1]) else {}
 NAME1, NAME2, USN = '[STUDENT NAME 1]', '[STUDENT NAME 2]', '[USN]'
 TITLE = c1.TITLE

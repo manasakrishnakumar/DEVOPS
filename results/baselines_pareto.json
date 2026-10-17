@@ -1,0 +1,78 @@
+{
+ "detection_pct": {
+  "bitflip": {
+   "range": 0.0,
+   "zscore3": 67.5,
+   "envelope": 2.5,
+   "env+inv": 7.5,
+   "golden": 100.0,
+   "full": 100.0
+  },
+  "bitflip_severe": {
+   "range": 90.0,
+   "zscore3": 100.0,
+   "envelope": 100.0,
+   "env+inv": 100.0,
+   "golden": 100.0,
+   "full": 100.0
+  },
+  "scaler": {
+   "range": 100.0,
+   "zscore3": 100.0,
+   "envelope": 100.0,
+   "env+inv": 100.0,
+   "golden": 100.0,
+   "full": 100.0
+  },
+  "corrupt": {
+   "range": 100.0,
+   "zscore3": 100.0,
+   "envelope": 100.0,
+   "env+inv": 100.0,
+   "golden": 100.0,
+   "full": 100.0
+  },
+  "unitchange": {
+   "range": 100.0,
+   "zscore3": 100.0,
+   "envelope": 100.0,
+   "env+inv": 100.0,
+   "golden": 100.0,
+   "full": 100.0
+  },
+  "flatline": {
+   "range": 0.0,
+   "zscore3": 100.0,
+   "envelope": 37.5,
+   "env+inv": 100.0,
+   "golden": 100.0,
+   "full": 100.0
+  },
+  "stale": {
+   "range": 0.0,
+   "zscore3": 100.0,
+   "envelope": 72.5,
+   "env+inv": 97.5,
+   "golden": 100.0,
+   "full": 100.0
+  }
+ },
+ "false_alarm_pct": {
+  "range": 0.0,
+  "zscore3": 12.3,
+  "envelope": 0.0,
+  "env+inv": 1.0,
+  "golden": 0.0,
+  "full": 1.0
+ },
+ "overhead_ms": {
+  "lstm_forecast_6_steps": 42.205,
+  "range": 0.03,
+  "zscore3": 0.022,
+  "envelope": 0.024,
+  "env+inv": 0.081,
+  "golden_dev_check": 0.022,
+  "golden_test_vector_forecast_24": 182.241
+ },
+ "note": "golden = LM-Fix-style fixed-test-vector check; golden detection is evaluated on the deployed test vector (independent of the window)."
+}

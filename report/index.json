@@ -350,11 +350,23 @@
 ],
 [
 "h3",
-"6.7  Overall Analysis"
+"6.7  Baselines and Cost-Coverage of the Guard Layers"
 ],
 [
 "h3",
-"6.8  Summary"
+"6.8  Healthy-but-Wrong Time and Mean Time to Correctness"
+],
+[
+"h3",
+"6.9  Compound Faults"
+],
+[
+"h3",
+"6.10  Overall Analysis"
+],
+[
+"h3",
+"6.11  Summary"
 ],
 [
 "h2",
@@ -633,6 +645,18 @@
 [
 "table",
 "Table 6.9  Metamorphic probe: detection per fault (no golden output, no stored reference)"
+],
+[
+"table",
+"Table 6.10  Detection of injected faults by simple baselines and by the layers of the guard (percent of windows)"
+],
+[
+"fig",
+"Figure 6.17  Detection of injected faults: baselines versus guard layers"
+],
+[
+"table",
+"Table 6.11  Compound faults: wrong answers and p95 latency per configuration"
 ],
 [
 "table",

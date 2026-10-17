@@ -1,0 +1,203 @@
+{
+ "C4|bitflip": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "D4|bitflip": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "E4|bitflip": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "G4|bitflip": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "H4|bitflip": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "C4|bitflip_severe": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "D4|bitflip_severe": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "E4|bitflip_severe": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "G4|bitflip_severe": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "C4|corrupt": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "D4|corrupt": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "E4|corrupt": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "G4|corrupt": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "H4|corrupt": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "C4|flatline": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "D4|flatline": {
+  "trials": 10,
+  "hbw_s_mean": 29.98,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 99.9
+ },
+ "E4|flatline": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "G4|flatline": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "H4|flatline": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "C4|scaler": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "D4|scaler": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "E4|scaler": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "G4|scaler": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "C4|stale": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "D4|stale": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "E4|stale": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "G4|stale": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "C4|unitchange": {
+  "trials": 10,
+  "hbw_s_mean": 30.0,
+  "mttc_s_median": 30.0,
+  "wrong_pct_mean": 100.0
+ },
+ "D4|unitchange": {
+  "trials": 10,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "E4|unitchange": {
+  "trials": 9,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "G4|unitchange": {
+  "trials": 5,
+  "hbw_s_mean": 0.0,
+  "mttc_s_median": 0.0,
+  "wrong_pct_mean": 0.0
+ },
+ "operator|none": {
+  "trials": 20,
+  "restored": 0,
+  "mttq_median_s": 150.0
+ },
+ "operator|rules": {
+  "trials": 20,
+  "restored": 20,
+  "mttq_median_s": 23.8
+ },
+ "operator|bandit": {
+  "trials": 20,
+  "restored": 20,
+  "mttq_median_s": 21.5
+ }
+}

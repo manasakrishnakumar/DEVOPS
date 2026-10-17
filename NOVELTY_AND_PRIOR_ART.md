@@ -25,3 +25,12 @@ Method: full-text keyword scan of the 23 reading-list papers plus web searches (
 
 ## Honest verdict
 The contribution is empirical and systems-level (measured study + integrated Kubernetes-native defence), not a new algorithm. Strongest gaps: 1, 2, 4. Weaker (close prior work): 3, 6, 7. The metamorphic probe (TESTING 3.21) is an experimental, partly negative result.
+
+
+## Five strongest contributions (final framing, 2026-10-17; each backed by measurements, none claimed as a new algorithm)
+1. **SilentBench + healthy-but-wrong time / MTTC metrics** - measured silent-failure study across monolith, Compose and Kubernetes (TESTING 3.5b, 3.23). Default probes: HBW 30 s, 0 detections; guard: HBW 0 s.
+2. **Compound silent + slow faults** - a subtle bit flip combined with a slow-model fault: E4 100 % wrong, G4 0 % wrong but slow (p95 1615 ms), H4 0 % wrong and bounded (p95 768 ms) (TESTING 3.24). No compound-fault evaluation of ML-service health found in the reviewed papers.
+3. **Cost-coverage evidence against baselines** - simple detectors (range, 3-sd z-score) miss or false-alarm; a golden/test-vector check detects everything but costs 182.241 ms per check vs 0.081 ms for envelope+invariants, motivating cheap per-request checks plus a periodic golden check (TESTING 3.22).
+4. **Correctness-aware probe design** - semantic readiness alone never restores; readiness + liveness restores in 36 s; partial vs strict readiness 0 % vs 81 % failed (TESTING 3.17).
+5. **Quality-aware recovery and deadline-aware degradation** - cost-blind bandit 5/20 vs quality-aware 20/20 restored; delay fault 96.8 % to 0 % failed (TESTING 3.8, 3.20).
+Not claimed as novel: golden-output check (LM-Fix, RADAR), conformal monitoring (WATCH and others), runtime SLO guard (arXiv 2607.09992), tiered fallback. The metamorphic probe is an experimental, partly negative result (TESTING 3.21).

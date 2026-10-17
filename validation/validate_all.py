@@ -371,6 +371,18 @@ def v_metamorphic_data():
     return f"interleaved FA {d['false_alarm_interleaved_triple_pct']} %, time-split FA {d['false_alarm_timesplit_triple_pct']} % (limit), bitflip {d['faults']['bitflip']['detected_pct']} % marginal, scaler {d['faults']['scaler']['detected_pct']} %"
 
 
+def v_novelty_studies():
+    """Baselines, healthy-but-wrong metrics and compound-fault results (Phase 14b studies)."""
+    b = json.load(open(os.path.join(ROOT, 'results', 'baselines_pareto.json')))
+    assert b['detection_pct']['bitflip']['env+inv'] <= 10 and b['detection_pct']['bitflip']['golden'] == 100.0
+    assert b['false_alarm_pct']['zscore3'] > 5 and b['false_alarm_pct']['env+inv'] <= 2
+    c = json.load(open(os.path.join(ROOT, 'results', 'compound_faults.json')))
+    assert c['E4|bitflip+delay']['wrong_pct'] == 100.0 and c['H4|bitflip+delay']['wrong_pct'] == 0.0
+    h = json.load(open(os.path.join(ROOT, 'results', 'hbw_mttc.json')))
+    assert h['C4|bitflip']['hbw_s_mean'] == 30.0 and h['G4|bitflip']['hbw_s_mean'] == 0.0
+    return 'baselines: simple detectors weak or noisy, golden strong but costly; compound bitflip+delay: E4 100 % wrong, H4 0 %; HBW C4 30 s vs G4 0 s'
+
+
 def main():
     check('V01 docker + kubectl available', v_env)
     check('V02 cluster pods Running', v_pods)
@@ -391,6 +403,7 @@ def main():
     check('V18 fix round: golden check + cost-aware bandit', v_fixes_data)
     check('V19 deadline-aware degradation (delay fault)', v_deadline_data)
     check('V20 metamorphic probe evaluation (experimental)', v_metamorphic_data)
+    check('V21 baselines, HBW/MTTC and compound faults', v_novelty_studies)
     check('V16 phases 7-13 result data (operator, probe validation, predictor, shadow gate, family)', v_later_phases_data)
     os.chdir(ROOT)
     npass = sum(1 for r in RES if r[1] == 'PASS')

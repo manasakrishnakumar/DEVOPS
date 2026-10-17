@@ -203,3 +203,6 @@ Deadline- and load-aware degradation implemented, measured and regression-tested
 
 ## 14. Metamorphic probe and prior-art check (2026-10-17)
 Metamorphic readiness probe built, calibrated and tested (TESTING 3.21; experimental, partly negative). Prior-art search done; novelty reframed as gap-based and empirical (NOVELTY_AND_PRIOR_ART.md).
+
+## 15. Five strongest contributions (2026-10-17)
+Baseline/cost-coverage study, healthy-but-wrong and MTTC metrics, compound-fault study done (TESTING 3.22-3.24); novelty reframed as five measured contributions (NOVELTY_AND_PRIOR_ART.md). Validation 21 checks.

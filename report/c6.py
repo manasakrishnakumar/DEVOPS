@@ -27,7 +27,7 @@ ITEMS = [
  ['bitflip (8 flips)', 'missed', 'missed', 'caught', 'plausible output, deviates from golden'],
 ]),
 ('cap', 'Table 6.3  Which guard layer catches which fault (10 trials per cell)'),
-('p', "The table shows that the layers are complementary rather than redundant: each added layer closes a class of faults that the previous layers cannot see. The cross-model canary is the fourth layer; it allows a repaired tier to return to service without a restart and detects a model that disagrees with the others even when its own output looks plausible."),
+('p', "The table shows that, among the per-request checks, each added layer closes a class of faults that the previous layers cannot see. Section 6.7 qualifies this: the golden check alone detects every fault but is too expensive to run per request. The cross-model canary is the fourth layer; it allows a repaired tier to return to service without a restart and detects a model that disagrees with the others even when its own output looks plausible."),
 
 ('h5', '6.2.2  Operator and recovery policies'),
 ('p', "Sixty operator trials were run on configuration E4: three policies (none, rules, bandit), four silent faults (corrupt, unitchange, scaler, flatline) and five trials each, with the fault left in place and the time to full quality measured. Without an operator the guard keeps serving valid degraded answers but full quality never returns (0 of 20). The rules policy restores 20 of 20 trials in 23.6 seconds on average (95 percent CI 22.3 to 24.9). The first version of the learned bandit policy restored only 5 of 20 (only the scaler fault), because its cost ignored the time spent below full quality and the policy table had been built before the operator data existed; after adding a quality term to the cost and regenerating the table it restored 20 of 20 in 21.6 seconds on average (CI 20.6 to 22.6). The 2-second difference to the rules policy is statistically detectable (Mann-Whitney p = 0.041) but both policies choose the same action, so it is run-to-run drift and not a policy effect. The rules policy versus no operator is significant (Fisher exact p = 1.5e-11)."),
@@ -132,16 +132,47 @@ ITEMS = [
 ('cap', 'Table 6.9  Metamorphic probe: detection per fault (no golden output, no stored reference)'),
 ('p', "The false-alarm rate depends on how the probe is calibrated. With calibration on the even windows of all years and testing on the odd windows it was 2.0 percent per probe; with calibration on the years up to 2018 and testing after 2018 it rose to 66.0 percent, because the response band does not survive the post-2018 drift and would need periodic re-calibration. In a cluster test with the golden check switched off, the probe scored healthy windows at the threshold (0.996 to 1.0) and missed the injected eight-flip bit fault (0.996). The honest conclusion is that the probe reliably detects output-level and gross faults (which the envelope, invariants and canary already detect) but not subtle weight corruption, for which the golden-output check remains necessary. It is therefore reported as an experimental and partly negative result, not as a claimed novelty."),
 
-('h3', '6.7  Overall Analysis'),
+('h3', '6.7  Baselines and Cost-Coverage of the Guard Layers'),
+('p', "To check that the guard is better than simple alternatives and to quantify what each layer costs, six detectors were compared on the same injected faults using the real service code: a range check (history minimum and maximum), a 3-sigma z-score against the calendar-month mean, a golden test-vector check in the style of LM-Fix, the conformal envelope alone, envelope with invariants, and the full guard (envelope, invariants and golden). Detection was measured on 40 random history windows and false alarms on 300 healthy windows."),
+('table', ['Fault', 'range', 'z-score 3 sd', 'golden', 'envelope', 'env + inv', 'full'], [
+ ['bitflip', '0.0 %', '67.5 %', '100.0 %', '2.5 %', '7.5 %', '100.0 %'],
+ ['bitflip_severe', '90.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %'],
+ ['scaler', '100.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %'],
+ ['corrupt', '100.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %'],
+ ['unitchange', '100.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %', '100.0 %'],
+ ['flatline', '0.0 %', '100.0 %', '100.0 %', '37.5 %', '100.0 %', '100.0 %'],
+ ['stale', '0.0 %', '100.0 %', '100.0 %', '72.5 %', '97.5 %', '100.0 %'],
+ ['false alarms (healthy)', '0.0 %', '12.3 %', '0.0 %', '0.0 %', '1.0 %', '1.0 %'],
+]),
+('cap', 'Table 6.10  Detection of injected faults by simple baselines and by the layers of the guard (percent of windows)'),
+('fig', 'fig_baselines_detection.png', 'Figure 6.17  Detection of injected faults: baselines versus guard layers', 6.0),
+('p', "Three honest conclusions follow. First, simple detectors are inadequate: the range check never sees the subtle bit flip, the flat-line or the stale output, and the z-score check raises false alarms on 12.3 percent of healthy windows. Second, the golden test-vector check on its own detected every injected fault with no false alarm, so on a deterministic model it subsumes the other layers for detection; the statement that the layers are complementary therefore holds for per-request checking only. Third, the cost differs by orders of magnitude: a golden check needs a 24-step forecast (182.241 ms) whereas the envelope with invariants needs 0.081 ms. The golden check can therefore be run only periodically (every five seconds it uses about 3.6 percent of one core), while the cheap checks validate every served answer. The resulting design - cheap per-request checks that bound the exposure between golden checks, plus a periodic golden check that bounds the detection latency - is the cost-coverage contribution of the study."),
+
+('h3', '6.8  Healthy-but-Wrong Time and Mean Time to Correctness'),
+('p', "Two metrics are defined to describe what availability and restart-time metrics hide. Healthy-but-wrong (HBW) time is the number of seconds during a fault window in which the platform reports the pod Ready while wrong answers are served. Mean time to correctness (MTTC) is the time from injection to the first answer that is not wrong. In the SilentBench data the guard-off configuration (C4) has an HBW time of 30 s (the whole fault window) and an undefined MTTC for every silent fault, which means that the platform never leaves the healthy-but-wrong state; the full guard (G4, H4) has an HBW time of 0 s for every fault; the envelope and invariants (E4) have 0 s except for the subtle bit flip (30 s). Full quality (MTTQ) returns with the operator in 23.8 s (rules) and 21.5 s (bandit) and never without it. The numbers are in results/hbw_mttc.md."),
+
+('h3', '6.9  Compound Faults'),
+('p', "Real incidents rarely come alone, so six combinations of a weight or scaler fault with an output-level or delay fault were injected into the real service code (25 requests per scenario; a response is wrong if it deviates from the healthy forecast of the tier it names). Output-level compound faults (flat-line, stale, unit change combined with a bit flip or scaler fault) and corrupt plus delay were handled by all three configurations by serving climatology. The interesting case is a subtle bit flip combined with a slow-model fault: E4 served 100 percent wrong answers from the LSTM with a p95 latency of 2465 ms; G4 served no wrong answer (it fell back to SARIMA) but with a p95 latency of 1615 ms; H4 served no wrong answer with a p95 latency of 768 ms. A subtle silent fault and a slow fault together need all three mechanisms - the golden check, the tier chain and the deadline - and neither of the two faults alone shows this interaction."),
+('table', ['Scenario', 'E4 wrong %', 'G4 wrong %', 'H4 wrong %', 'E4 p95 (ms)', 'G4 p95 (ms)', 'H4 p95 (ms)'], [
+ ['bitflip+flatline', '0.0', '0.0', '0.0', '6', '5', '3'],
+ ['bitflip+stale', '0.0', '0.0', '0.0', '6', '3', '3'],
+ ['scaler+unitchange', '0.0', '0.0', '0.0', '5', '3', '2'],
+ ['bitflip+delay', '100.0', '0.0', '0.0', '2465', '1615', '768'],
+ ['corrupt+delay', '0.0', '0.0', '0.0', '3', '7', '9'],
+ ['scaler+flatline', '0.0', '0.0', '0.0', '6', '5', '4']
+]),
+('cap', 'Table 6.11  Compound faults: wrong answers and p95 latency per configuration'),
+
+('h3', '6.10  Overall Analysis'),
 ('bullets', [
  "The central claim is supported by measurement: default Kubernetes and Compose cannot see silent failures, while a guard that tests the answer converts all injected silent faults into valid answers without false alarms.",
- "The layers are complementary; the last layer (golden output) was added because the first three left a measured hole.",
+ "Among per-request checks the layers are complementary; the golden check was added because the others left a measured hole, and on its own it detects every injected fault but costs about 182 ms per check (Section 6.7).",
  "Automatic restoration needs an operator or a semantic liveness probe; semantic readiness alone only stops traffic.",
  "The learned recovery policy is not better than simple rules in this action space; its value is that it is derived from data and would choose differently where restarting is expensive (for example crash faults, where the table prefers restart-only at 48 s against 75 s).",
  "Probe tuning is secondary to redundancy: replicas dominate recovery time.",
  "Prediction gives useful lead for gradual faults at the cost of false alarms; the shadow gate separates good and bad candidates cleanly on the tested candidates.",
  "Several attractive extras gave negative or inconclusive results; recording them prevents over-claiming.",
 ]),
-('h3', '6.8  Summary'),
+('h3', '6.11  Summary'),
 ('p', "The results show a large and statistically significant effect of the proposed mechanisms on the safety of the served answers (0 percent wrong versus 100 percent), on the restoration of full quality (20 of 20 within about 24 seconds versus never) and, with the deadline mechanism, on availability under slow faults (0 percent failed versus 96.8 percent). They also show the limits of the approach, which Chapter 7 summarises."),
 ]

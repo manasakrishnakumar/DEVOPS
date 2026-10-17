@@ -383,3 +383,24 @@ Idea: check the LSTM with *related inputs* instead of a stored reference output.
 - False alarms: interleaved split (calibrate on even windows of all years, test odd) 2.0 % per probe (triple of windows), 0.5 % per window; **time split (calibrate <= 2018, test > 2018) 66.0 % per probe** - the band does not survive the post-2018 drift, so it needs periodic re-calibration.
 - Detection over 30 random probe-window triples: corrupt 100.0 %, unit change 100.0 %, flat-line 100.0 %, stale 100.0 % (scores 100-1e9 x threshold, via MR2/MR1); subtle bit flip (8 flips) 93.3 % and 16 flips 83.3 % but with scores only about 1.1 x threshold (marginal); scaler fault 16.7 %.
 - Cluster test (image :13, golden off, probe on): healthy probe score already 0.996-1.0 (at the threshold because the deployed probe windows are the latest, most drifted ones) and the injected bit flip scored 0.996 (missed); one violation counter increment occurred on healthy data. **Conclusion: the probe is reliable for output-level and gross faults (which the envelope, invariants and canary already catch) but NOT for subtle weight corruption; the golden-output check remains necessary. Not recommended to enable without re-calibration; reported as an experimental, partly negative result (K42).** Final cluster state: probe off, golden check on, deadline 800 ms.
+
+### 3.22 Baselines and cost-coverage (local, real service code; `analysis/baselines_pareto.py`, `results/baselines_pareto.json`, `results/figures/fig_baselines_detection.png`)
+Detection (% of 40 random windows; golden is evaluated on its fixed test vector) of injected LSTM faults; false alarms on 300 healthy windows.
+| fault | range | zscore3 | golden (LM-Fix-style) | envelope | env+inv | full |
+|---|---|---|---|---|---|---|
+| bitflip | 0.0 | 67.5 | 100.0 | 2.5 | 7.5 | 100.0 |
+| bitflip_severe | 90.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| scaler | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| corrupt | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| unitchange | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| flatline | 0.0 | 100.0 | 100.0 | 37.5 | 100.0 | 100.0 |
+| stale | 0.0 | 100.0 | 100.0 | 72.5 | 97.5 | 100.0 |
+| false alarms on healthy | 0.0 % | 12.3 % | 0.0 % | 0.0 % | 1.0 % | 1.0 % |
+Cost per call (ms): LSTM 6-step forecast 42.205; range 0.03; zscore3 0.022; envelope 0.024; env+inv 0.081; golden test-vector forecast (24 steps) 182.241; golden comparison 0.022.
+Findings (honest): (1) simple baselines are inadequate - the range check misses subtle bit flip, flat-line and stale output (0 %) and the 3-sd z-score flags 12.3 % of healthy windows; (2) the golden/test-vector check alone detects every injected fault here with no false alarm, so on deterministic models it **subsumes** the other layers for detection - the earlier statement that layers are strictly complementary must be read as "for per-request checking"; (3) its cost is 182.241 ms per check versus 0.081 ms for envelope+invariants, so it cannot be run per request, only periodically (every 5 s = about 3.6 % of one core), whereas the cheap checks validate every served answer. The recommended design is therefore cheap per-request checks (bounding exposure between checks) plus a periodic golden check (bounding detection latency); this cost-coverage trade-off is the contribution, not the golden check itself.
+
+### 3.23 Healthy-but-wrong time and mean time to correctness (`analysis/hbw_mttc.py`, `results/hbw_mttc.md`, `results/hbw_mttc.json`)
+Definitions: HBW = seconds in the 30 s fault window during which the platform reports the pod Ready while wrong answers are served; MTTC = seconds from injection to the first non-wrong answer (censored at 30 s); MTTQ = seconds to full quality (operator trials, censored at 150 s). Results: guard off (C4): HBW 30 s and MTTC censored for every silent fault (the platform never leaves the healthy-but-wrong state); E4: HBW 0 s except subtle bit flip (30 s); G4/H4: HBW 0 s for all faults; operator MTTQ median: none never (0/20), rules 23.8 s, bandit 21.5 s.
+
+### 3.24 Compound faults (weights/scaler fault + output or delay fault; local, real service code; `analysis/compound_faults.py`, `results/compound_faults.json`)
+25 requests per scenario after 3.5 s; oracle = deviation from the healthy forecast of the tier named in the response. Wrong answers: 0 % in all scenarios for E4, G4 and H4 except **bit flip + delay**: E4 serves 100 % wrong answers from the LSTM with p95 2465 ms; G4 serves 0 % wrong (SARIMA) but p95 1615 ms; H4 serves 0 % wrong with p95 768 ms (climatology). Output-level compound faults (flat-line, stale, unit change with bit flip or scaler) and corrupt + delay were handled by all three configs (served from climatology). The interaction of a subtle silent fault with a slow-model fault is where all three mechanisms (golden check, tiers, deadline) are needed together.
