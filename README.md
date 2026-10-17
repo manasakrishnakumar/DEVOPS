@@ -11,6 +11,7 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 - The operator restores full quality in about 19-26 s with the rules policy (20/20) and, after a cost-model fix, with the learned bandit policy (20/20; it first failed 15/20).
 - Tuned probe period/threshold gave no benefit; replicas dominate recovery time.
 - A golden-output integrity check (config G4) catches the subtle bit flips that evaded every other check (20/20 caught, 0 false alarms in healthy control).
+- Deadline- and load-aware degradation (config H4) turns the delay fault from 96.8 % failed requests into 0 % failed (94 % valid degraded answers) and cuts burst p95 about 4x.
 - Honest limits: the golden check only detects change from a trusted start-up state; the guard does not help crash/hang/OOM; 5-10 trials per cell on one laptop.
 
 ## Where to start
@@ -28,7 +29,7 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 ## Layout
 `monolith/` (config A) · `frontend/` + `inference-api/` + PostgreSQL (configs B/C) · `k8s/`, `monitoring/` (Minikube, Prometheus, Grafana) ·
 `chaos/` (probes, fault/load runner, DoE, operator experiments) · `analysis/` (guard ablation, invariants, predictor, twin/bandit, extras) ·
-`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (18 executed checks) · `results/` (all raw data).
+`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (19 executed checks) · `results/` (all raw data).
 
 ## Quick check
 ```bash

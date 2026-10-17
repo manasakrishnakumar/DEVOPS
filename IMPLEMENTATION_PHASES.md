@@ -197,3 +197,6 @@ Golden-output check (G4) fixes K40; cost-aware bandit fixes K41 (20/20 restored)
 
 ## 12. Phase 14 (done 2026-10-17)
 Final statistics (bootstrap CIs, Fisher/Mann-Whitney) and paper figures from raw results: `analysis/phase14_stats.py` -> `results/phase14_tables.md`, `results/phase14_stats.json`, `results/figures/`. Also run: Kyverno+cosign, OpenTelemetry/Jaeger, KEDA, Chaos Mesh, log anomaly, RL autoscaler (TESTING 3.19). Remaining: write the paper, run CI on GitHub, multi-node scaling study.
+
+## 13. Novelty 6 (2026-10-17)
+Deadline- and load-aware degradation implemented, measured and regression-tested (TESTING 3.20); K37 root cause corrected (thread pool).

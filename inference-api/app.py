@@ -42,6 +42,8 @@ ENABLED = os.environ.get('MODELS', 'sarima,lstm').split(',')
 LAZY_LSTM = os.environ.get('LOAD_MODE', 'eager') == 'lazy'          # X31: load the LSTM on first use
 GOLDEN_ON = os.environ.get('GOLDEN_CHECK', '0') == '1'            # integrity canary: output must equal the healthy start-up output
 GOLDEN_TOL = float(os.environ.get('GOLDEN_TOL', '0.002'))          # in history-std units (deterministic models: noise is ~1e-7)
+DEADLINE_S = float(os.environ.get('DEADLINE_MS', '0')) / 1000.0     # per-request time budget; 0 = off (deadline- and load-aware degradation)
+TIER_CONC = {'lstm': int(os.environ.get('LSTM_CONC', '2')), 'sarima': int(os.environ.get('SARIMA_CONC', '3'))}   # max queued/running calls per tier
 DISABLE_CLIM = os.environ.get('DISABLE_CLIMATOLOGY', '0') == '1'   # X15: force the cache tier
 try:
     INTERVALS = json.load(open('intervals.json'))['half_width']      # X21: conformal half-widths (90 %)
@@ -161,6 +163,43 @@ def shadow_check(steps):
 def run_backend(b, steps):
     with _RUN_LOCK:
         return _run_backend(b, steps)
+
+
+_SEM = {t: threading.BoundedSemaphore(n) for t, n in TIER_CONC.items()}
+_EXEC = ThreadPoolExecutor(max_workers=16)
+_RESERVE_S = 0.05      # kept free for the cheap fallback tier
+
+
+def _guarded(b, steps, sem):
+    try:
+        return run_backend(b, steps)
+    finally:
+        if sem:
+            sem.release()
+
+
+def timed_run(b, steps, t_end):
+    """Deadline- and load-aware call: None means 'shed this tier' (queue full or budget exhausted) so the caller falls to a cheaper tier."""
+    if DEADLINE_S <= 0:
+        return run_backend(b, steps)
+    sem = _SEM.get(b.name)
+    if sem and not sem.acquire(blocking=False):
+        metrics.inc('shed', tier=b.name, reason='load')
+        return None
+    remaining = t_end - time.time() - _RESERVE_S
+    if remaining <= 0:
+        if sem:
+            sem.release()
+        metrics.inc('shed', tier=b.name, reason='deadline')
+        return None
+    fut = _EXEC.submit(_guarded, b, steps, sem)
+    try:
+        return fut.result(timeout=remaining)
+    except Exception as e:
+        if isinstance(e, TimeoutError) or type(e).__name__ == 'TimeoutError':
+            metrics.inc('shed', tier=b.name, reason='timeout')
+            return None
+        raise
 
 
 _FAULT_MODE = {'mode': None}
@@ -293,12 +332,15 @@ def serve(model, steps):
         return (run_backend(b, steps), b.name, info) if b and b.ready else (None, None, info)
 
     _STATE['n'] += 1
+    t_end = time.time() + DEADLINE_S
     for tier in tier_chain(model):
         if tier in BACKENDS:
             b = BACKENDS[tier]
             if not b.ready or _SUSPECT.get(tier):      # canary marked this version suspect (cross-model vote)
                 continue
-            fc = run_backend(b, steps)
+            fc = timed_run(b, steps, t_end)
+            if fc is None:
+                continue
             score = GUARD.score(fc, b.start_month)   # cheap conformal envelope check on the output itself
             metrics.gauge('semantic_score', round(score, 3) if np.isfinite(score) else 1e9, backend=tier)
             if score <= 1.0 and GOLDEN_ON and golden_dev(tier, fc) > GOLDEN_TOL:

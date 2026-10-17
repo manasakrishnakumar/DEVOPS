@@ -349,6 +349,19 @@ def v_fixes_data():
     return f'G4 bitflip rows={len(g4)} (0 wrong), healthy rows={len(ok)} (100% correct); bandit v2 restored {len(bd)}/20'
 
 
+def v_deadline_data():
+    """Novelty 6: deadline- and load-aware degradation removes failures under the delay fault; no regression."""
+    sb = [json.loads(l) for l in open(os.path.join(ROOT, 'results', 'silentbench.jsonl')) if l.strip()]
+    g = [r['fault_window']['failed_pct'] for r in sb if r['config'] == 'G4' and r['fault'] == 'delay']
+    h = [r['fault_window']['failed_pct'] for r in sb if r['config'] == 'H4' and r['fault'] == 'delay']
+    assert len(g) == 10 and len(h) == 10 and min(g) > 90 and max(h) == 0, (g, h)
+    ok = [r['fault_window'] for r in sb if r['config'] == 'H4' and r['fault'] == 'none']
+    assert ok and all(w['correct_pct'] == 100 for w in ok), 'H4 healthy false alarm'
+    bw = [r['fault_window']['wrong_pct'] for r in sb if r['config'] == 'H4' and r['fault'] in ('corrupt', 'bitflip', 'flatline')]
+    assert bw and max(bw) == 0
+    return f'delay fault failed %: G4 mean {sum(g)/len(g):.1f} -> H4 {sum(h)/len(h):.1f}; H4 healthy 100% correct, 0% wrong on corrupt/bitflip/flatline'
+
+
 def main():
     check('V01 docker + kubectl available', v_env)
     check('V02 cluster pods Running', v_pods)
@@ -367,6 +380,7 @@ def main():
     check('V15 silent-benchmark data integrity', v_silentbench_integrity)
     check('V17 cluster extras results (semantic probes, partial readiness, UI, scaling, Chronos)', v_extras_data)
     check('V18 fix round: golden check + cost-aware bandit', v_fixes_data)
+    check('V19 deadline-aware degradation (delay fault)', v_deadline_data)
     check('V16 phases 7-13 result data (operator, probe validation, predictor, shadow gate, family)', v_later_phases_data)
     os.chdir(ROOT)
     npass = sum(1 for r in RES if r[1] == 'PASS')

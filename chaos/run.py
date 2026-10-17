@@ -18,7 +18,7 @@ os.makedirs(RES, exist_ok=True)
 NET = 'devops_project_default'
 IMG = 'climate-frontend:2'
 KNS = 'climate'
-K8S_CFGS = ('C', 'D', 'C4', 'D4', 'E4', 'G4')
+K8S_CFGS = ('C', 'D', 'C4', 'D4', 'E4', 'G4', 'H4')
 
 
 def sh(cmd, check=False, capture=True):
@@ -36,7 +36,7 @@ def kube(*a):
     return sh(['kubectl', *a])
 
 
-CFG4 = {'C4': ('0', 'envelope'), 'D4': ('1', 'envelope'), 'E4': ('1', 'envelope+inv'), 'G4': ('1', 'envelope+inv')}   # G4 = E4 + golden-output integrity check   # image :4 variants
+CFG4 = {'C4': ('0', 'envelope'), 'D4': ('1', 'envelope'), 'E4': ('1', 'envelope+inv'), 'G4': ('1', 'envelope+inv'), 'H4': ('1', 'envelope+inv')}   # G4 = E4 + golden-output integrity check   # image :4 variants
 
 
 def switch_cfg4(cfg):
@@ -45,7 +45,7 @@ def switch_cfg4(cfg):
     compose('--profile', 'mono', 'stop')
     kube('-n', KNS, 'set', 'image', 'deploy/inference-api', f'inference-api=climate-inference:{os.environ.get("INFER_TAG", "4")}')
     kube('-n', KNS, 'set', 'env', 'deploy/inference-api', f'SEMANTIC_GUARD={guard}', f'GUARD_MODE={mode}',
-         'FAULT_INJECTION=1', f'GOLDEN_CHECK={"1" if cfg == "G4" else "0"}')
+         'FAULT_INJECTION=1', f'GOLDEN_CHECK={"1" if cfg in ("G4", "H4") else "0"}', f'DEADLINE_MS={"800" if cfg == "H4" else "0"}')
     kube('-n', KNS, 'rollout', 'restart', 'deploy/inference-api')
     kube('-n', KNS, 'scale', 'deploy/frontend', 'deploy/inference-api', '--replicas=1')
     ok = False

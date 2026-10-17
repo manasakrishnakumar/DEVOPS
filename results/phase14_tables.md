@@ -9,15 +9,15 @@
 | stale | 100.0 [100.0, 100.0] n=10 | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=5 | 0.00033 |
 | bitflip | 100.0 [100.0, 100.0] n=10 | 100.0 [100.0, 100.0] n=10 | 100.0 [100.0, 100.0] n=10 | 0.0 [0.0, 0.0] n=10 | 1.1e-05 |
 | bitflip_severe | 100.0 [100.0, 100.0] n=10 | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | 1.1e-05 |
-| delay | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | - | - |
+| delay | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | 0.0 [0.0, 0.0] n=10 | 1 |
 
 ## Operator policies: time to full quality (s) and restore rate
 
 | policy | restored | mean [95 % CI] s |
 |---|---|---|
 | none | 0/20 | never |
-| rules | 20/20 | 23.59 [22.25, 24.93] |
-| bandit | 20/20 | 21.56 [20.63, 22.55] |
+| rules | 20/20 | 23.59 [22.23, 24.92] |
+| bandit | 20/20 | 21.56 [20.62, 22.54] |
 
 Rules vs bandit restore time: Mann-Whitney p = 0.041 (bandit ~2 s faster, small; both use the same action so this is run-to-run drift, not a policy effect).
 Rules vs none (restored 20/20 vs 0/20): Fisher exact p = 1.5e-11.

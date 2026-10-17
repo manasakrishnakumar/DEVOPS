@@ -357,6 +357,31 @@
      }
     }
    ]
+  },
+  {
+   "id": 15,
+   "type": "timeseries",
+   "title": "Shed requests by tier and reason (deadline/load-aware degradation)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 24,
+    "x": 0,
+    "y": 56
+   },
+   "targets": [
+    {
+     "expr": "sum by (tier, reason)(shed_total) or vector(0)",
+     "refId": "A",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     }
+    }
+   ]
   }
  ]
 }

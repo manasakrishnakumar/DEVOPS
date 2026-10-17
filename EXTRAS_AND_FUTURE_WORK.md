@@ -69,3 +69,7 @@ Companions: [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) · [IMPLEMENTATION_PHASES.m
 - GitHub repository link (X07, X08, X34, X35).
 - Whether the paper should include a "Supporting experiments" section (target venue/page limit).
 - Which 2–3 extras the user wants as the first additions after Phase 8.
+
+
+## Added 2026-10-17
+- Novelty 6 deadline/load-aware degradation: DONE (TESTING 3.20). Next: per-tier locks; repeat scaling study on image :12 with heavier burst; metamorphic readiness probe; healthy-but-wrong time / MTTC metrics (proposed, not started).

@@ -235,3 +235,6 @@ Fixed: subtle bit flips (golden-output check, image :10, config G4), bandit poli
 
 ## 10. Addendum 2026-10-17 (extras round 2, Phase 14)
 Kyverno+cosign (local), OpenTelemetry+Jaeger, KEDA, Chaos Mesh, log anomaly (negative), RL autoscaler (simulation) run; Phase 14 statistics and figures done (TESTING 3.19). Cluster now runs images inference :11 (OTel, golden check on) and frontend :4; extra namespaces: kyverno, keda, argo-rollouts, chaos-mesh. Only GitHub Actions CI remains unrun.
+
+## 11. Addendum 2026-10-17 (Novelty 6)
+Deadline/load-aware degradation (image :12, config H4, env DEADLINE_MS) fixes the delay fault (96.8 % -> 0 % failed). Cluster final state: inference :12 with GUARD on, GOLDEN_CHECK=1, DEADLINE_MS=800, OTel on; frontend :4; extra stacks uninstalled; validation 19/19 expected. K37 withdrawn.
