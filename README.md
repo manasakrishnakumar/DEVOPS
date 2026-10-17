@@ -8,9 +8,10 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 ## Key findings (all measured, small samples; see the documents)
 - Default Kubernetes / Compose never recover from silent faults (100 % wrong answers, 0 of 10 detected).
 - A conformal-envelope guard with soft invariants and a cross-model canary turns detectable silent faults into valid, labelled degraded answers; 0 false alarms on hold-out windows and in a 10-minute healthy soak.
-- The operator (rules policy) restores full quality in about 20-26 s; the learned (bandit) policy did not.
+- The operator restores full quality in about 19-26 s with the rules policy (20/20) and, after a cost-model fix, with the learned bandit policy (20/20; it first failed 15/20).
 - Tuned probe period/threshold gave no benefit; replicas dominate recovery time.
-- Honest limits: subtle bit flips evade every check; the guard does not help crash/hang/OOM; 5-10 trials per cell on one laptop.
+- A golden-output integrity check (config G4) catches the subtle bit flips that evaded every other check (20/20 caught, 0 false alarms in healthy control).
+- Honest limits: the golden check only detects change from a trusted start-up state; the guard does not help crash/hang/OOM; 5-10 trials per cell on one laptop.
 
 ## Where to start
 | File | Content |
@@ -20,13 +21,14 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 | `TESTING_AND_KNOWN_ISSUES.md` | every measured result, tests, known issues (K1-K36) |
 | `REFERENCES_AND_LITERATURE_REVIEW.md` | 23 provided papers + web sources, gaps, traceability |
 | `EXTRAS_AND_FUTURE_WORK.md` | all additional ideas with status |
+| `SECURITY_REVIEW.md` | manual security review, 10 findings |
 | `RESTORE.md` | set up a new machine (Docker Desktop, Minikube, images, experiments) |
 | `PROJECT_HANDOFF_COMPLETE.pdf`, `Literature_Survey.pdf` | PDF versions |
 
 ## Layout
 `monolith/` (config A) · `frontend/` + `inference-api/` + PostgreSQL (configs B/C) · `k8s/`, `monitoring/` (Minikube, Prometheus, Grafana) ·
 `chaos/` (probes, fault/load runner, DoE, operator experiments) · `analysis/` (guard ablation, invariants, predictor, twin/bandit, extras) ·
-`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (17 executed checks) · `results/` (all raw data).
+`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (18 executed checks) · `results/` (all raw data).
 
 ## Quick check
 ```bash

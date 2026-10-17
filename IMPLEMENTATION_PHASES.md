@@ -187,7 +187,10 @@ Offline batch 1 and predictor extras (TESTING 3.16); cluster extras e1-e8, scali
 - [x] Tests: validation suite 16/16 PASS; unit tests 2 (small).
 - [x] Environment reproducible: RESTORE.md, requirements, images tagged, repository pushed.
 - [x] Extras: run or explicitly blocked/skipped (see EXTRAS_AND_FUTURE_WORK.md).
-- [ ] Security review: not done (default placeholder secrets; no CSRF audit).
+- [x] Security review written (SECURITY_REVIEW.md); findings not all remediated.
 - [ ] Research claims fully supported: wider literature search not done.
 - [ ] Larger samples (10+ trials everywhere), confidence intervals and significance tests: pending in the final phase.
 - [ ] Paper written: pending.
+
+## 11. Addendum 2026-10-17: fix round
+Golden-output check (G4) fixes K40; cost-aware bandit fixes K41 (20/20 restored); Argo Rollouts run (good promoted, bad aborted); dashboards 13-14; validation 18/18. See TESTING 3.18.

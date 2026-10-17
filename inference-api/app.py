@@ -26,6 +26,8 @@ app = Flask(__name__)
 DATA_PATH = os.environ.get('DATA_PATH', 'data.csv')
 ENABLED = os.environ.get('MODELS', 'sarima,lstm').split(',')
 LAZY_LSTM = os.environ.get('LOAD_MODE', 'eager') == 'lazy'          # X31: load the LSTM on first use
+GOLDEN_ON = os.environ.get('GOLDEN_CHECK', '0') == '1'            # integrity canary: output must equal the healthy start-up output
+GOLDEN_TOL = float(os.environ.get('GOLDEN_TOL', '0.002'))          # in history-std units (deterministic models: noise is ~1e-7)
 DISABLE_CLIM = os.environ.get('DISABLE_CLIMATOLOGY', '0') == '1'   # X15: force the cache tier
 try:
     INTERVALS = json.load(open('intervals.json'))['half_width']      # X21: conformal half-widths (90 %)
@@ -66,11 +68,31 @@ if _SHADOW_DIR and 'lstm' in BACKENDS:
     CAND.load()
     _lm.MODELS_DIR = _orig_dir
     CAND.start_month = BACKENDS['lstm'].start_month
+GOLDEN = {}
+SD = {v: float(np.std(SERIES[v])) for v in VARS}
+for _n2, _b2 in BACKENDS.items():
+    if _b2.ready and not getattr(_b2, 'lazy', False):
+        GOLDEN[_n2] = _b2.forecast(SERIES, 24)
 metrics.gauge('startup_seconds', round(time.time() - _t, 3))
 _STATE = {'corrupt': False, 'n': 0}
 _CACHE = {}
 _COST = {}        # EWMA CPU-seconds per request per tier (energy proxy)
 _SUSPECT = {}     # last audit verdict per tier
+
+
+def golden_dev(tier, fc):
+    """Largest deviation from the healthy start-up forecast, in history-std units (inf if non-finite). 0 if no golden output."""
+    g = GOLDEN.get(tier)
+    if not g:
+        return 0.0
+    k = min(len(fc[VARS[0]]), 24)
+    dev = 0.0
+    for v in VARS:
+        x = np.asarray(fc[v][:k], dtype=float)
+        if not np.all(np.isfinite(x)):
+            return float('inf')
+        dev = max(dev, float(np.max(np.abs(x - np.asarray(g[v][:k], dtype=float)))) / SD[v])
+    return dev
 FAULTS = os.environ.get('FAULT_INJECTION') == '1'
 
 
@@ -265,6 +287,10 @@ def serve(model, steps):
             fc = run_backend(b, steps)
             score = GUARD.score(fc, b.start_month)   # cheap conformal envelope check on the output itself
             metrics.gauge('semantic_score', round(score, 3) if np.isfinite(score) else 1e9, backend=tier)
+            if score <= 1.0 and GOLDEN_ON and golden_dev(tier, fc) > GOLDEN_TOL:
+                _SUSPECT[tier] = True
+                metrics.inc('golden_reject', backend=tier)
+                continue
             if score <= 1.0:
                 _CACHE[steps] = fc
                 return fc, tier, info
@@ -290,6 +316,9 @@ def canary_once(steps=6):
         full = run_backend(b, steps + off)
         fc = {v: full[v][:steps] for v in VARS}
         scores[tier] = GUARD.score(fc, b.start_month)
+        if GOLDEN_ON and golden_dev(tier, fc) > GOLDEN_TOL:
+            scores[tier] = max(scores[tier], 1.0 + 1e-6)          # integrity violation counts as invalid
+            metrics.inc('golden_violation', backend=tier)
         aligned[tier] = {v: full[v][off:off + steps] for v in VARS}
         metrics.gauge('semantic_score', round(scores[tier], 3) if np.isfinite(scores[tier]) else 1e9, backend=tier)
     aligned['climatology'] = GUARD.climatology(steps, ref)
@@ -426,7 +455,9 @@ def semantic():
             continue
         fc = run_backend(b, 6)
         s = GUARD.score(fc, b.start_month)
-        res[n] = {'valid': bool(s <= 1.0), 'score': None if not np.isfinite(s) else round(s, 3)}
+        gd = golden_dev(n, fc)
+        res[n] = {'valid': bool(s <= 1.0 and not (GOLDEN_ON and gd > GOLDEN_TOL)), 'score': None if not np.isfinite(s) else round(s, 3),
+                  'golden_dev': None if not np.isfinite(gd) else round(gd, 5)}
         ok = ok and res[n]['valid']
         metrics.gauge('semantic_valid', int(s <= 1.0), backend=n)
     return jsonify(semantic_ok=ok, backends=res), (200 if ok else 503)
@@ -535,6 +566,15 @@ def fault():
         return jsonify(mode=_FAULT_MODE['mode'], corrupt=_STATE['corrupt'], guard=GUARD_ON, guard_mode=GUARD.mode,
                        tiers_suspect=_SUSPECT)
     return jsonify(error='unknown mode'), 400
+
+
+@app.route('/golden/refresh')
+def golden_refresh():
+    with _RUN_LOCK:
+        for n, b in BACKENDS.items():
+            if b.ready:
+                GOLDEN[n] = b.forecast(SERIES, 24)
+    return jsonify(refreshed=list(GOLDEN))
 
 
 @app.route('/shadow/load')

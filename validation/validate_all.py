@@ -336,6 +336,19 @@ def v_extras_data():
     return f'extras rows={len(rows)}; UI checks all True; chronos status={ch.get("status")}; scaling rows={len(sc)}'
 
 
+def v_fixes_data():
+    """Fix round 2026-10-17: golden-output check catches subtle bit flips; cost-aware bandit restores."""
+    sb = [json.loads(l) for l in open(os.path.join(ROOT, 'results', 'silentbench.jsonl')) if l.strip()]
+    g4 = [r for r in sb if r['config'] == 'G4' and r['fault'] in ('bitflip', 'bitflip_severe')]
+    assert len(g4) == 20 and all(r['fault_window']['wrong_pct'] == 0 for r in g4), 'golden check must remove wrong answers'
+    ok = [r for r in sb if r['config'] == 'G4' and r['fault'] == 'none']
+    assert ok and all(r['fault_window']['correct_pct'] == 100 for r in ok), 'golden check false alarm'
+    op = [json.loads(l) for l in open(os.path.join(ROOT, 'results', 'operator_trials.jsonl')) if l.strip()]
+    bd = [r for r in op if r['policy'] == 'bandit']
+    assert len(bd) == 20 and all(r.get('restored_s') is not None for r in bd), 'bandit v2 must restore 20/20'
+    return f'G4 bitflip rows={len(g4)} (0 wrong), healthy rows={len(ok)} (100% correct); bandit v2 restored {len(bd)}/20'
+
+
 def main():
     check('V01 docker + kubectl available', v_env)
     check('V02 cluster pods Running', v_pods)
@@ -353,6 +366,7 @@ def main():
     check('V14 baseline experiment data integrity', v_results_integrity)
     check('V15 silent-benchmark data integrity', v_silentbench_integrity)
     check('V17 cluster extras results (semantic probes, partial readiness, UI, scaling, Chronos)', v_extras_data)
+    check('V18 fix round: golden check + cost-aware bandit', v_fixes_data)
     check('V16 phases 7-13 result data (operator, probe validation, predictor, shadow gate, family)', v_later_phases_data)
     os.chdir(ROOT)
     npass = sum(1 for r in RES if r[1] == 'PASS')

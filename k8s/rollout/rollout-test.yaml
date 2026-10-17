@@ -1,0 +1,49 @@
+# Tested copy of the canary-with-analysis-gate (Argo Rollouts v1.7.2) running beside the main Deployment.
+# Gate queries Prometheus; "ok" uses the real shadow-reject ratio (0 when no shadow traffic), "bad" always fails (demo of abort).
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata: {name: gate-ok, namespace: climate}
+spec:
+  metrics:
+  - name: shadow-reject-ratio
+    interval: 10s
+    count: 3
+    failureLimit: 0
+    successCondition: result[0] <= 0.05
+    provider: {prometheus: {address: "http://prom-prometheus-server.monitoring.svc", query: "(sum(increase(shadow_reject_total[2m])) / clamp_min(sum(increase(shadow_total_total[2m])), 1)) or vector(0)"}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata: {name: gate-bad, namespace: climate}
+spec:
+  metrics:
+  - name: always-fails
+    interval: 10s
+    count: 3
+    failureLimit: 0
+    successCondition: result[0] <= 0.05
+    provider: {prometheus: {address: "http://prom-prometheus-server.monitoring.svc", query: "vector(1)"}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata: {name: inference-rollout-test, namespace: climate}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app: inference-rollout-test}}
+  strategy:
+    canary:
+      steps:
+      - setWeight: 50
+      - analysis: {templates: [{templateName: gate-ok}]}
+      - setWeight: 100
+  template:
+    metadata: {labels: {app: inference-rollout-test}}
+    spec:
+      containers:
+      - name: inference-api
+        image: climate-inference:10
+        imagePullPolicy: Never
+        env: [{name: SEMANTIC_GUARD, value: "1"}, {name: REV, value: "1"}]
+        ports: [{containerPort: 5001}]
+        resources: {requests: {cpu: 100m, memory: 700Mi}}
+        readinessProbe: {httpGet: {path: /health/ready, port: 5001}, periodSeconds: 5}

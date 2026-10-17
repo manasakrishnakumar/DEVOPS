@@ -3,7 +3,8 @@
 The twin is empirical: for every (fault, action) it resamples measured trials from results/fault_trials.jsonl.
   action 'restart_only' <- config C  (default Kubernetes, no semantic guard)
   action 'tier_switch'  <- config D  (semantic guard + tier fall-through)
-Cost per episode = recovery_s + W_FAIL * failed_pct + W_DEG * degraded_share * 100
+Cost per episode = recovery_s + W_FAIL * failed_pct + W_DEG * degraded_share * 100 + W_Q * seconds_below_full_quality
+(the last term charges a policy that leaves the service on a fallback tier forever; without it tier_switch looked cheapest)
 (W_* are policy knobs; defaults penalise a failed request more than a degraded-but-valid answer).
 Writes analysis/policy.json (signature -> {action: mean cost}) for the operator and analysis/bandit_eval.json.
 """
@@ -15,6 +16,8 @@ from collections import defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 W_FAIL, W_DEG = 0.3, 0.05
+W_Q, HORIZON = 0.5, 240.0     # cost per second spent below full quality; horizon charged when full quality never returns
+SILENT = ('corrupt', 'unitchange', 'flatline', 'scaler')
 ACTION_OF = {'C': 'restart_only', 'D': 'tier_switch'}
 SIGNATURE = {'crash': 'unreachable', 'oom': 'unreachable', 'hang': 'timeout', 'corrupt': 'invalid:lstm,sarima',
              'unitchange': 'invalid:lstm,sarima', 'flatline': 'invalid:lstm,sarima', 'scaler': 'invalid:lstm'}
@@ -34,7 +37,8 @@ def load():
         total = max(1, r.get('total') or 1)
         tiers = r.get('tiers_after_fault') or {}
         deg = sum(v for k, v in tiers.items() if k in ('climatology', 'cache')) / max(1, sum(tiers.values()) or 1)
-        cost = rec + W_FAIL * (r.get('failed_pct') or 0.0) + W_DEG * deg * 100
+        full = HORIZON if (act == 'tier_switch' and r['fault'] in SILENT) else rec      # a tier switch never restores full quality for silent faults
+        cost = rec + W_FAIL * (r.get('failed_pct') or 0.0) + W_DEG * deg * 100 + W_Q * full
         eps[(r['fault'], act)].append(cost)
     op = os.path.join(ROOT, 'results', 'operator_trials.jsonl')    # Phase 8 live-operator experiments
     if os.path.exists(op):
@@ -46,7 +50,7 @@ def load():
                 continue
             rec = r.get('restored_s')
             rec = 240.0 if rec is None else rec          # full quality never came back inside the window
-            eps[(r['fault'], act)].append(rec + W_FAIL * fw['failed_pct'] + W_DEG * fw['degraded_pct'])
+            eps[(r['fault'], act)].append(rec + W_FAIL * fw['failed_pct'] + W_DEG * fw['degraded_pct'] + W_Q * rec)
     return eps
 
 

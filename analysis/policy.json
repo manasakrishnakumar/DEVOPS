@@ -1,19 +1,19 @@
 {
  "unreachable": {
-  "restart_only": 40.739,
-  "tier_switch": 59.262
+  "restart_only": 47.904,
+  "tier_switch": 74.967
  },
  "timeout": {
-  "restart_only": 91.148,
-  "tier_switch": 106.52999999999997
+  "restart_only": 122.079,
+  "tier_switch": 145.07999999999998
  },
  "invalid:lstm,sarima": {
-  "restart_only": 270.0,
-  "tier_switch": 198.8855,
-  "switch_then_restart": 24.653999999999996
+  "restart_only": 390.0,
+  "tier_switch": 318.8855,
+  "switch_then_restart": 36.534000000000006
  },
  "invalid:lstm": {
-  "tier_switch": 240.0,
-  "switch_then_restart": 23.182000000000002
+  "tier_switch": 360.0,
+  "switch_then_restart": 34.722
  }
 }
