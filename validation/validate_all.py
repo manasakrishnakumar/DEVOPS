@@ -362,6 +362,15 @@ def v_deadline_data():
     return f'delay fault failed %: G4 mean {sum(g)/len(g):.1f} -> H4 {sum(h)/len(h):.1f}; H4 healthy 100% correct, 0% wrong on corrupt/bitflip/flatline'
 
 
+def v_metamorphic_data():
+    """Metamorphic probe evaluation file exists; output-level faults detected, interleaved false alarms low; limits recorded."""
+    d = json.load(open(os.path.join(ROOT, 'results', 'metamorphic_eval.json')))
+    for f in ('corrupt', 'unitchange', 'flatline', 'stale'):
+        assert d['faults'][f]['detected_pct'] == 100.0, f
+    assert d['false_alarm_interleaved_triple_pct'] <= 5.0 and d['deployed_probe_windows_healthy_after_heal_false_alarm_pct'] == 0.0
+    return f"interleaved FA {d['false_alarm_interleaved_triple_pct']} %, time-split FA {d['false_alarm_timesplit_triple_pct']} % (limit), bitflip {d['faults']['bitflip']['detected_pct']} % marginal, scaler {d['faults']['scaler']['detected_pct']} %"
+
+
 def main():
     check('V01 docker + kubectl available', v_env)
     check('V02 cluster pods Running', v_pods)
@@ -381,6 +390,7 @@ def main():
     check('V17 cluster extras results (semantic probes, partial readiness, UI, scaling, Chronos)', v_extras_data)
     check('V18 fix round: golden check + cost-aware bandit', v_fixes_data)
     check('V19 deadline-aware degradation (delay fault)', v_deadline_data)
+    check('V20 metamorphic probe evaluation (experimental)', v_metamorphic_data)
     check('V16 phases 7-13 result data (operator, probe validation, predictor, shadow gate, family)', v_later_phases_data)
     os.chdir(ROOT)
     npass = sum(1 for r in RES if r[1] == 'PASS')

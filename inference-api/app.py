@@ -44,6 +44,8 @@ GOLDEN_ON = os.environ.get('GOLDEN_CHECK', '0') == '1'            # integrity ca
 GOLDEN_TOL = float(os.environ.get('GOLDEN_TOL', '0.002'))          # in history-std units (deterministic models: noise is ~1e-7)
 DEADLINE_S = float(os.environ.get('DEADLINE_MS', '0')) / 1000.0     # per-request time budget; 0 = off (deadline- and load-aware degradation)
 TIER_CONC = {'lstm': int(os.environ.get('LSTM_CONC', '2')), 'sarima': int(os.environ.get('SARIMA_CONC', '3'))}   # max queued/running calls per tier
+MM_ON = os.environ.get('METAMORPHIC', '0') == '1'                  # reference-free metamorphic readiness probe (LSTM)
+MM_EVERY = int(os.environ.get('METAMORPHIC_EVERY', '6'))            # run the probe every N canary rounds
 DISABLE_CLIM = os.environ.get('DISABLE_CLIMATOLOGY', '0') == '1'   # X15: force the cache tier
 try:
     INTERVALS = json.load(open('intervals.json'))['half_width']      # X21: conformal half-widths (90 %)
@@ -84,6 +86,8 @@ if _SHADOW_DIR and 'lstm' in BACKENDS:
     CAND.load()
     _lm.MODELS_DIR = _orig_dir
     CAND.start_month = BACKENDS['lstm'].start_month
+from metamorphic import MetamorphicProbe
+MMP = MetamorphicProbe()
 GOLDEN = {}
 SD = {v: float(np.std(SERIES[v])) for v in VARS}
 for _n2, _b2 in BACKENDS.items():
@@ -94,6 +98,28 @@ _STATE = {'corrupt': False, 'n': 0}
 _CACHE = {}
 _COST = {}        # EWMA CPU-seconds per request per tier (energy proxy)
 _SUSPECT = {}     # last audit verdict per tier
+_MM = {'score': None, 'detail': {}, 'n': 0}
+
+
+def mm_forecast(b, series, steps):
+    fc = b.forecast(series, steps)
+    if _STATE['corrupt']:
+        fc = {v: np.full(steps, np.nan) for v in fc}
+    return _apply_output_fault(fc)
+
+
+def mm_probe():
+    """Metamorphic readiness probe on the LSTM; returns the worst normalised violation (<= 1 valid) or None if unavailable."""
+    b = BACKENDS.get('lstm')
+    if not MM_ON or b is None or not b.ready or not MMP.ready:
+        return None
+    with _RUN_LOCK:
+        s, d = MMP.score(lambda ser, k: mm_forecast(b, ser, k), SERIES, SD)
+    _MM.update(score=s, detail=d)
+    metrics.gauge('metamorphic_score', round(s, 3) if np.isfinite(s) else 1e9)
+    if s > 1.0:
+        metrics.inc('metamorphic_violation', backend='lstm')
+    return s
 
 
 def golden_dev(tier, fc):
@@ -377,6 +403,11 @@ def canary_once(steps=6):
             metrics.inc('golden_violation', backend=tier)
         aligned[tier] = {v: full[v][off:off + steps] for v in VARS}
         metrics.gauge('semantic_score', round(scores[tier], 3) if np.isfinite(scores[tier]) else 1e9, backend=tier)
+    _MM['n'] += 1
+    if MM_ON and 'lstm' in scores and (_MM['n'] % MM_EVERY == 1 or (_MM['score'] or 0) > 1.0):
+        s = mm_probe()
+        if s is not None and s > 1.0:
+            scores['lstm'] = max(scores['lstm'], 1.0 + 1e-6)
     aligned['climatology'] = GUARD.climatology(steps, ref)
     ok = {t: aligned[t] for t in aligned if t == 'climatology' or np.isfinite(scores.get(t, np.inf))}
     dis = GUARD.disagreement(ok)
@@ -512,7 +543,8 @@ def semantic():
         fc = run_backend(b, 6)
         s = GUARD.score(fc, b.start_month)
         gd = golden_dev(n, fc)
-        res[n] = {'valid': bool(s <= 1.0 and not (GOLDEN_ON and gd > GOLDEN_TOL)), 'score': None if not np.isfinite(s) else round(s, 3),
+        mm_bad = bool(MM_ON and n == 'lstm' and _MM['score'] is not None and _MM['score'] > 1.0)
+        res[n] = {'valid': bool(s <= 1.0 and not (GOLDEN_ON and gd > GOLDEN_TOL) and not mm_bad), 'metamorphic': (None if n != 'lstm' or _MM['score'] is None else round(min(_MM['score'], 1e9), 3)), 'score': None if not np.isfinite(s) else round(s, 3),
                   'golden_dev': None if not np.isfinite(gd) else round(gd, 5)}
         ok = ok and res[n]['valid']
         metrics.gauge('semantic_valid', int(s <= 1.0), backend=n)

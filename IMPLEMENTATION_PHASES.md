@@ -200,3 +200,6 @@ Final statistics (bootstrap CIs, Fisher/Mann-Whitney) and paper figures from raw
 
 ## 13. Novelty 6 (2026-10-17)
 Deadline- and load-aware degradation implemented, measured and regression-tested (TESTING 3.20); K37 root cause corrected (thread pool).
+
+## 14. Metamorphic probe and prior-art check (2026-10-17)
+Metamorphic readiness probe built, calibrated and tested (TESTING 3.21; experimental, partly negative). Prior-art search done; novelty reframed as gap-based and empirical (NOVELTY_AND_PRIOR_ART.md).

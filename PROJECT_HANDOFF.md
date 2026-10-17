@@ -238,3 +238,6 @@ Kyverno+cosign (local), OpenTelemetry+Jaeger, KEDA, Chaos Mesh, log anomaly (neg
 
 ## 11. Addendum 2026-10-17 (Novelty 6)
 Deadline/load-aware degradation (image :12, config H4, env DEADLINE_MS) fixes the delay fault (96.8 % -> 0 % failed). Cluster final state: inference :12 with GUARD on, GOLDEN_CHECK=1, DEADLINE_MS=800, OTel on; frontend :4; extra stacks uninstalled; validation 19/19 expected. K37 withdrawn.
+
+## 12. Addendum 2026-10-17 (metamorphic probe, prior art)
+Image :13 adds the opt-in metamorphic probe (METAMORPHIC=1, off by default); final cluster state: probe off, golden on, deadline 800 ms. Prior-art search shows golden-output, conformal monitoring, runtime SLO guards and tiered fallback exist in the literature; novelty is empirical/systems-level (see NOVELTY_AND_PRIOR_ART.md). Read arXiv 2607.09992 (Trusted Floors) before writing.

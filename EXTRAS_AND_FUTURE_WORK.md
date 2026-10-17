@@ -73,3 +73,5 @@ Companions: [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) · [IMPLEMENTATION_PHASES.m
 
 ## Added 2026-10-17
 - Novelty 6 deadline/load-aware degradation: DONE (TESTING 3.20). Next: per-tier locks; repeat scaling study on image :12 with heavier burst; metamorphic readiness probe; healthy-but-wrong time / MTTC metrics (proposed, not started).
+
+- Metamorphic readiness probe (X36): DONE as experimental, partly negative result - reliable for output-level faults, marginal for subtle bit flips, brittle under drift (TESTING 3.21, K42).

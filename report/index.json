@@ -1,0 +1,646 @@
+{
+"headings": [
+[
+"h2",
+"CHAPTER 1:  INTRODUCTION"
+],
+[
+"h3",
+"1.1  Terminology"
+],
+[
+"h3",
+"1.2  Scope and Relevance"
+],
+[
+"h3",
+"1.3  Motivation"
+],
+[
+"h3",
+"1.4  Problem Statement"
+],
+[
+"h3",
+"1.5  Objectives"
+],
+[
+"h3",
+"1.6  Report Organisation"
+],
+[
+"h3",
+"1.7  Summary"
+],
+[
+"h2",
+"CHAPTER 2:  LITERATURE SURVEY"
+],
+[
+"h3",
+"2.1  Literature Review"
+],
+[
+"h5",
+"2.1.1  Chaos engineering and resilience on Kubernetes"
+],
+[
+"h5",
+"2.1.2  Anomaly detection for microservices"
+],
+[
+"h5",
+"2.1.3  Failure prediction"
+],
+[
+"h5",
+"2.1.4  Predictive autoscaling"
+],
+[
+"h5",
+"2.1.5  Monolith versus microservices"
+],
+[
+"h5",
+"2.1.6  Service-level objectives"
+],
+[
+"h5",
+"2.1.7  Forecasting models and conformal prediction"
+],
+[
+"h3",
+"2.2  Summary of the Reviewed Papers"
+],
+[
+"h3",
+"2.3  Research Gap and Positioning"
+],
+[
+"h3",
+"2.4  Summary"
+],
+[
+"h2",
+"CHAPTER 3:  SOFTWARE REQUIREMENTS SPECIFICATION"
+],
+[
+"h3",
+"3.1  Functional Requirements"
+],
+[
+"h3",
+"3.2  Non-Functional Requirements"
+],
+[
+"h3",
+"3.3  Hardware Requirements"
+],
+[
+"h3",
+"3.4  Software Requirements"
+],
+[
+"h3",
+"3.5  Summary"
+],
+[
+"h2",
+"CHAPTER 4:  DESIGN OF THE SYSTEM"
+],
+[
+"h3",
+"4.1  Theory and Concepts"
+],
+[
+"h5",
+"4.1.1  Containers, Docker and Docker Compose"
+],
+[
+"h5",
+"4.1.2  Kubernetes, probes and self-healing"
+],
+[
+"h5",
+"4.1.3  Observability: Prometheus, Grafana and OpenTelemetry"
+],
+[
+"h5",
+"4.1.4  Time-series forecasting: SARIMA and LSTM"
+],
+[
+"h5",
+"4.1.5  Conformal prediction and the window-level envelope"
+],
+[
+"h5",
+"4.1.6  Invariants, cross-model voting and golden outputs"
+],
+[
+"h5",
+"4.1.7  Service-level objectives and burn rates"
+],
+[
+"h5",
+"4.1.8  Recovery policies: rules, digital twin and bandit"
+],
+[
+"h5",
+"4.1.9  Failure prediction and software aging"
+],
+[
+"h5",
+"4.1.10  Deadline-aware degradation"
+],
+[
+"h3",
+"4.2  Dataset Description"
+],
+[
+"h3",
+"4.3  Design and Methodology"
+],
+[
+"h5",
+"4.3.1  Configurations compared"
+],
+[
+"h5",
+"4.3.2  Fault model"
+],
+[
+"h5",
+"4.3.3  Metrics"
+],
+[
+"h5",
+"4.3.4  Experimental protocol"
+],
+[
+"h3",
+"4.4  System Architecture"
+],
+[
+"h5",
+"4.4.1  Kubernetes objects"
+],
+[
+"h3",
+"4.5  Tools and APIs"
+],
+[
+"h3",
+"4.6  Summary"
+],
+[
+"h2",
+"CHAPTER 5:  IMPLEMENTATION AND TESTING"
+],
+[
+"h3",
+"5.1  Implementation Requirements"
+],
+[
+"h3",
+"5.2  Implementation Tool Features"
+],
+[
+"h3",
+"5.3  Code Snippets with Explanation"
+],
+[
+"h5",
+"5.3.1  Window-level conformal calibration (guard.py)"
+],
+[
+"h5",
+"5.3.2  The validity score (guard.py)"
+],
+[
+"h5",
+"5.3.3  Golden-output integrity check (app.py)"
+],
+[
+"h5",
+"5.3.4  Deadline- and load-aware tier call (app.py)"
+],
+[
+"h5",
+"5.3.5  Tier fall-through with circuit breaker (app.py)"
+],
+[
+"h5",
+"5.3.6  Operator decision and reconcile loop (forecast_operator.py)"
+],
+[
+"h5",
+"5.3.7  Cost model of the digital twin (twin_bandit.py)"
+],
+[
+"h5",
+"5.3.8  Container image of the inference service (Dockerfile)"
+],
+[
+"h5",
+"5.3.9  Unit test of the guard (test_guard.py)"
+],
+[
+"h5",
+"5.3.10  Event-driven scaling object (KEDA)"
+],
+[
+"h3",
+"5.4  Testing"
+],
+[
+"h5",
+"5.4.1  Test levels"
+],
+[
+"h5",
+"5.4.2  Validation suite"
+],
+[
+"h5",
+"5.4.3  Defects found by testing and how they were fixed"
+],
+[
+"h3",
+"5.5  Summary"
+],
+[
+"h2",
+"CHAPTER 6:  RESULTS AND ANALYSIS"
+],
+[
+"h3",
+"6.1  Results"
+],
+[
+"h5",
+"6.1.1  Baselines: monolith, Docker Compose and default Kubernetes"
+],
+[
+"h5",
+"6.1.2  Silent-fault benchmark (SilentBench)"
+],
+[
+"h5",
+"6.1.3  Guard ablation (offline)"
+],
+[
+"h3",
+"6.2  Benchmarking and Analysis"
+],
+[
+"h5",
+"6.2.1  Layer complementarity"
+],
+[
+"h5",
+"6.2.2  Operator and recovery policies"
+],
+[
+"h5",
+"6.2.3  Probe tuning, design of experiments and Bayesian optimisation"
+],
+[
+"h5",
+"6.2.4  Correctness SLO replay"
+],
+[
+"h5",
+"6.2.5  Failure prediction"
+],
+[
+"h5",
+"6.2.6  Shadow-traffic gate and delivery"
+],
+[
+"h5",
+"6.2.7  Extras, including negative results"
+],
+[
+"h3",
+"6.3  Screenshots and Live Plots"
+],
+[
+"h5",
+"6.3.1  Application pages"
+],
+[
+"h5",
+"6.3.2  Live monitoring: Grafana and Prometheus"
+],
+[
+"h5",
+"6.3.3  Distributed tracing"
+],
+[
+"h3",
+"6.4  Contributions (gap-based)"
+],
+[
+"h3",
+"6.5  Deadline- and Load-Aware Degradation (Novelty 6)"
+],
+[
+"h3",
+"6.6  Metamorphic Readiness Probe (experimental)"
+],
+[
+"h3",
+"6.7  Overall Analysis"
+],
+[
+"h3",
+"6.8  Summary"
+],
+[
+"h2",
+"CHAPTER 7:  CONCLUSION"
+],
+[
+"h3",
+"7.1  Conclusion"
+],
+[
+"h3",
+"7.2  Limitations"
+],
+[
+"h3",
+"7.3  Future Scope"
+],
+[
+"h3",
+"7.4  Summary"
+],
+[
+"h2",
+"REFERENCES (IEEE FORMAT)"
+],
+[
+"h2",
+"APPENDIX A  DATASET SAMPLE"
+],
+[
+"h2",
+"APPENDIX B  RESEARCH PAPER (IEEE FORMAT)"
+],
+[
+"h5",
+"Correctness-Aware Self-Healing for ML Forecasting Services on Kubernetes: Detecting and Recovering from Silent Failures"
+],
+[
+"h5",
+"I. Introduction"
+],
+[
+"h5",
+"II. Related Work"
+],
+[
+"h5",
+"III. System and Method"
+],
+[
+"h5",
+"IV. Experiments and Results"
+],
+[
+"h5",
+"V. Discussion and Limitations"
+],
+[
+"h5",
+"VI. Conclusion"
+]
+],
+"captions": [
+[
+"table",
+"Table 1.1  Terminology"
+],
+[
+"table",
+"Table 2.1  Reviewed papers (A1-A23): problem, method, result, limitation and relevance"
+],
+[
+"table",
+"Table 2.2  Gaps in the literature, what this project does, and the closest prior work"
+],
+[
+"table",
+"Table 3.1  Functional requirements"
+],
+[
+"table",
+"Table 3.2  Hardware requirements"
+],
+[
+"table",
+"Table 3.3  Software requirements"
+],
+[
+"table",
+"Table 4.1  Summary statistics of the daily data (26,835 rows)"
+],
+[
+"fig",
+"Figure 4.1  Monthly rainfall, temperature and humidity (1951-2024) from data.csv"
+],
+[
+"fig",
+"Figure 4.2  Monthly climatology used by the climatology tier"
+],
+[
+"fig",
+"Figure 4.3  Methodology of the study"
+],
+[
+"table",
+"Table 4.2  Configurations"
+],
+[
+"table",
+"Table 4.3  Injected faults (SilentBench and extensions)"
+],
+[
+"fig",
+"Figure 4.4  System architecture"
+],
+[
+"fig",
+"Figure 4.5  Tiered degradation and guard checks"
+],
+[
+"table",
+"Table 4.4  Inference API"
+],
+[
+"table",
+"Table 4.5  Configuration variables"
+],
+[
+"table",
+"Table 5.1  Implementation tools and the feature used"
+],
+[
+"code",
+"Listing 5.1  Family-wise calibration of the envelope"
+],
+[
+"code",
+"Listing 5.2  Window-level validity score"
+],
+[
+"code",
+"Listing 5.3  Golden-output deviation"
+],
+[
+"code",
+"Listing 5.4  Deadline- and load-aware call"
+],
+[
+"code",
+"Listing 5.5  Tier chain inside serve()"
+],
+[
+"code",
+"Listing 5.6  Signature and policy choice"
+],
+[
+"code",
+"Listing 5.7  Quality term added to the cost"
+],
+[
+"code",
+"Listing 5.8  Dockerfile of the inference service"
+],
+[
+"code",
+"Listing 5.9  Guard unit test"
+],
+[
+"code",
+"Listing 5.10  KEDA ScaledObject"
+],
+[
+"table",
+"Table 5.2  Executed validation checks (19 of 19 passed)"
+],
+[
+"table",
+"Table 5.3  Defects found and fixed"
+],
+[
+"table",
+"Table 6.1  Baseline fault trials (mean over trials; recovery - means never recovered)"
+],
+[
+"table",
+"Table 6.2  Wrong answers served (percent of responses in the fault window), mean [95 % CI], n trials"
+],
+[
+"fig",
+"Figure 6.1  Wrong answers served per fault and configuration"
+],
+[
+"table",
+"Table 6.3  Which guard layer catches which fault (10 trials per cell)"
+],
+[
+"table",
+"Table 6.4  Operator policies (60 + 20 trials)"
+],
+[
+"fig",
+"Figure 6.2  Time to full quality under the operator"
+],
+[
+"table",
+"Table 6.5  Validation of tuned probe settings (hang fault) - a negative result for probe tuning"
+],
+[
+"table",
+"Table 6.6  Shadow gate decisions (selected candidates; 15 of 15 bad rejected, 6 of 6 good promoted overall)"
+],
+[
+"table",
+"Table 6.7  Additional components and their measured outcome"
+],
+[
+"fig",
+"Figure 6.3  Home page of the Bangalore Climate Analytics System (browser, localhost:5000)"
+],
+[
+"fig",
+"Figure 6.4  Climate dashboard: current values, 6-month forecast table and recent predictions"
+],
+[
+"fig",
+"Figure 6.5  Dashboard forecast plots (rainfall and temperature)"
+],
+[
+"fig",
+"Figure 6.6  Twelve-month SARIMA forecast plots served by the inference tier"
+],
+[
+"fig",
+"Figure 6.7  Analysis gallery: distributions, anomaly z-scores, anomaly evolution and decade-wise anomalies"
+],
+[
+"fig",
+"Figure 6.8  Live 12-step forecasts of SARIMA and LSTM returned by the deployed API"
+],
+[
+"fig",
+"Figure 6.9  Live Grafana dashboard, last 30 minutes (refresh 5 s)"
+],
+[
+"fig",
+"Figure 6.10  Grafana dashboard panels during the verification run"
+],
+[
+"fig",
+"Figure 6.11  Golden-output integrity violations after an injected bit flip (Grafana panel)"
+],
+[
+"fig",
+"Figure 6.12  Prometheus: golden_violation_total for the LSTM backend (1 h)"
+],
+[
+"fig",
+"Figure 6.13  Prometheus: valid answers served per tier (1 h)"
+],
+[
+"fig",
+"Figure 6.14  Jaeger trace of GET /dashboard with three inference calls"
+],
+[
+"fig",
+"Figure 6.15  Jaeger trace search for the frontend service"
+],
+[
+"table",
+"Table 6.8  Innovative components"
+],
+[
+"fig",
+"Figure 6.16  Delay fault with and without deadline-aware degradation (10 trials each)"
+],
+[
+"table",
+"Table 6.9  Metamorphic probe: detection per fault (no golden output, no stored reference)"
+],
+[
+"table",
+"Table A.1  First 15 rows of data.csv"
+],
+[
+"table",
+"Table A.2  Ten rows from July 2018"
+]
+]
+}

@@ -382,6 +382,31 @@
      }
     }
    ]
+  },
+  {
+   "id": 16,
+   "type": "timeseries",
+   "title": "Metamorphic probe score (<=1 valid; experimental, opt-in)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 24,
+    "x": 0,
+    "y": 64
+   },
+   "targets": [
+    {
+     "expr": "metamorphic_score or vector(0)",
+     "refId": "A",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     }
+    }
+   ]
   }
  ]
 }

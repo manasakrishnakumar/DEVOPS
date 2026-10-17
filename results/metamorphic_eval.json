@@ -1,0 +1,39 @@
+{
+ "alpha": 0.01,
+ "windows": 840,
+ "false_alarm_interleaved_triple_pct": 2.0,
+ "false_alarm_interleaved_single_pct": 0.5,
+ "false_alarm_timesplit_triple_pct": 66.0,
+ "false_alarm_timesplit_single_pct": 28.8,
+ "faults": {
+  "bitflip": {
+   "detected_pct": 93.3,
+   "median_score": 1.09
+  },
+  "bitflip_severe": {
+   "detected_pct": 83.3,
+   "median_score": 1.13
+  },
+  "scaler": {
+   "detected_pct": 16.7,
+   "median_score": 0.81
+  },
+  "corrupt": {
+   "detected_pct": 100.0,
+   "median_score": 1000000000.0
+  },
+  "unitchange": {
+   "detected_pct": 100.0,
+   "median_score": 2100.6
+  },
+  "flatline": {
+   "detected_pct": 100.0,
+   "median_score": 362.07
+  },
+  "stale": {
+   "detected_pct": 100.0,
+   "median_score": 533.35
+  }
+ },
+ "deployed_probe_windows_healthy_after_heal_false_alarm_pct": 0.0
+}

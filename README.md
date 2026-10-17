@@ -22,6 +22,7 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 | `TESTING_AND_KNOWN_ISSUES.md` | every measured result, tests, known issues (K1-K36) |
 | `REFERENCES_AND_LITERATURE_REVIEW.md` | 23 provided papers + web sources, gaps, traceability |
 | `EXTRAS_AND_FUTURE_WORK.md` | all additional ideas with status |
+| `NOVELTY_AND_PRIOR_ART.md` | gap-based novelty, prior art found, honest verdict |
 | `SECURITY_REVIEW.md` | manual security review, 10 findings |
 | `RESTORE.md` | set up a new machine (Docker Desktop, Minikube, images, experiments) |
 | `PROJECT_HANDOFF_COMPLETE.pdf`, `Literature_Survey.pdf` | PDF versions |
