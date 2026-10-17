@@ -1,0 +1,3 @@
+{"mode": "keda_prometheus", "trial": 1, "peak_ready_replicas": 2, "base": {"n": 120, "failed_pct": 0.0, "p50_ms": 49, "p95_ms": 91}, "burst": {"n": 1400, "failed_pct": 76.4, "p50_ms": 51, "p95_ms": 2724}, "tail": {"n": 99, "failed_pct": 80.8, "p50_ms": 2678, "p95_ms": 7977}, "ts": "2026-10-17T12:45:02"}
+{"mode": "keda_prometheus", "trial": 2, "peak_ready_replicas": 1, "ts": "2026-10-17T12:49:47"}
+{"mode": "keda_prometheus", "trial": 3, "peak_ready_replicas": 3, "base": {"n": 120, "failed_pct": 0.0, "p50_ms": 47, "p95_ms": 91}, "burst": {"n": 974, "failed_pct": 64.5, "p50_ms": 53, "p95_ms": 1592}, "tail": {"n": 120, "failed_pct": 46.7, "p50_ms": 85, "p95_ms": 3206}, "ts": "2026-10-17T12:53:04"}

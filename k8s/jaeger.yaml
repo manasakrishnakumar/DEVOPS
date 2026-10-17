@@ -1,0 +1,24 @@
+# Trace backend for OpenTelemetry (Jaeger all-in-one, OTLP/HTTP on 4318, UI on 16686). Tested 2026-10-17.
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: jaeger, namespace: climate}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: jaeger}}
+  template:
+    metadata: {labels: {app: jaeger}}
+    spec:
+      containers:
+      - name: jaeger
+        image: jaegertracing/all-in-one:1.57
+        imagePullPolicy: Never
+        env: [{name: COLLECTOR_OTLP_ENABLED, value: "true"}]
+        ports: [{containerPort: 16686}, {containerPort: 4318}]
+        resources: {requests: {cpu: 50m, memory: 128Mi}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: jaeger, namespace: climate}
+spec:
+  selector: {app: jaeger}
+  ports: [{name: ui, port: 16686}, {name: otlp, port: 4318}]

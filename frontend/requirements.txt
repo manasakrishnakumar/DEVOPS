@@ -17,3 +17,7 @@ requests==2.31.0
 gunicorn==21.2.0
 Werkzeug==2.3.7
 seaborn==0.12.2
+opentelemetry-sdk==1.27.0
+opentelemetry-exporter-otlp-proto-http==1.27.0
+opentelemetry-instrumentation-flask==0.48b0
+opentelemetry-instrumentation-requests==0.48b0

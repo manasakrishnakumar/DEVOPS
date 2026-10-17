@@ -1,0 +1,25 @@
+# Signature verification (tested 2026-10-17 with a local registry and a key pair; production would use keyless in CI).
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata: {name: climate-verify-signature}
+spec:
+  validationFailureAction: Enforce
+  webhookTimeoutSeconds: 30
+  rules:
+  - name: verify-cosign
+    match: {any: [{resources: {kinds: [Pod], namespaces: [climate-test]}}]}
+    verifyImages:
+    - imageReferences: ["host.minikube.internal:5050/*"]
+      mutateDigest: false
+      verifyDigest: false
+      required: true
+      attestors:
+      - entries:
+        - keys:
+            publicKeys: |-
+              -----BEGIN PUBLIC KEY-----
+              MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4Reob3qKLQ0wtyD8xeSlXOvGqUYQ
+              3YYni0JBKKleuift6DyfyLL+Hshu7oNvcR72sP8Q0zEPmdKG/d4P5ZsMRw==
+              -----END PUBLIC KEY-----
+            ctlog: {ignoreSCT: true}
+            rekor: {ignoreTlog: true}

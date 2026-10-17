@@ -232,3 +232,6 @@ Final title choice; target venue and page limit; confirmation of paper years/aut
 
 ## 9. Addendum 2026-10-17 (fix round)
 Fixed: subtle bit flips (golden-output check, image :10, config G4), bandit policy (cost charges time below full quality), Argo Rollouts canary run, security review (`SECURITY_REVIEW.md`), dashboard panels 13-14, validation 18/18. Reframed as limitations: probe tuning (replicas dominate), scaling (single-node CPU). Still not run: Kyverno/cosign/CI (need GitHub/registry), KEDA, RL autoscaler, log anomaly, Chaos Mesh, OpenTelemetry (hop timing used). Details TESTING 3.18.
+
+## 10. Addendum 2026-10-17 (extras round 2, Phase 14)
+Kyverno+cosign (local), OpenTelemetry+Jaeger, KEDA, Chaos Mesh, log anomaly (negative), RL autoscaler (simulation) run; Phase 14 statistics and figures done (TESTING 3.19). Cluster now runs images inference :11 (OTel, golden check on) and frontend :4; extra namespaces: kyverno, keda, argo-rollouts, chaos-mesh. Only GitHub Actions CI remains unrun.

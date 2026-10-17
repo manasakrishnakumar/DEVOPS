@@ -59,6 +59,20 @@ warnings.filterwarnings('ignore')
 
 # Initialize Flask app
 app = Flask(__name__)
+
+if os.environ.get('OTEL_EXPORTER_OTLP_ENDPOINT'):       # optional distributed tracing (X: OpenTelemetry); off unless the env var is set
+    from opentelemetry import trace
+    from opentelemetry.sdk.resources import Resource
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+    from opentelemetry.instrumentation.flask import FlaskInstrumentor
+    from opentelemetry.instrumentation.requests import RequestsInstrumentor
+    _tp = TracerProvider(resource=Resource.create({'service.name': os.environ.get('OTEL_SERVICE_NAME', 'climate-service')}))
+    _tp.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
+    trace.set_tracer_provider(_tp)
+    FlaskInstrumentor().instrument_app(app, excluded_urls='metrics,health,healthz')
+    RequestsInstrumentor().instrument()
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-only-change-me')
 init_db()  # run at import so gunicorn/containers get the schema too
 

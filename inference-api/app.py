@@ -23,6 +23,20 @@ from utils.preprocessing import load_data, preprocess, aggregate_monthly
 from utils.anomaly_detection import get_baseline_for_flask, compute_ces_single
 
 app = Flask(__name__)
+
+if os.environ.get('OTEL_EXPORTER_OTLP_ENDPOINT'):       # optional distributed tracing (X: OpenTelemetry); off unless the env var is set
+    from opentelemetry import trace
+    from opentelemetry.sdk.resources import Resource
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+    from opentelemetry.instrumentation.flask import FlaskInstrumentor
+    from opentelemetry.instrumentation.requests import RequestsInstrumentor
+    _tp = TracerProvider(resource=Resource.create({'service.name': os.environ.get('OTEL_SERVICE_NAME', 'climate-service')}))
+    _tp.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
+    trace.set_tracer_provider(_tp)
+    FlaskInstrumentor().instrument_app(app, excluded_urls='metrics,health,healthz')
+    RequestsInstrumentor().instrument()
 DATA_PATH = os.environ.get('DATA_PATH', 'data.csv')
 ENABLED = os.environ.get('MODELS', 'sarima,lstm').split(',')
 LAZY_LSTM = os.environ.get('LOAD_MODE', 'eager') == 'lazy'          # X31: load the LSTM on first use

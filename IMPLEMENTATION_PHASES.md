@@ -194,3 +194,6 @@ Offline batch 1 and predictor extras (TESTING 3.16); cluster extras e1-e8, scali
 
 ## 11. Addendum 2026-10-17: fix round
 Golden-output check (G4) fixes K40; cost-aware bandit fixes K41 (20/20 restored); Argo Rollouts run (good promoted, bad aborted); dashboards 13-14; validation 18/18. See TESTING 3.18.
+
+## 12. Phase 14 (done 2026-10-17)
+Final statistics (bootstrap CIs, Fisher/Mann-Whitney) and paper figures from raw results: `analysis/phase14_stats.py` -> `results/phase14_tables.md`, `results/phase14_stats.json`, `results/figures/`. Also run: Kyverno+cosign, OpenTelemetry/Jaeger, KEDA, Chaos Mesh, log anomaly, RL autoscaler (TESTING 3.19). Remaining: write the paper, run CI on GitHub, multi-node scaling study.

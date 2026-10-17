@@ -1,0 +1,365 @@
+{
+ "silent": {
+  "corrupt": {
+   "C4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "D4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "E4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "G4": [
+    0.0,
+    0.0,
+    0.0,
+    5
+   ]
+  },
+  "unitchange": {
+   "C4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "D4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "E4": [
+    0.0,
+    0.0,
+    0.0,
+    9
+   ],
+   "G4": [
+    0.0,
+    0.0,
+    0.0,
+    5
+   ]
+  },
+  "flatline": {
+   "C4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "D4": [
+    99.93,
+    99.79,
+    100.0,
+    10
+   ],
+   "E4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "G4": [
+    0.0,
+    0.0,
+    0.0,
+    5
+   ]
+  },
+  "scaler": {
+   "C4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "D4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "E4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "G4": [
+    0.0,
+    0.0,
+    0.0,
+    5
+   ]
+  },
+  "stale": {
+   "C4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "D4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "E4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "G4": [
+    0.0,
+    0.0,
+    0.0,
+    5
+   ]
+  },
+  "bitflip": {
+   "C4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "D4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "E4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "G4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ]
+  },
+  "bitflip_severe": {
+   "C4": [
+    100.0,
+    100.0,
+    100.0,
+    10
+   ],
+   "D4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "E4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "G4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ]
+  },
+  "delay": {
+   "C4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "D4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ],
+   "E4": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ]
+  }
+ },
+ "operator": {
+  "none": {
+   "restored": "0/20",
+   "mean_ci": [
+    null,
+    null,
+    null
+   ]
+  },
+  "rules": {
+   "restored": "20/20",
+   "mean_ci": [
+    23.59,
+    22.25,
+    24.93
+   ]
+  },
+  "bandit": {
+   "restored": "20/20",
+   "mean_ci": [
+    21.56,
+    20.63,
+    22.55
+   ]
+  },
+  "rules_vs_bandit_mannwhitney_p": 0.041,
+  "rules_vs_none_restore_fisher_p": 1.4508889103849688e-11
+ },
+ "extras": {
+  "keda": [
+   {
+    "mode": "keda_prometheus",
+    "trial": 1,
+    "peak_ready_replicas": 2,
+    "base": {
+     "n": 120,
+     "failed_pct": 0.0,
+     "p50_ms": 49,
+     "p95_ms": 91
+    },
+    "burst": {
+     "n": 1400,
+     "failed_pct": 76.4,
+     "p50_ms": 51,
+     "p95_ms": 2724
+    },
+    "tail": {
+     "n": 99,
+     "failed_pct": 80.8,
+     "p50_ms": 2678,
+     "p95_ms": 7977
+    },
+    "ts": "2026-10-17T12:45:02"
+   },
+   {
+    "mode": "keda_prometheus",
+    "trial": 2,
+    "peak_ready_replicas": 1,
+    "ts": "2026-10-17T12:49:47"
+   },
+   {
+    "mode": "keda_prometheus",
+    "trial": 3,
+    "peak_ready_replicas": 3,
+    "base": {
+     "n": 120,
+     "failed_pct": 0.0,
+     "p50_ms": 47,
+     "p95_ms": 91
+    },
+    "burst": {
+     "n": 974,
+     "failed_pct": 64.5,
+     "p50_ms": 53,
+     "p95_ms": 1592
+    },
+    "tail": {
+     "n": 120,
+     "failed_pct": 46.7,
+     "p50_ms": 85,
+     "p95_ms": 3206
+    },
+    "ts": "2026-10-17T12:53:04"
+   }
+  ],
+  "chaosmesh": [
+   {
+    "exp": "baseline",
+    "ok": 10,
+    "fail": 0,
+    "p50_ms": 39,
+    "ts": "2026-10-17T13:40:02"
+   },
+   {
+    "exp": "pod_kill",
+    "trial": 1,
+    "ready_after_s": 16.1,
+    "ts": "2026-10-17T13:40:02"
+   },
+   {
+    "exp": "pod_kill",
+    "trial": 2,
+    "ready_after_s": 16.3,
+    "ts": "2026-10-17T13:40:02"
+   },
+   {
+    "exp": "pod_kill",
+    "trial": 3,
+    "ready_after_s": 16.2,
+    "ts": "2026-10-17T13:40:02"
+   },
+   {
+    "exp": "network_delay_300ms",
+    "ok": 10,
+    "fail": 0,
+    "p50_ms": 646,
+    "ts": "2026-10-17T13:40:02"
+   },
+   {
+    "exp": "after_delay_removed",
+    "ok": 10,
+    "fail": 0,
+    "p50_ms": 42,
+    "ts": "2026-10-17T13:40:02"
+   }
+  ],
+  "extras_log_anomaly": {
+   "templates": 0,
+   "healthy_holdout_false_alarm_pct": 0.0,
+   "by_fault_detected_pct": {
+    "unitchange": 0.0,
+    "bitflip": 0.0,
+    "flatline": 0.0,
+    "corrupt": 0.0,
+    "stale": 0.0,
+    "scaler": 0.0
+   },
+   "note": "logs carry little signal for silent faults when the service does not log them; compare with semantic check (100 %)."
+  },
+  "extras_rl_autoscaler": {
+   "fixed1": {
+    "mean_reward": -240.41,
+    "mean_drop_pct": 17.03
+   },
+   "fixed3": {
+    "mean_reward": -170.31,
+    "mean_drop_pct": 5.19
+   },
+   "reactive": {
+    "mean_reward": -110.34,
+    "mean_drop_pct": 4.2
+   },
+   "q": {
+    "mean_reward": -121.04,
+    "mean_drop_pct": 2.41
+   },
+   "note": "simulation only; capacity/delay assumed; single-node cluster could not show scaling gains (K37)"
+  }
+ }
+}

@@ -1,0 +1,18 @@
+# Admission rules enforced in namespace "climate-test" (tested 2026-10-17): no :latest, images only from approved sources, must declare resources.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata: {name: climate-image-rules}
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+  - name: no-latest-tag
+    match: {any: [{resources: {kinds: [Pod], namespaces: [climate-test]}}]}
+    validate:
+      message: "image tag :latest (or no tag) is not allowed"
+      pattern: {spec: {containers: [{image: "!*:latest"}]}}
+  - name: approved-sources
+    match: {any: [{resources: {kinds: [Pod], namespaces: [climate-test]}}]}
+    validate:
+      message: "image must be climate-inference:*, climate-frontend:* or host.minikube.internal:5050/*"
+      pattern: {spec: {containers: [{image: "climate-inference:* | climate-frontend:* | host.minikube.internal:5050/*"}]}}

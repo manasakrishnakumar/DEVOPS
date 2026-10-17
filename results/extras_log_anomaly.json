@@ -1,0 +1,13 @@
+{
+ "templates": 0,
+ "healthy_holdout_false_alarm_pct": 0.0,
+ "by_fault_detected_pct": {
+  "unitchange": 0.0,
+  "bitflip": 0.0,
+  "flatline": 0.0,
+  "corrupt": 0.0,
+  "stale": 0.0,
+  "scaler": 0.0
+ },
+ "note": "logs carry little signal for silent faults when the service does not log them; compare with semantic check (100 %)."
+}

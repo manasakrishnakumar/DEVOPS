@@ -1,0 +1,6 @@
+{"exp": "baseline", "ok": 10, "fail": 0, "p50_ms": 39, "ts": "2026-10-17T13:40:02"}
+{"exp": "pod_kill", "trial": 1, "ready_after_s": 16.1, "ts": "2026-10-17T13:40:02"}
+{"exp": "pod_kill", "trial": 2, "ready_after_s": 16.3, "ts": "2026-10-17T13:40:02"}
+{"exp": "pod_kill", "trial": 3, "ready_after_s": 16.2, "ts": "2026-10-17T13:40:02"}
+{"exp": "network_delay_300ms", "ok": 10, "fail": 0, "p50_ms": 646, "ts": "2026-10-17T13:40:02"}
+{"exp": "after_delay_removed", "ok": 10, "fail": 0, "p50_ms": 42, "ts": "2026-10-17T13:40:02"}

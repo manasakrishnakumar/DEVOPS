@@ -1,0 +1,16 @@
+# KEDA event-driven scaling on the request rate seen by Prometheus (tested 2026-10-17, results/extras_keda.jsonl)
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: {name: inference-api, namespace: climate}
+spec:
+  scaleTargetRef: {name: inference-api}
+  minReplicaCount: 1
+  maxReplicaCount: 3
+  cooldownPeriod: 60
+  pollingInterval: 5
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prom-prometheus-server.monitoring.svc
+      query: sum(rate(predict_seconds_count[30s]))
+      threshold: "3"
