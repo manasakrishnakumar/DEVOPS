@@ -1,0 +1,6 @@
+{"exp": "e8_ui", "check": "degraded_badge_visible", "value": false, "ts": "2026-10-17T01:41:39"}
+{"exp": "e8_ui", "check": "unusual_input_warning_visible", "value": true, "ts": "2026-10-17T01:41:41"}
+{"exp": "e8_ui", "check": "normal_input_no_warning", "value": false, "ts": "2026-10-17T01:41:43"}
+{"exp": "e8_ui", "check": "degraded_badge_visible", "value": true, "ts": "2026-10-17T09:19:44"}
+{"exp": "e8_ui", "check": "unusual_input_warning_visible", "value": true, "ts": "2026-10-17T09:19:46"}
+{"exp": "e8_ui", "check": "normal_input_no_warning", "value": false, "ts": "2026-10-17T09:19:48"}

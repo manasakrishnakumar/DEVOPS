@@ -26,7 +26,7 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 ## Layout
 `monolith/` (config A) · `frontend/` + `inference-api/` + PostgreSQL (configs B/C) · `k8s/`, `monitoring/` (Minikube, Prometheus, Grafana) ·
 `chaos/` (probes, fault/load runner, DoE, operator experiments) · `analysis/` (guard ablation, invariants, predictor, twin/bandit, extras) ·
-`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (16 executed checks) · `results/` (all raw data).
+`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (17 executed checks) · `results/` (all raw data).
 
 ## Quick check
 ```bash

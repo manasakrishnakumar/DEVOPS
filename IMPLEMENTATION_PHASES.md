@@ -156,3 +156,38 @@ Acceptance for Phase 6: see §2. Required tests: injector unit/local test (done)
 
 ## 9. Resume prompt (paste into a new chat)
 "Continue the DevOps project at `C:\Users\manas\OneDrive\Desktop\bangalore_climate_app_final\devops_project`. First read PROJECT_HANDOFF.md, IMPLEMENTATION_PHASES.md, TESTING_AND_KNOWN_ISSUES.md and REFERENCES_AND_LITERATURE_REVIEW.md. Current phase: Phase 6 (silent-fault benchmark). Check `results/pilot_silent.log` and `results/silentbench*.jsonl`, fix any root cause found, then run the full benchmark (`python chaos/run.py --silent --configs C4 D4 E4 --trials 5`, then `--trial-offset 5`), summarise with `analysis/silentbench_summary.py`, then implement Phase 7 (correctness SLO). Verify every image build and pod image before measuring. Keep token use low; do not claim novelty beyond the evidence."
+
+## 10. ADDENDUM (updated 2026-10-17): phases 7-13 as implemented, and the extras
+
+### Phase 7 - correctness SLO (done, small sample)
+Service: `served_valid/invalid_total`, `/slo` (Wilson lower bound), `output_score_shift_ks`; rules `monitoring/slo-values.yaml`; replay `analysis/slo_replay.py` on image :6 (C4 3 trials, E4 2 trials per fault). Root causes fixed: stale recording rules (evaluation interval 1 m -> direct queries, 5 s) and pod restarts from a saturated sync worker (gthread, 4 threads). Results: TESTING 3.7.
+### Phase 8 - operator (done)
+`operator/forecast_operator.py`, CRD/RBAC, policy ConfigMap; `chaos/run_operator.py` (none / rules / bandit x corrupt, unitchange, scaler, flatline x 5). Rules: 20/20 restored in 20-26 s median; bandit restored only scaler; none never. Twin re-run with `switch_then_restart`. Kopf logs a namespace-permission warning (K27). TESTING 3.8, 3.9.
+### Phase 9 - probe tuning validation (done)
+`chaos/validate_probe.py` + `_control.py`; recommended 7/5/3 and controls. Replicas explain the gain (K28). TESTING 3.10.
+### Phase 10 - failure predictor (done)
+Leak and drift precursor faults, telemetry collector, Isolation Forest + Mahalanobis vs static threshold and reactive guard; failure marker fixed (K29). TESTING 3.11.
+### Phase 11 - shadow gate in the cluster (done)
+`/shadow/*` endpoints, 8 candidate sets (`analysis/make_candidates.py`), `analysis/shadow_gate_cluster.py`: 15/15 bad rejected, 6/6 good promoted; final re-check 5/5 and 2/2. Fixes: UTF-8 mode for training prints, relative path for `kubectl cp` on Windows. TESTING 3.12. Argo/Kyverno/CI not run.
+### Phase 12 - aging, drift, energy, retraining in the cluster (done)
+`analysis/phase12_cluster.py`: /aging, /drift, energy-aware vs always-LSTM (0.93 vs 3.99 J/request), retrain-vs-production RMSE. TESTING 3.13, K33, K34.
+### Phase 13 - secondary experiments (done)
+Adaptive conformal study (offline), SARIMA vs LSTM vs both under crash/oom/hang (`chaos/run_family.py`). KEDA not run. TESTING 3.14, 3.15, K32.
+### Extras (see EXTRAS_AND_FUTURE_WORK.md for the per-item status)
+Offline batch 1 and predictor extras (TESTING 3.16); cluster extras e1-e8, scaling, Chronos attempt (TESTING 3.17, filled in when the batch finishes); `results/incident_reports.md`; `release/silentbench_release.zip`.
+
+### Chronological log (continued)
+- 2026-10-14/15: baseline batches interrupted twice by Docker stopping; config D invalid run (image never built) repaired; guard v2 + LSTM speed-up.
+- 2026-10-16: Phase 5/6 (windows calibration, invariants, benchmark pass 1/2, validation 15/15), Phases 7-10 (SLO, operator, probes, predictor), Phases 11-13, final verification (browser + suite 16/16), documents, first push (`0e305ce`).
+- 2026-10-17: cluster extras batch (e1-e8), scaling and Chronos run; two test-artefact problems found and fixed (guard left off by the MTTR experiment; timing after heal; K38) and the scaling burst made heavy enough (K37); suite 17/17; documents refreshed; second commit pushed.
+
+### Final implementation readiness checklist (evidence-based, 2026-10-17)
+- [x] All main phases 0-13 implemented and measured (TESTING 3.x).
+- [x] Application runs end to end in the browser (TESTING 3.0).
+- [x] Tests: validation suite 16/16 PASS; unit tests 2 (small).
+- [x] Environment reproducible: RESTORE.md, requirements, images tagged, repository pushed.
+- [x] Extras: run or explicitly blocked/skipped (see EXTRAS_AND_FUTURE_WORK.md).
+- [ ] Security review: not done (default placeholder secrets; no CSRF audit).
+- [ ] Research claims fully supported: wider literature search not done.
+- [ ] Larger samples (10+ trials everywhere), confidence intervals and significance tests: pending in the final phase.
+- [ ] Paper written: pending.

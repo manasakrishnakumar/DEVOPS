@@ -87,3 +87,7 @@ Other entries: use Group A table and Group C URLs; all DOIs **unverified**.
 
 ## Information Needed
 IEEE/Scholar lookup for years, venues and DOIs of all `~` entries; read-in-full of A1, A8, A11, A16, A22, 2507.02158, 2608.19412, D3M before final related-work text; a systematic search for "conformal" + microservice/health check, "bandit" + AIOps remediation, "Bayesian optimization" + probe parameters.
+
+## 7. ADDENDUM (updated 2026-10-17): sources behind the extras (bibliographic details NOT verified)
+Standard methods used in code (cite the original papers before submission; details not checked here): Isolation Forest, Mahalanobis distance, SMOTE, Page-Hinkley test, population stability index, Weibull survival model, Hedge / multiplicative weights, adaptive conformal inference, split-conformal prediction, Granger causality, gradient boosting, LSTM autoencoder. Chronos (Amazon time-series foundation model, `amazon/chronos-t5-tiny`) was only attempted (TESTING 3.17); its paper and licence must be looked up before citing.
+Traceability additions: silent faults vs probes -> Phase 3/6 (C4 vs D4/E4); conformal exchangeability caveat -> Phase 5 window calibration and Phase 13a; N-version / disagreement -> canary and the third-model vote (TESTING 3.16); remediation-action papers (TELKA, safe remediation, ARBITER) -> Phase 8 operator and twin (supporting only); shadow-deployment practice -> Phase 11; SLO practice paper -> Phase 7. No new papers were read in full since section 6; the survey table's years marked ~ and two author lists remain to be verified.

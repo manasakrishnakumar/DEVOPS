@@ -234,6 +234,59 @@ Not run in Phases 11-13 (moved to extras): Argo Rollouts, Kyverno, cosign, GitHu
 - **X23 attribution:** latency and CPU-rate features contribute most to the anomaly score (permutation attribution; SHAP not used). **X25 Granger screen:** CPU rate Granger-causes latency in 3/6 runs for both scenarios, other features rarely.
 - Not yet run: cluster extras (X09, X12-X15, X30, X31), X10 scaling, X06 Argo, X17 foundation model; blocked: X07, X08, X35 (registry / CI), skipped: X26, X28, X29. See EXTRAS_AND_FUTURE_WORK.md.
 
+### 3.17 Extras in the cluster (image :9 / frontend :3; `results/extras_cluster.jsonl`)
+**X13 semantic probes wired into Kubernetes (no heal, 140 s):**
+| Probe variant | Fault | trials | restored | median restored s | correct % | degraded % | failed % |
+|---|---|---|---|---|---|---|---|
+| D1_default | corrupt | 3 | 0/3 | never | 0.0 | 100.0 | 0.0 |
+| D1_default | unitchange | 3 | 0/3 | never | 0.0 | 100.0 | 0.0 |
+| D3_semantic_readiness | corrupt | 3 | 0/3 | never | 0.0 | 8.1 | 91.9 |
+| D3_semantic_readiness | unitchange | 3 | 0/3 | never | 0.0 | 8.5 | 91.5 |
+| D2_semantic_readiness_and_liveness | corrupt | 3 | 3/3 | 36.2 | 73.9 | 7.6 | 18.5 |
+| D2_semantic_readiness_and_liveness | unitchange | 3 | 3/3 | 36.6 | 74.8 | 7.8 | 17.4 |
+
+**X14 partial readiness (LSTM model for one variable lost, 60 s):**
+| Readiness | trials | correct % | fallback % | degraded % | failed % |
+|---|---|---|---|---|---|
+| strict | 3 | 0.0 | 19.3 | 0.0 | 80.7 |
+| partial | 3 | 0.0 | 100.0 | 0.0 | 0.0 |
+
+**X15 cache tier (climatology disabled, all models faulty), 3 trials:** degraded (cache) 100.0 %, wrong 0.0 %, failed 0.0 %, correct 0.0 %.
+
+**X31 eager vs lazy LSTM loading (3 restarts each):**
+| Mode | median time to ready s | median first LSTM request s | median second request s |
+|---|---|---|---|
+| eager | 11.2 | 2.6 | 0.5 |
+| lazy | 7.0 | 10.0 | 0.4 |
+
+**X12 MTTR decomposition (crash, 5 trials, medians):** client_detect_s=0.1, container_restart_delay_s=28.0, ready_delay_after_start_s=6.0, app_startup_s=4.6, client_recovery_s=34.6
+
+**X30 database faults seen from the web app (/history polled every 0.5 s):**
+| Fault | trials | median failed % | median outage s | median recovered s |
+|---|---|---|---|---|
+| db_lock_30s | 3 | 4.3 | 19.6 | 20.1 |
+| db_restart | 3 | 0.8 | 0.0 | 0.6 |
+
+**X09 per-hop latency attribution (hop timing via histograms, not OpenTelemetry):**
+| Scenario | page requests | avg request s | avg inference call s | avg DB s | other (rendering) s |
+|---|---|---|---|---|---|
+| healthy | 35 | 1.151 | 0.085 | 0.012 | 1.053 |
+| inference_delay | 19 | 2.131 | 1.145 | 0.012 | 0.974 |
+
+**X22 / X19 web UI checks:** degraded_badge_visible=True; unusual_input_warning_visible=True; normal_input_no_warning=True
+
+**X10 bursty load (4 rps -> 24 rps for 70 s -> 4 rps; SARIMA endpoint; guard off):**
+| Mode | trials | burst p95 ms (median) | burst failed % (median) | tail p95 ms | ready replicas at end |
+|---|---|---|---|---|---|
+| fixed_1_replica | 3 | 6658 | 67.0 | 2349 | ['1', '1', ''] |
+| reactive_hpa | 3 | 4028 | 93.4 | 4748 | ['3', '3', '3'] |
+| proactive_prescale | 3 | 5827 | 91.8 | 4458 | ['3', '3', '2'] |
+Proactive pre-scaling here uses a known schedule as the "forecast" (not a learned forecaster); KEDA was not used.
+
+**X17 foundation model (Chronos-T5-tiny, zero-shot):** {"rmse_Jan_Jun_2024": {"chronos": {"Rainfall": 69.917, "Temp_mean": 1.203, "Humidity": 1.784}, "sarima": {"Rainfall": 60.774, "Temp_mean": 0.779, "Humidity": 0.972}, "lstm": {"Rainfall": 71.316, "Temp_mean": 1.22, "Humidity": 1.774}}, "error_correlation_per_variable": {"chronos~sarima": [1.0, 0.97, 0.48], "chronos~lstm": [0.98, 0.58, 0.89], "sarima~lstm": [0.99, 0.65, 0.67]}, "vote_lstm_disagreement": {"3_members|healthy": 0.077, "3_members|scaler_x0.35": 2.589, "3_members|subtle_+1.2C": 0.138, "4_members_with_chronos|healthy": 0.136, "4_members_with_chronos|scaler_x0.35": 2.643, "4_members_with_chronos|subtle_+1.2C": 0.208}}
+
+Not attempted: X06 Argo Rollouts (needs controller install and a candidate-bearing image per revision), X07/X08 (registry, Actions), X26, X28, X29 (see EXTRAS_AND_FUTURE_WORK.md).
+
 ## 4. Known issues (reproducible where possible)
 | # | Issue | Evidence / reproduce | Root cause (established?) | Status |
 |---|---|---|---|---|
@@ -272,6 +325,9 @@ Not run in Phases 11-13 (moved to extras): Argo Rollouts, Kyverno, cosign, GitHu
 | K34 | Retraining is recommended by `/aging` and `/drift`, but the 40-epoch retrain is not better on 2019-2024 (RMSE rain 90.3 vs 90.5, temp 1.16 vs 1.14, humidity 2.86 vs 2.48) although the shadow gate promotes it | `results/phase12.json`, TESTING 3.12/3.13 | gate checks validity/agreement, not accuracy improvement | open: add an accuracy criterion to the gate |
 | K35 | Input guard flags ordinary conditions as unusual (default test input 100 mm / 26 C / 70 % was flagged); hold-out false alarm 6 % | browser check, `results/extras_offline1.json` | monthly-triple Isolation Forest ignores season and has a loose threshold | open: warning only; add hard range rules |
 | K36 | LSTM autoencoder raises many alarms on healthy telemetry (79 samples) | `results/predictor_extras.json` | threshold calibrated on a 4-minute healthy half | open |
+| K37 | Bursty-load scaling comparison is inconclusive/negative: with the LSTM endpoint (3 -> 20 rps) 1 replica failed 52-85 %, reactive HPA 93-94 %, proactive pre-scaling 89-94 % | `results/extras_scaling.jsonl` | single 4-CPU Minikube node: extra TensorFlow pods and the load generator compete for the same CPU, so scaling out cannot add capacity; an earlier lighter SARIMA burst showed no failures in any mode (`results/extras_scaling_light_burst_superseded.jsonl`) | open: needs a multi-node cluster or lower per-pod CPU use; do not claim an autoscaling benefit |
+| K38 | Earlier UI check "degraded badge not visible" and "normal input not warned" were test artefacts: the MTTR experiment left the guard off; the check ran right after heal | `results/extras_cluster_superseded_e8.jsonl` | script ordering/timing | fixed (guard restored at end of e5; wait after heal); final UI checks all True |
+| K39 | Crash recovery on Kubernetes is dominated by the container restart delay (28 s of 34.6 s total) | TESTING 3.17 (X12) | kubelet restart back-off, not application start-up (4.6 s) | informative; a finding for the paper |
 | K17 | No git repo; models 118 MB × 6 copies | folder listing | – | LFS plan in `RESTORE.md`; GitHub link pending |
 
 ## 5. Regression risks
@@ -284,3 +340,9 @@ Changing `guard.py` thresholds invalidates `phase5_guard_ablation.json`; changin
 4. DoE (≥ 30 runs) with validated RSM; tuned probes beat defaults on held-out runs.
 5. Operator restores full tier after corrupt (measured).
 6. All claims in the paper map to rows in `results/`.
+
+## 8. ADDENDUM (updated 2026-10-17)
+- Test inventory: unit tests = 2 (`inference-api/tests/test_guard.py`, passed); validation suite = 17 executed checks (V01-V17; 16/16 PASS at 2026-10-16 23:38, 17/17 PASS at 2026-10-17 09:56 after the cluster extras, `results/validation_report.md`); browser verification (TESTING 3.0); live re-checks of operator and shadow gate on images :9/:3; no automated frontend, security or load-limit tests beyond the experiments.
+- Known issues are K1-K39 in section 4; K25-K28 and K32-K34 changed conclusions (restarts from a saturated worker, stale rule timings, replicas vs probes, hang comparability, energy accuracy, retraining gate).
+- Result files and where each table comes from: `results/fault_trials.jsonl` (3.1), `load.jsonl` (3.2), `phase5_guard_ablation.json` (3.3), `silentbench*.jsonl/csv` (3.5, 3.5b), `doe.jsonl` + `probe_validation.jsonl` (3.6, 3.10), `slo_replay.jsonl` (3.7), `operator_trials.jsonl` (3.8), `predictor_results.json` + `telemetry/` (3.11), `shadow_gate_cluster.jsonl` (3.12), `phase12.json` (3.13), `phase13_adaptive_conformal.json` (3.14), `model_family.jsonl` (3.15), `extras_offline1.json` + `predictor_extras.json` (3.16), `extras_cluster.jsonl`, `extras_scaling.jsonl`, `extras_chronos.json` (3.17).
+- Invalid or superseded data kept for the record: `fault_trials_D_invalid_*.jsonl`, `slo_replay_invalid_*.jsonl`, `operator_trials_invalid_*.jsonl`, `invalid_*.json*`, `silentbench_pilot_*.jsonl`, `silentbench_excluded.jsonl`.

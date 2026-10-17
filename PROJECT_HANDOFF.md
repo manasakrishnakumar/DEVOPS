@@ -184,3 +184,48 @@ Generated/backup files in `results/`: `fault_trials_D_invalid_*.jsonl` (invalid 
 - Final paper title and target venue/deadline.
 - Confirmation of years/authors for papers marked `~` in the survey.
 - Whether config A should be rerun with 1 worker for a like-for-like comparison.
+
+## 8. ADDENDUM (updated 2026-10-17): everything since the first handoff
+
+### 8.1 Where the documents and code are stored
+| What | Location |
+|---|---|
+| Project root (local) | `C:\Users\manas\OneDrive\Desktop\bangalore_climate_app_final\devops_project\` (synced by OneDrive if enabled) |
+| GitHub repository | https://github.com/manasakrishnakumar/DEVOPS, branch `main`; first push = commit `0e305ce` (2026-10-16 night; models via Git LFS, about 381 MB); the second push (cluster extras, final documents) was made on 2026-10-17 after the suite passed 17/17 |
+| Handoff documents | `PROJECT_HANDOFF.md`, `IMPLEMENTATION_PHASES.md`, `REFERENCES_AND_LITERATURE_REVIEW.md`, `TESTING_AND_KNOWN_ISSUES.md`, `EXTRAS_AND_FUTURE_WORK.md`, `README.md`, `RESTORE.md` (all in the project root) |
+| PDFs | `PROJECT_HANDOFF_COMPLETE.pdf` (the four handoff documents), `EXTRAS_AND_FUTURE_WORK.pdf`, `Literature_Survey.pdf` / `.docx` (21+2 paper survey; years marked ~ unverified) |
+| Raw data and evidence | `results/` (JSONL per experiment, `validation_report.md`, `silentbench_summary.csv`, `incident_reports.md`, `candidates/`, `telemetry/`) |
+| Benchmark release package | `release/silentbench/` and `release/silentbench_release.zip` |
+| Original, untouched application (archive) | `C:\Users\manas\OneDrive\Desktop\bangalore_climate_app_final\bangalore_climate_app` (not in the repository) |
+
+### 8.2 Status (all main implementation phases 0-13 are complete and measured; final results/paper phase remains)
+Phase 0 baseline | 1 service split | 2 Kubernetes + Prometheus/Grafana (OpenTelemetry not done) | 3 fault/load harness + baselines | 4 guard, canary, tiers | 5 invariants + window calibration | 6 silent-fault benchmark (10 trials per cell + 10-minute soak) | 7 correctness SLO (small sample) | 8 operator experiments (60 trials) | 9 probe validation (replicas dominate, tuned probe settings not helpful) | 10 failure predictor (synthetic leak/drift) | 11 shadow gate in cluster (24/24, re-check 7/7) | 12 aging/drift/energy/retrain in cluster | 13 adaptive conformal + model family. Argo Rollouts, Kyverno, cosign, CI and KEDA were not run (extras).
+Final verification before the first push (2026-10-16 23:20-23:58): browser walk-through of every page, API/novelty checks, Grafana, validation suite 16/16 PASS (details TESTING 3.0). After the cluster extras (2026-10-17 09:56) the suite has 17 checks (V17 = extras) and **17/17 PASS**; all extras were run or explicitly marked blocked/skipped (EXTRAS_AND_FUTURE_WORK.md).
+
+### 8.3 Container images in Minikube / Docker (tag -> purpose)
+`climate-monolith:1` (config A) | `climate-frontend:2` (config B/C frontend), `:3` (adds degraded badge, input guard, hop timing, DB timers) | `climate-inference:2` (baseline, sync worker) | `:3` (guard v1, invalid for config D, replaced) | `:4` (guard v2, benchmark pass 1/2, DoE) | `:5` (SLO/shadow, sync) | `:6` (gthread, 4 threads) | `:7` (leak/drift faults, RSS metric) | `:8` (runtime shadow endpoints; phases 11-13) | `:9` (lazy load, cache tier, intervals, partial readiness, dropvar; final) | `climate-operator:1`, `:2` (action mapping, policy volume). Rebuilding under an existing tag needs `kubectl rollout restart`; always verify the pod's image (`switch_cfg4` does this).
+
+### 8.4 Service endpoints (inference-api) and switches
+Endpoints: `/predict?model=auto|sarima|lstm&steps=N[&interval=1]`, `/health/live`, `/health/ready[?partial=1]`, `/health/semantic`, `/metrics`, `/slo`, `/aging`, `/drift`, `/energy`, `/baseline`, `/shadow/load?dir=`, `/shadow/status`, `/shadow/clear`, `/fault?mode=` (crash, hang, oom, corrupt, bitflip, bitflip_severe, scaler, stale, unitchange, flatline, delay, leak, drift, dropvar, heal, status; only when FAULT_INJECTION=1).
+Environment: SEMANTIC_GUARD, GUARD_MODE (envelope | envelope+inv), GUARD_ALPHA (0.01), GUARD_CAL_END (2018), CANARY_SECONDS (5), DISAGREE_THR (1.0), ENERGY_AWARE, AUDIT_EVERY, CPU_WATTS (15), SHADOW_LSTM_DIR, MODELS, LOAD_MODE (eager | lazy), DISABLE_CLIMATOLOGY, FAULT_INJECTION, BITFLIP settings fixed in code. Frontend: INFERENCE_URL, SAVE_PLOT_FILES, DATABASE_URL, SECRET_KEY.
+
+### 8.5 Files added since section 4 (not listed there)
+`analysis/`: mine_invariants, guard_ablation, model_aging, twin_bandit, bo_probe, shadow_gate (+_cluster), failure_predictor, predictor_extras, collect_telemetry, adaptive_conformal, make_candidates, phase12_cluster, extras_offline1, extras_cluster, extras_scaling, extras_chronos, incident_summary, make_release, silentbench_summary, summarize_phase8/9_10/11_13/extras_cluster, build_handoff_pdf, slo_replay, shadow_gate.
+`chaos/`: probe.py (fault, load, silent modes), run.py, doe.py, run_operator.py, validate_probe(.py/_control.py), run_family.py, burst_load.py and the detached `.ps1` pipelines (phase78b, phase910, phase1113b, extras_batch/2, final_check, after_* waiters).
+`validation/validate_all.py` (16 checks). `retrain/loop.py`. `operator/` (kopf operator, CRD, RBAC). `release/silentbench/`. `results/candidates/` (8 candidate LSTM sets). Frontend: `frontend/app.py` (remote inference, metrics, degraded badge, input guard trained at start-up), `frontend/utils/database.py` (PostgreSQL/SQLite, advisory lock, DB timers).
+
+### 8.6 Decisions and status changes since section 6
+- **N4 (probe tuning) is not supported**: replicas drive recovery; recommended probe settings at one replica were slower than defaults (TESTING K28). Report as neutral/negative.
+- **N3 (bandit policy)**: the cost model preferred tier-switch-only and never restarted; the rules policy is the working operator policy (TESTING 3.8).
+- **Predictor**: Isolation Forest cannot extrapolate beyond its training range; a Mahalanobis detector was added; both give the same lead times; healthy false alarms 2.45 per 10 min on a small sample.
+- **Image :8/:9 uses gthread**, so Phase 3 hang results (sync worker) are not comparable with Phase 13b hang results (K32).
+- **Title**: unchanged (see section 1). The user was offered three options (keep and finish predictor/delivery, rename to the silent-failure framing, or hybrid); no choice recorded yet. Delivery (shadow gate) and failure prediction now exist as supporting experiments; Argo/Kyverno/CI do not.
+- **User instructions to respect**: low token use; detailed phased documentation; do not claim novelty beyond the evidence; fix problems from the root cause; push to GitHub only after full verification (done once).
+
+### 8.7 Next steps
+1. Done on 2026-10-17: extras batches and fix-run finished, suite 17/17, documents and PDFs refreshed, second commit pushed. Findings to carry into the paper: semantic readiness alone leaves the service failed (92 %), semantic readiness + liveness restores in 36 s, partial readiness keeps serving (0 % failed vs 81 % strict), crash recovery is dominated by the 28 s container restart delay, scaling out on a single CPU-bound node did not help (K37).
+2. Final results phase: figures from `results/*.jsonl`, confidence intervals and significance tests (n = 5-10 per cell is small), paper draft with "to the best of our knowledge" wording; IEEE/Scholar search for conformal + health checks, bandit + AIOps remediation.
+3. Optional: run X06 (Argo), X07/X08 once a registry/Actions setup exists; confirm bibliographic details of the survey papers.
+
+## Information Needed (updated)
+Final title choice; target venue and page limit; confirmation of paper years/authors/DOIs; whether to publish the benchmark release (licence choice); registry/CI access for X07/X08.

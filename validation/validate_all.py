@@ -315,6 +315,27 @@ def v_later_phases_data():
     return ' ; '.join(out)
 
 
+def v_extras_data():
+    """Cluster extras result files: rows exist and the headline behaviours hold."""
+    rows = [json.loads(l) for l in open(os.path.join(ROOT, 'results', 'extras_cluster.jsonl')) if l.strip()]
+    by = {}
+    for r in rows:
+        by.setdefault(r.get('exp'), []).append(r)
+    assert len(by['e1_semantic_probes']) == 18 and len(by['e2_partial_readiness']) == 6 and len(by['e5_mttr_decomposition']) == 5
+    ui = {r['check']: r['value'] for r in by['e8_ui']}
+    assert ui == {'degraded_badge_visible': True, 'unusual_input_warning_visible': True, 'normal_input_no_warning': True}, ui
+    d2 = [r for r in by['e1_semantic_probes'] if r['variant'].startswith('D2')]
+    assert all(r['restored_s'] is not None for r in d2), 'semantic readiness+liveness must restore'
+    d3 = [r for r in by['e1_semantic_probes'] if r['variant'].startswith('D3')]
+    assert all(r['restored_s'] is None for r in d3), 'readiness-only should not restore'
+    part = [r for r in by['e2_partial_readiness'] if r['variant'] == 'partial']
+    assert all(r['fault_window']['failed_pct'] < 5 for r in part), 'partial readiness should keep serving'
+    ch = json.load(open(os.path.join(ROOT, 'results', 'extras_chronos.json')))
+    sc = [json.loads(l) for l in open(os.path.join(ROOT, 'results', 'extras_scaling.jsonl')) if l.strip()]
+    assert len(sc) == 9
+    return f'extras rows={len(rows)}; UI checks all True; chronos status={ch.get("status")}; scaling rows={len(sc)}'
+
+
 def main():
     check('V01 docker + kubectl available', v_env)
     check('V02 cluster pods Running', v_pods)
@@ -331,6 +352,7 @@ def main():
     check('V13 Prometheus metrics + Grafana health', v_prometheus_grafana)
     check('V14 baseline experiment data integrity', v_results_integrity)
     check('V15 silent-benchmark data integrity', v_silentbench_integrity)
+    check('V17 cluster extras results (semantic probes, partial readiness, UI, scaling, Chronos)', v_extras_data)
     check('V16 phases 7-13 result data (operator, probe validation, predictor, shadow gate, family)', v_later_phases_data)
     os.chdir(ROOT)
     npass = sum(1 for r in RES if r[1] == 'PASS')

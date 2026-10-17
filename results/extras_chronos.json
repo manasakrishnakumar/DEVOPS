@@ -1,0 +1,45 @@
+{
+ "rmse_Jan_Jun_2024": {
+  "chronos": {
+   "Rainfall": 69.917,
+   "Temp_mean": 1.203,
+   "Humidity": 1.784
+  },
+  "sarima": {
+   "Rainfall": 60.774,
+   "Temp_mean": 0.779,
+   "Humidity": 0.972
+  },
+  "lstm": {
+   "Rainfall": 71.316,
+   "Temp_mean": 1.22,
+   "Humidity": 1.774
+  }
+ },
+ "error_correlation_per_variable": {
+  "chronos~sarima": [
+   1.0,
+   0.97,
+   0.48
+  ],
+  "chronos~lstm": [
+   0.98,
+   0.58,
+   0.89
+  ],
+  "sarima~lstm": [
+   0.99,
+   0.65,
+   0.67
+  ]
+ },
+ "vote_lstm_disagreement": {
+  "3_members|healthy": 0.077,
+  "3_members|scaler_x0.35": 2.589,
+  "3_members|subtle_+1.2C": 0.138,
+  "4_members_with_chronos|healthy": 0.136,
+  "4_members_with_chronos|scaler_x0.35": 2.643,
+  "4_members_with_chronos|subtle_+1.2C": 0.208
+ },
+ "status": "ok"
+}

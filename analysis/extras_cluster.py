@@ -157,6 +157,8 @@ def e5():
               'ready_delay_after_start_s': None if ready is None else round(ready - started, 1), 'app_startup_s': round(st, 2),
               'restart_count': cs.get('restartCount')})
         ro.wait_ready()
+    K('-n', run.KNS, 'set', 'env', 'deploy/inference-api', 'SEMANTIC_GUARD=1')    # restore the guard for later experiments
+    ro.wait_ready()
 
 
 def _frontend_session():
@@ -257,18 +259,23 @@ def e7():
 
 def e8():
     """X22 + X19: degraded badge and input guard visible in the web UI (flash messages)."""
+    K('-n', run.KNS, 'set', 'env', 'deploy/inference-api', 'SEMANTIC_GUARD=1', 'GUARD_MODE=envelope+inv')
+    time.sleep(8)
+    ro.wait_ready()
     pf, s, b = _frontend_session()
     try:
         ro.pod_get('/fault?mode=unitchange')
         time.sleep(7)
-        s.post(b + '/predict', data=dict(rainfall=100, temperature=26, humidity=70, forecast_months=6), allow_redirects=False, timeout=60)
+        s.post(b + '/predict', data=dict(rainfall=80, temperature=25, humidity=78, forecast_months=6), allow_redirects=False, timeout=60)
         page = s.get(b + '/result', timeout=180).text
         save({'exp': 'e8_ui', 'check': 'degraded_badge_visible', 'value': 'degraded mode' in page})
         heal()
+        time.sleep(12)          # let the canary re-validate both tiers before the next page request
         s.post(b + '/predict', data=dict(rainfall=480, temperature=44, humidity=5, forecast_months=6), allow_redirects=False, timeout=60)
         page = s.get(b + '/result', timeout=180).text
         save({'exp': 'e8_ui', 'check': 'unusual_input_warning_visible', 'value': 'unusual compared with Bangalore' in page})
-        s.post(b + '/predict', data=dict(rainfall=100, temperature=26, humidity=70, forecast_months=6), allow_redirects=False, timeout=60)
+        time.sleep(5)
+        s.post(b + '/predict', data=dict(rainfall=80, temperature=25, humidity=78, forecast_months=6), allow_redirects=False, timeout=60)
         page = s.get(b + '/result', timeout=180).text
         save({'exp': 'e8_ui', 'check': 'normal_input_no_warning', 'value': 'unusual compared with Bangalore' not in page and 'degraded mode' not in page})
     finally:
