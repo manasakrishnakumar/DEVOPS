@@ -1,4 +1,4 @@
-# Self-Healing Beyond Liveness: Correctness-Aware Recovery for ML Forecasting Services on Kubernetes
+# Correctness-Aware Self-Healing for ML Forecasting Services on Kubernetes: Detecting and Recovering from Silent Failures
 
 A DevOps research project (R V College of Engineering, ISE). The workload is the Bangalore Climate Analytics app
 (SARIMA + LSTM forecasts of rainfall, temperature and humidity, 1951-2024). The study shows that **silent model failures
