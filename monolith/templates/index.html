@@ -100,8 +100,8 @@
                     <li><i class="fas fa-chart-line me-2"></i>Forecast Horizon: Up to 24 months</li>
                     <li><i class="fas fa-percent me-2"></i>Model Accuracy: 85-92% MAPE</li>
                     <li><i class="fas fa-chart-pie me-2"></i>Variables: Rainfall, Temperature, Humidity</li>
-                    <li><i class="fas fa-brain me-2"></i>Algorithms: SARIMA, ARIMA, Prophet</li>
-                    <li><i class="fas fa-chart-line me-2"></i>CES Range: 0 (Normal) to 3+ (Extreme)</li>
+                    <li><i class="fas fa-brain me-2"></i>Algorithms: SARIMA, LSTM</li>
+                    <li><i class="fas fa-chart-line me-2"></i>CES: |CES| &lt; 1.051 Normal, 1.051-1.300 Moderate, &ge; 1.300 Extreme</li>
                 </ul>
             </div>
         </div>
@@ -121,8 +121,8 @@
         <h6>Mathematical Framework:</h6>
         <ul>
             <li><strong>Z-Score:</strong> Z = (X - μ) / σ - Standardized anomaly detection</li>
-            <li><strong>Climate Extreme Score (CES):</strong> CES = 0.4×Z_rain + 0.3×Z_temp + 0.3×Z_hum</li>
-            <li><strong>Anomaly Classification:</strong> |Z| ≥ 2 (Strong), 1 ≤ |Z| < 2 (Moderate), else Normal</li>
+            <li><strong>Climate Extreme Score (CES):</strong> CES = 0.6×Z_rain + 0.4×Z_temp (humidity shown for reference only, not used in CES)</li>
+            <li><strong>Anomaly Classification:</strong> |Z| ≥ 1.300 (Strong), 1.051 ≤ |Z| &lt; 1.300 (Moderate), else Normal (WMO SPI percentiles)</li>
             <li><strong>Forecasting:</strong> Seasonal ARIMA models with 95% confidence intervals</li>
         </ul>
         <div class="alert alert-info mt-3">

@@ -1,0 +1,60 @@
+﻿N1  SilentBench + HBW/MTTC (silentbench.jsonl, hbw_mttc.json)
+  [PASS] C4 corrupt: wrong% (n=10), detected=0: computed=100.0  report=100.0
+  [PASS] C4 unitchange: wrong% (n=10), detected=0: computed=100.0  report=100.0
+  [PASS] C4 flatline: wrong% (n=10), detected=0: computed=100.0  report=100.0
+  [PASS] C4 scaler: wrong% (n=10), detected=0: computed=100.0  report=100.0
+  [PASS] C4 stale: wrong% (n=10), detected=0: computed=100.0  report=100.0
+  [PASS] C4 bitflip: wrong% (n=10), detected=0: computed=100.0  report=100.0
+  [PASS] C4 bitflip_severe: wrong% (n=10), detected=0: computed=100.0  report=100.0
+  [PASS] G4 all 7 silent faults mean wrong% over 45 trials: computed=0.0  report=0.0
+  [PASS] HBW C4 corrupt (s): computed=30.0  report=30.0
+  [PASS] HBW G4 corrupt (s): computed=0.0  report=0.0
+  [PASS] HBW E4 bitflip (s): computed=30.0  report=30.0
+N2  Correctness-aware probe design (extras_cluster.jsonl)
+   experiments found: [('e1_semantic_probes', 'D1_default'), ('e1_semantic_probes', 'D2_semantic_readiness_and_liveness'), ('e1_semantic_probes', 'D3_semantic_readiness'), ('e2_partial_readiness', 'partial'), ('e2_partial_readiness', 'strict'), ('e3_cache_tier', None), ('e4_load_mode', None), ('e5_mttr_decomposition', None), ('e6_db_faults', None), ('e7_hop_timing', None), ('e8_ui', None)]
+   D1_default: trials=6 restored=0/6 median_restored_s=None failed%=0.0
+   D3_semantic_readiness: trials=6 restored=0/6 median_restored_s=None failed%=91.68
+   D2_semantic_readiness_and_liveness: trials=6 restored=6/6 median_restored_s=36.400000000000006 failed%=17.93
+  [PASS] readiness alone: mean failed% (report ~92): computed=91.68  report=92.0
+  [PASS] readiness alone: restored trials: computed=0  report=0
+  [PASS] readiness+liveness: median restoration s (report 36): computed=36.400000000000006  report=36.0
+   partial-readiness partial: trials=3 failed%=0.0
+   partial-readiness strict: trials=3 failed%=80.67
+  [PASS] strict readiness failed% (report 81): computed=80.67  report=81.0
+  [PASS] partial readiness failed% (report 0): computed=0.0  report=0.0
+N3  Compound faults (compound_faults.json)
+  [PASS] E4 bitflip+delay wrong%: computed=100.0  report=100.0
+  [PASS] G4 bitflip+delay wrong%: computed=0.0  report=0.0
+  [PASS] G4 bitflip+delay p95 ms (report 1615): computed=1615  report=1615
+  [PASS] H4 bitflip+delay wrong%: computed=0.0  report=0.0
+  [PASS] H4 bitflip+delay p95 ms (report 768): computed=768  report=768
+N4  Baselines and cost-coverage (baselines_pareto.json)
+   keys: ['detection_pct', 'false_alarm_pct', 'overhead_ms', 'note']
+  [PASS] range check detects bitflip %: computed=0.0  report=0.0
+  [PASS] golden detects bitflip %: computed=100.0  report=100.0
+  [PASS] envelope detects bitflip % (report 2.5): computed=2.5  report=2.5
+    false_alarm_pct {'range': 0.0, 'zscore3': 12.3, 'envelope': 0.0, 'env+inv': 1.0, 'golden': 0.0, 'full': 1.0}
+  [PASS] z-score false alarms % (report 12.3): computed=12.3  report=12.3
+    overhead_ms {'lstm_forecast_6_steps': 42.205, 'range': 0.03, 'zscore3': 0.022, 'envelope': 0.024, 'env+inv': 0.081, 'golden_dev_check': 0.022, 'golden_test_vector_forecast_24': 182.241}
+N5  Quality-aware recovery (operator_trials*.jsonl)
+   policy=none: trials=20 restored=0  mean_s=None  tags=['6']
+   policy=rules: trials=20 restored=20  mean_s=23.59  tags=['6']
+   policy=bandit: trials=20 restored=20  mean_s=21.56  tags=['5']
+  [PASS] no operator: restored trials (report 0/20): computed=0  report=0
+  [PASS] rules: restored trials (report 20/20): computed=20  report=20
+  [PASS] rules: mean restoration s (report 23.6): computed=23.59  report=23.6
+  [PASS] bandit v1 (cost-blind) restored trials (report 5/20): computed=5  report=5
+  [PASS] bandit v2 restored trials (report 20/20): computed=20  report=20
+  [PASS] bandit v2 mean restoration s (report 21.6): computed=21.56  report=21.6
+N6  Deadline/load-aware degradation (silentbench.jsonl delay, G4 vs H4)
+   G4 delay: trials=10 failed%=96.83 degraded%=0.0 wrong%=0.0 p95=2007.9
+   H4 delay: trials=10 failed%=0.0 degraded%=93.99 wrong%=0.0 p95=762.4
+  [PASS] G4 delay failed% (report 96.8): computed=96.83  report=96.8
+  [PASS] H4 delay failed% (report 0): computed=0.0  report=0.0
+  [PASS] H4 delay degraded% (report 94): computed=93.99  report=94.0
+EXACT BINOMIAL one-sided 95% upper bound for 0 events in n trials (replaces degenerate [0,0] bootstrap CI)
+   n=5: 45.1%
+   n=9: 28.3%
+   n=10: 25.9%
+
+SUMMARY: 34/34 checks passed

@@ -2,7 +2,7 @@
 
 1. Install: Python 3.10, Docker Desktop (WSL2), kubectl, minikube, helm, git, git-lfs.
 2. Clone: `git clone https://github.com/manasakrishnakumar/DEVOPS.git` then `cd DEVOPS` and `git lfs pull` (models are `*.pkl` / `*.h5`).
-3. Python packages: `pip install tensorflow-cpu==2.15.1 pandas scikit-learn statsmodels joblib scipy matplotlib seaborn requests psycopg2-binary prometheus-client kopf kubernetes imbalanced-learn pyDOE2 reportlab pypdf pytest`.
+3. Python packages: `pip install tensorflow-cpu==2.15.1 pandas scikit-learn statsmodels joblib scipy matplotlib seaborn requests psycopg2-binary prometheus-client kopf kubernetes imbalanced-learn pyDOE2 reportlab pypdf pytest Flask==2.3.3 Werkzeug==2.3.7`.
 4. Start the cluster: `minikube start --driver=docker --cpus=4 --memory=5500`.
 5. Build and load images (tags matter; see PROJECT_HANDOFF 8.3):
    `docker build -t climate-inference:9 inference-api` ; `docker build -t climate-frontend:3 frontend` ; `docker build -t climate-operator:2 operator` ; `docker build -t climate-monolith:1 monolith`
