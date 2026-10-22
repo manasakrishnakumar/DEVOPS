@@ -16,3 +16,7 @@ Method: manual review of manifests, Dockerfiles and app code (grep for secrets, 
 | S10 | App login: Werkzeug password hashing, min length 6, no rate limit/CSRF token | Medium | `frontend/app.py` | Out of scope for the DevOps study; note as limitation |
 
 Not verified here: the GitHub Actions workflow (`.github/workflows/ci.yml`, build + cosign) and the Kyverno image-verify policy (`k8s/policy/kyverno-verify.yaml`) were written but cannot run on this laptop without GitHub/registry; treat them as untested.
+
+## Addendum 2026-10-22: signed golden outputs
+- **Added:** signed behavioural reference and model-file hashes verified at start-up; fail-closed readiness; admission policy for the wiring.
+- **Open findings:** (a) the signing key is a lab key held on one machine (production: KMS/HSM or keyless signing with a transparency log); (b) the public key is shipped in the same ConfigMap as the signed file, so a principal with write access to the namespace can replace both: pin the public key in the image or the policy; (c) no transparency log, so there is no public audit trail; (d) the admission policy checks wiring, not signatures; (e) `/golden/refresh` is refused (409) when the reference is signed, but the fault-injection endpoint `/fault` is still enabled by `FAULT_INJECTION=1` and must be off in production; (f) `CORRUPT_AT_STARTUP` is a test switch and must not exist in a production manifest.

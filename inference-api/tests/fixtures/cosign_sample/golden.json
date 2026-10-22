@@ -1,0 +1,1 @@
+{"version": 1, "note": "test fixture signed with a throwaway cosign key", "files": {}, "golden": {"sarima": {"Rainfall": [1.0, 2.0]}}}

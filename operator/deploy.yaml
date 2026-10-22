@@ -19,9 +19,10 @@ spec:
             properties:
               inferenceUrl: {type: string}
               deployment: {type: string}
-              policy: {type: string, enum: [rules, bandit]}
+              policy: {type: string, enum: [rules, bandit, release_aware, escalate]}
               failureThreshold: {type: integer}
               cooldownSeconds: {type: integer}
+              goodAfter: {type: integer}
           status: {type: object, x-kubernetes-preserve-unknown-fields: true}
 ---
 apiVersion: v1
@@ -36,7 +37,7 @@ rules:
   resources: [forecastservices, forecastservices/status]
   verbs: [get, list, watch, patch, update]
 - apiGroups: [apps]
-  resources: [deployments, deployments/scale]
+  resources: [deployments, deployments/scale, replicasets]
   verbs: [get, list, patch, update]
 - apiGroups: [""]
   resources: [events]

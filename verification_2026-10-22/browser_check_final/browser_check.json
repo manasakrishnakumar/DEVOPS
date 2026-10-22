@@ -1,0 +1,646 @@
+{
+ "generated": "2026-10-22 23:39:03",
+ "pages": 48,
+ "ok": 46,
+ "rows": [
+  {
+   "page": "A home",
+   "url": "http://127.0.0.1:5000/",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li",
+    "Failed to load resource: the server responded with a status of 404 (NOT FOUND)"
+   ],
+   "failed_requests": [],
+   "chars": 1994,
+   "screenshot": "A01_home.png"
+  },
+  {
+   "page": "A register form",
+   "url": "http://127.0.0.1:5000/register",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 344,
+   "screenshot": "A02_register.png"
+  },
+  {
+   "page": "A login form",
+   "url": "http://127.0.0.1:5000/login",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 348,
+   "screenshot": "A03_login.png"
+  },
+  {
+   "page": "A dashboard",
+   "url": "http://127.0.0.1:5000/dashboard",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1578,
+   "screenshot": "A04_dashboard.png"
+  },
+  {
+   "page": "A predict form",
+   "url": "http://127.0.0.1:5000/predict",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1215,
+   "screenshot": "A05_predict_form.png"
+  },
+  {
+   "page": "A result (extreme rain)",
+   "url": "http://127.0.0.1:5000/result",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 5005,
+   "screenshot": "A06_result_extreme.png"
+  },
+  {
+   "page": "A result (drought)",
+   "url": "http://127.0.0.1:5000/result",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 4779,
+   "screenshot": "A07_result_drought.png"
+  },
+  {
+   "page": "A analysis",
+   "url": "http://127.0.0.1:5000/analysis",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 2820,
+   "screenshot": "A08_analysis.png"
+  },
+  {
+   "page": "A xai",
+   "url": "http://127.0.0.1:5000/xai",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 9607,
+   "screenshot": "A09_xai.png"
+  },
+  {
+   "page": "A history",
+   "url": "http://127.0.0.1:5000/history",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1058,
+   "screenshot": "A10_history.png"
+  },
+  {
+   "page": "A /api/forecast",
+   "url": "http://127.0.0.1:5000/api/forecast",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 5525,
+   "screenshot": null
+  },
+  {
+   "page": "A /api/baseline",
+   "url": "http://127.0.0.1:5000/api/baseline",
+   "status": 500,
+   "ok": false,
+   "title": "TypeError: Object of type DataFrame is not JSON serializable // Werkzeug Debugge",
+   "error_text": [
+    "Traceback"
+   ],
+   "console_errors": [
+    "Failed to load resource: the server responded with a status of 500 (INTERNAL SERVER ERROR)"
+   ],
+   "failed_requests": [],
+   "chars": 3105,
+   "screenshot": null
+  },
+  {
+   "page": "B home",
+   "url": "http://127.0.0.1:5100/",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li",
+    "Failed to load resource: the server responded with a status of 404 (NOT FOUND)"
+   ],
+   "failed_requests": [],
+   "chars": 2000,
+   "screenshot": "B01_home.png"
+  },
+  {
+   "page": "B register form",
+   "url": "http://127.0.0.1:5100/register",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 344,
+   "screenshot": "B02_register.png"
+  },
+  {
+   "page": "B login form",
+   "url": "http://127.0.0.1:5100/login",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 348,
+   "screenshot": "B03_login.png"
+  },
+  {
+   "page": "B dashboard",
+   "url": "http://127.0.0.1:5100/dashboard",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1591,
+   "screenshot": "B04_dashboard.png"
+  },
+  {
+   "page": "B predict form",
+   "url": "http://127.0.0.1:5100/predict",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1228,
+   "screenshot": "B05_predict_form.png"
+  },
+  {
+   "page": "B result (extreme rain)",
+   "url": "http://127.0.0.1:5100/result",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 5018,
+   "screenshot": "B06_result_extreme.png"
+  },
+  {
+   "page": "B result (drought)",
+   "url": "http://127.0.0.1:5100/result",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 4792,
+   "screenshot": "B07_result_drought.png"
+  },
+  {
+   "page": "B analysis",
+   "url": "http://127.0.0.1:5100/analysis",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 2833,
+   "screenshot": "B08_analysis.png"
+  },
+  {
+   "page": "B xai",
+   "url": "http://127.0.0.1:5100/xai",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 9620,
+   "screenshot": "B09_xai.png"
+  },
+  {
+   "page": "B history",
+   "url": "http://127.0.0.1:5100/history",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1071,
+   "screenshot": "B10_history.png"
+  },
+  {
+   "page": "B /api/forecast",
+   "url": "http://127.0.0.1:5100/api/forecast",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 3670,
+   "screenshot": null
+  },
+  {
+   "page": "B /api/baseline",
+   "url": "http://127.0.0.1:5100/api/baseline",
+   "status": 500,
+   "ok": false,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [
+    "Internal Server Error"
+   ],
+   "console_errors": [
+    "Failed to load resource: the server responded with a status of 500 (INTERNAL SERVER ERROR)",
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 333,
+   "screenshot": null
+  },
+  {
+   "page": "B healthz",
+   "url": "http://127.0.0.1:5100/healthz",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 2,
+   "screenshot": null
+  },
+  {
+   "page": "B metrics",
+   "url": "http://127.0.0.1:5100/metrics",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 18182,
+   "screenshot": null
+  },
+  {
+   "page": "B lstm_predict form",
+   "url": "http://127.0.0.1:5100/lstm_predict",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1040,
+   "screenshot": "B11_lstm_predict_form.png"
+  },
+  {
+   "page": "B lstm_result",
+   "url": "http://127.0.0.1:5100/lstm_result",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 4890,
+   "screenshot": "B12_lstm_result.png"
+  },
+  {
+   "page": "API /health/live",
+   "url": "http://127.0.0.1:5001/health/live",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [
+    "Failed to load resource: the server responded with a status of 404 (NOT FOUND)"
+   ],
+   "failed_requests": [],
+   "chars": 19,
+   "screenshot": null
+  },
+  {
+   "page": "API /health/ready",
+   "url": "http://127.0.0.1:5001/health/ready",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 144,
+   "screenshot": "C01_ready.png"
+  },
+  {
+   "page": "API /health/semantic",
+   "url": "http://127.0.0.1:5001/health/semantic",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 276,
+   "screenshot": "C02_semantic.png"
+  },
+  {
+   "page": "API /golden/info",
+   "url": "http://127.0.0.1:5001/golden/info",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 77,
+   "screenshot": "C03_golden_info.png"
+  },
+  {
+   "page": "API /predict?model=auto&steps=6",
+   "url": "http://127.0.0.1:5001/predict?model=auto&steps=6",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 247,
+   "screenshot": "C04_predict.png"
+  },
+  {
+   "page": "API /slo",
+   "url": "http://127.0.0.1:5001/slo",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 113,
+   "screenshot": "C05_slo.png"
+  },
+  {
+   "page": "API /drift",
+   "url": "http://127.0.0.1:5001/drift",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 160,
+   "screenshot": "C06_drift.png"
+  },
+  {
+   "page": "API /aging",
+   "url": "http://127.0.0.1:5001/aging",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 1060,
+   "screenshot": "C07_aging.png"
+  },
+  {
+   "page": "API /energy",
+   "url": "http://127.0.0.1:5001/energy",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 172,
+   "screenshot": "C08_energy.png"
+  },
+  {
+   "page": "API /baseline",
+   "url": "http://127.0.0.1:5001/baseline",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 1177,
+   "screenshot": null
+  },
+  {
+   "page": "API /shadow/status",
+   "url": "http://127.0.0.1:5001/shadow/status",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 134,
+   "screenshot": null
+  },
+  {
+   "page": "API /metrics",
+   "url": "http://127.0.0.1:5001/metrics",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 3770,
+   "screenshot": null
+  },
+  {
+   "page": "API semantic health while corrupted (503 = correct)",
+   "url": "http://127.0.0.1:5001/health/semantic",
+   "status": 503,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [
+    "Failed to load resource: the server responded with a status of 503 (SERVICE UNAVAILABLE)"
+   ],
+   "failed_requests": [],
+   "chars": 279,
+   "screenshot": "C09_semantic_corrupted.png"
+  },
+  {
+   "page": "B dashboard while degraded",
+   "url": "http://127.0.0.1:5100/dashboard",
+   "status": 200,
+   "ok": true,
+   "title": "Bangalore Climate Analytics System",
+   "error_text": [],
+   "console_errors": [
+    "WARNING: plotly-latest.min.js and plotly-latest.js are NO LONGER the latest releases of plotly.js. They are v1.58.5 (released July 2021), the end of the v1.x li"
+   ],
+   "failed_requests": [],
+   "chars": 1691,
+   "screenshot": "B14_dashboard_degraded.png"
+  },
+  {
+   "page": "API semantic health after heal",
+   "url": "http://127.0.0.1:5001/health/semantic",
+   "status": 200,
+   "ok": true,
+   "title": "",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 276,
+   "screenshot": "C10_semantic_healed.png"
+  },
+  {
+   "page": "Grafana climate dashboard",
+   "url": "http://127.0.0.1:3000/d/climate-live/climate-ml-service-live?orgId=1&from=now-15m&to=now",
+   "status": 200,
+   "ok": true,
+   "title": "Climate ML Service - Live - Dashboards - Grafana",
+   "error_text": [],
+   "console_errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   ],
+   "failed_requests": [],
+   "chars": 6552,
+   "screenshot": "D01_grafana.png"
+  },
+  {
+   "page": "Prometheus up",
+   "url": "http://127.0.0.1:9090/query?g0.expr=up&g0.tab=0&g0.range_input=15m",
+   "status": 200,
+   "ok": true,
+   "title": "Prometheus Time Series Collection and Processing Server",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 2789,
+   "screenshot": "E01_prometheus.png"
+  },
+  {
+   "page": "Prometheus golden_violation_total",
+   "url": "http://127.0.0.1:9090/query?g0.expr=golden_violation_total&g0.tab=0&g0.range_input=15m",
+   "status": 200,
+   "ok": true,
+   "title": "Prometheus Time Series Collection and Processing Server",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 1085,
+   "screenshot": "E02_prometheus.png"
+  },
+  {
+   "page": "Prometheus sum by (tier) (predict_tier_total)",
+   "url": "http://127.0.0.1:9090/query?g0.expr=sum%20by%20%28tier%29%20%28predict_tier_total%29&g0.tab=0&g0.range_input=15m",
+   "status": 200,
+   "ok": true,
+   "title": "Prometheus Time Series Collection and Processing Server",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 264,
+   "screenshot": "E03_prometheus.png"
+  },
+  {
+   "page": "Prometheus golden_signature_valid",
+   "url": "http://127.0.0.1:9090/query?g0.expr=golden_signature_valid&g0.tab=0&g0.range_input=15m",
+   "status": 200,
+   "ok": true,
+   "title": "Prometheus Time Series Collection and Processing Server",
+   "error_text": [],
+   "console_errors": [],
+   "failed_requests": [],
+   "chars": 609,
+   "screenshot": "E04_prometheus.png"
+  }
+ ]
+}

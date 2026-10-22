@@ -58,6 +58,8 @@ ENERGY_AWARE = os.environ.get('ENERGY_AWARE', '0') == '1'
 AUDIT_EVERY = int(os.environ.get('AUDIT_EVERY', '10'))     # full cross-model vote every N requests when energy-aware
 CPU_WATTS = float(os.environ.get('CPU_WATTS', '15'))       # assumed power per busy core (no RAPL in containers)
 AGING_FILE = os.environ.get('AGING_FILE', 'aging.json')
+SIGNED_GOLDEN_DIR = os.environ.get('SIGNED_GOLDEN_DIR')            # dir with golden.json + cosign bundle + cosign.pub (release-time signed reference outputs)
+CORRUPT_AT_STARTUP = os.environ.get('CORRUPT_AT_STARTUP')          # experiments only: the model is already corrupt when the service starts ('bitflip' | 'scaler')
 
 _t = time.time()
 monthly = aggregate_monthly(preprocess(load_data(DATA_PATH)))
@@ -90,9 +92,7 @@ from metamorphic import MetamorphicProbe
 MMP = MetamorphicProbe()
 GOLDEN = {}
 SD = {v: float(np.std(SERIES[v])) for v in VARS}
-for _n2, _b2 in BACKENDS.items():
-    if _b2.ready and not getattr(_b2, 'lazy', False):
-        GOLDEN[_n2] = _b2.forecast(SERIES, 24)
+_SIG = {'required': bool(SIGNED_GOLDEN_DIR), 'ok': True, 'reason': '', 'source': 'startup', 'files_checked': 0}
 metrics.gauge('startup_seconds', round(time.time() - _t, 3))
 _STATE = {'corrupt': False, 'n': 0}
 _CACHE = {}
@@ -522,6 +522,8 @@ def live():
 
 @app.route('/health/ready')
 def ready():
+    if _SIG['required'] and not _SIG['ok']:      # fail closed: the signed reference outputs / model files cannot be trusted
+        return jsonify(ready=False, reason=_SIG['reason']), 503
     st = {n: b.partial_ready() for n, b in BACKENDS.items()}
     ok = all(b.ready for b in BACKENDS.values())
     if request.args.get('partial'):      # X14: ready if every variable has at least one usable tier
@@ -534,7 +536,7 @@ def ready():
 @app.route('/health/semantic')
 def semantic():
     """Novelty 1: canary inference validated by the conformal envelope (use as readiness/liveness probe)."""
-    res, ok = {}, True
+    res, ok = {}, not (_SIG['required'] and not _SIG['ok'])
     for n, b in BACKENDS.items():
         if not b.ready:
             res[n] = {'valid': False, 'reason': 'not loaded'}
@@ -548,7 +550,7 @@ def semantic():
                   'golden_dev': None if not np.isfinite(gd) else round(gd, 5)}
         ok = ok and res[n]['valid']
         metrics.gauge('semantic_valid', int(s <= 1.0), backend=n)
-    return jsonify(semantic_ok=ok, backends=res), (200 if ok else 503)
+    return jsonify(semantic_ok=ok, backends=res, golden_reference=_SIG), (200 if ok else 503)
 
 
 @app.route('/predict')
@@ -658,11 +660,18 @@ def fault():
 
 @app.route('/golden/refresh')
 def golden_refresh():
+    if _SIG['source'] == 'signed':
+        return jsonify(error='signed golden outputs are in force; they can only be replaced by a new signed release'), 409
     with _RUN_LOCK:
         for n, b in BACKENDS.items():
             if b.ready:
                 GOLDEN[n] = b.forecast(SERIES, 24)
     return jsonify(refreshed=list(GOLDEN))
+
+
+@app.route('/golden/info')
+def golden_info():
+    return jsonify(_SIG)
 
 
 @app.route('/shadow/load')
@@ -714,6 +723,37 @@ def prom():
     metrics.gauge('process_rss_bytes', _rss_bytes())
     return Response(metrics.render(), mimetype='text/plain')
 
+
+def _init_golden():
+    """Reference outputs for the golden-integrity check.
+    start-up reference : forecast of every tier right now (trusts that the model is healthy at this moment)
+    signed reference   : release-time forecasts + model-file hashes, verified with a public key; replaces the start-up reference
+    CORRUPT_AT_STARTUP : experiment switch - corrupts the model BEFORE the start-up reference is taken (the known blind spot)"""
+    if CORRUPT_AT_STARTUP:
+        _inject_weights('bitflip' if CORRUPT_AT_STARTUP == 'bitflip' else 'scaler', 8)
+    for n, b in BACKENDS.items():
+        if b.ready and not getattr(b, 'lazy', False):
+            GOLDEN[n] = b.forecast(SERIES, 24)
+    if not SIGNED_GOLDEN_DIR:
+        return
+    import backends as _bk
+    import signed_golden as _sg
+    try:
+        man = _sg.verify(SIGNED_GOLDEN_DIR)
+        for n, vals in man['golden'].items():
+            if n in BACKENDS:
+                GOLDEN[n] = {v: np.asarray(x, dtype=float) for v, x in vals.items()}
+        _SIG['source'] = 'signed'
+        bad = _sg.check_files(_bk.MODEL_DIR, man)
+        _SIG['files_checked'] = len(man.get('files', {}))
+        if bad:
+            _SIG.update(ok=False, reason='model file hash differs from the signed manifest: ' + ', '.join(bad[:3]))
+    except Exception as e:
+        _SIG.update(ok=False, reason='signed golden outputs rejected: ' + str(e)[:120])
+    metrics.gauge('golden_signature_valid', int(_SIG['ok']))
+
+
+_init_golden()
 
 if GUARD_ON:
     threading.Thread(target=canary_loop, daemon=True).start()

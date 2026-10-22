@@ -244,3 +244,12 @@ Image :13 adds the opt-in metamorphic probe (METAMORPHIC=1, off by default); fin
 
 ## 13. Addendum 2026-10-17 (five contributions)
 New studies: TESTING 3.22 (baselines, cost-coverage), 3.23 (HBW/MTTC), 3.24 (compound faults). Note: golden/test-vector check alone detects all injected faults on a deterministic model (subsumes other layers for detection) but costs about 182 ms per check; the recommended design is cheap per-request checks plus periodic golden.
+
+## 14. Addendum 2026-10-22 (bit-flip fuzzing, signed golden outputs, rollback/escalation)
+- **Status:** phase 15 complete and validated: `python validation/validate_all.py` gives 25/25 PASS on the cluster; live browser check 46/48 pages (the two failures are the pre-existing `/api/baseline` 500, TESTING K37).
+- **Where things are:** the working copy to use is the folder this file is in (the Desktop copy `Desktop\ALL DEKTOP\bangalore_climate_app_final`); the OneDrive copy is the pre-extras backup (OneDrive storage is full).
+- **New images:** `climate-inference:14` (signed golden, start-up corruption switch), `forecast-operator:4` (rollback/escalation). **New switches:** `SIGNED_GOLDEN_DIR` (mount of the ConfigMap `signed-golden`; readiness fails closed if unset-but-required checks fail), `CORRUPT_AT_STARTUP=scaler|bitflip` (test only), `GOLDEN_TOL`. **New endpoints:** `/golden/info`; `/health/semantic` now reports `golden_reference`.
+- **Operator policies:** rules (default), bandit, release_aware, escalate; `goodAfter` field.
+- **Release step for signed golden:** `chaos/release_signed_golden.ps1 -Publish` (needs the cosign key outside the repository and `COSIGN_PASSWORD`).
+- **Honest limits:** lab signing key; public key shipped with the golden file; golden check alarms on harmless changes at the default tolerance; 5-20 trials per cell; weights of one model family only.
+- **Next steps:** pin the public key; production key management; fix K37; confirm references and survey years/authors on IEEE Xplore; fill in student 2 name and USNs.

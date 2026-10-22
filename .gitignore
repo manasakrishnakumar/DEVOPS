@@ -7,3 +7,6 @@ uploads/
 results/batch_*.log
 analysis/bo_result.json
 *.env
+cosign.key
+*.key
+signed_golden_work/

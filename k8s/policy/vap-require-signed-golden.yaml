@@ -1,0 +1,32 @@
+﻿# Admission control for signed golden outputs (Kubernetes ValidatingAdmissionPolicy, built in since v1.30; no extra controller needed).
+# It enforces that the inference Deployment is wired to the signed reference outputs. The cryptographic check itself runs inside the
+# service at start-up (fail closed: readiness stays 503 if the signature or any model-file hash does not verify).
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata: {name: require-signed-golden}
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["apps"]
+      apiVersions: ["v1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["deployments"]
+  matchConditions:
+  - name: only-inference-api
+    expression: "object.metadata.name == 'inference-api'"
+  validations:
+  - expression: "object.spec.template.spec.containers.exists(c, has(c.env) && c.env.exists(e, e.name == 'SIGNED_GOLDEN_DIR'))"
+    message: "inference-api must set SIGNED_GOLDEN_DIR: signed golden outputs are mandatory in this namespace"
+  - expression: "has(object.spec.template.spec.volumes) && object.spec.template.spec.volumes.exists(v, has(v.configMap) && v.configMap.name == 'signed-golden')"
+    message: "inference-api must mount the signed-golden ConfigMap"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata: {name: require-signed-golden-climate}
+spec:
+  policyName: require-signed-golden
+  validationActions: [Deny]
+  matchResources:
+    namespaceSelector:
+      matchLabels: {kubernetes.io/metadata.name: climate}

@@ -383,6 +383,77 @@ def v_novelty_studies():
     return 'baselines: simple detectors weak or noisy, golden strong but costly; compound bitflip+delay: E4 100 % wrong, H4 0 %; HBW C4 30 s vs G4 0 s'
 
 
+def v_fuzz_data():
+    """Extra 1: bit-flip fuzzing of the real LSTM weights (results/bitflip_fuzz.json)."""
+    j = json.load(open(os.path.join(ROOT, 'results', 'bitflip_fuzz.json')))
+    cells = j['cells']
+    assert len(cells) == 42 and all(c['trials'] >= 100 for c in cells.values()), 'incomplete design'
+    assert j['control']['env_false_alarms'] == 0 and j['control']['golden_false_alarms'] == 0, 'false alarms on unmodified models'
+    tot = {k: sum(c[k] for c in cells.values()) for k in ('trials', 'wrong', 'silent_wrong_env', 'silent_wrong_golden', 'env_detect_given_wrong', 'golden_detect_given_wrong')}
+    assert tot['wrong'] > 0 and tot['golden_detect_given_wrong'] == tot['wrong'] and tot['silent_wrong_golden'] == 0, 'golden check must detect every wrong answer'
+    assert tot['silent_wrong_env'] > 0, 'the envelope is expected to miss some wrong answers'
+    rate = {}
+    for c in cells.values():
+        t, w = rate.get(c['class'], (0, 0))
+        rate[c['class']] = (t + c['trials'], w + c['wrong'])
+    r = {k: w / t for k, (t, w) in rate.items()}
+    assert r['exp_msb'] > 5 * max(r[k] for k in ('sign', 'exp_other', 'mant_high', 'mant_low')), 'damage should concentrate in the exponent MSB'
+    pp = os.path.join(ROOT, 'results', 'bitflip_fuzz_in_pod.json')                      # same study inside a pod of the production image
+    pod_note = ''
+    if os.path.exists(pp):
+        jp = json.load(open(pp))
+        tp = {k: sum(c[k] for c in jp['cells'].values()) for k in ('trials', 'wrong', 'silent_wrong_golden')}
+        assert tp['wrong'] > 0 and tp['silent_wrong_golden'] == 0 and jp['control']['golden_false_alarms'] == 0, 'in-pod fuzz disagrees'
+        assert abs(tp['wrong'] / tp['trials'] - tot['wrong'] / tot['trials']) < 0.03, 'in-pod wrong rate differs from the host run'
+        pod_note = f"; in-pod run {tp['trials']} trials, wrong {100 * tp['wrong'] / tp['trials']:.1f} %, golden missed 0"
+    return (f"{tot['trials']} trials in {len(cells)} cells; wrong {tot['wrong']} ({100 * tot['wrong'] / tot['trials']:.1f} %), envelope missed {tot['silent_wrong_env']}, "
+            f"golden missed 0; exponent-MSB wrong rate {100 * r['exp_msb']:.1f} % vs max {100 * max(r[k] for k in ('sign', 'exp_other', 'mant_high', 'mant_low')):.1f} % elsewhere; control false alarms 0" + pod_note)
+
+
+def v_signed_golden_data():
+    """Extra 3: signed golden outputs on the cluster (results/signed_golden_trials.jsonl)."""
+    rows = [json.loads(l.lstrip('﻿')) for l in open(os.path.join(ROOT, 'results', 'signed_golden_trials.jsonl'), encoding='utf-8-sig') if l.strip()]
+    by = {c: [r for r in rows if r['cond'] == c] for c in ('C0', 'C1', 'C2', 'C3', 'C4')}
+    assert len(by['C0']) >= 20 and len(by['C1']) >= 20 and len(by['C2']) >= 20 and len(by['C3']) >= 10 and len(by['C4']) >= 10, 'incomplete design'
+    assert all(r['semantic_ok'] is True and r['reference_source'] == 'signed' and r['window']['wrong_pct'] == 0 for r in by['C0']), 'false alarm with healthy models'
+    for r in by['C1']:        # the known blind spot: corrupt before start, start-up reference
+        assert r['window']['correct_pct'] == 0 and r['window']['wrong_pct'] >= 95 and r.get('semantic_ok') is not False, 'start-up reference should be blind'
+    for r in by['C2']:        # same corruption, signed reference
+        assert r['window']['wrong_pct'] == 0 and r['window']['fallback_pct'] >= 95 and r.get('semantic_ok') is not True, 'signed reference must detect it'
+    assert sum(1 for r in by['C2'] if r.get('semantic_ok') is False) >= 8
+    for r in by['C3'] + by['C4']:   # fail closed; the old pod keeps serving correct answers
+        assert r['new_pod_ready'] is False and r['served']['wrong_pct'] == 0 and r['served']['correct_pct'] >= 98
+    assert all('rejected' in r['new_pod_reason'] for r in by['C3']) and all('hash differs' in r['new_pod_reason'] for r in by['C4'])
+    wr1 = sum(r['window']['wrong_pct'] for r in by['C1']) / len(by['C1'])
+    return (f"healthy signed: {len(by['C0'])} trials, no false alarm; corrupt-at-start-up: start-up reference {wr1:.1f} % wrong with health OK, "
+            f"signed reference 0 % wrong, health not OK; tampered golden and model-hash mismatch: new pod never Ready ({len(by['C3'])}+{len(by['C4'])} trials), old pod 100 % correct")
+
+
+def v_rollback_data():
+    """Extra 2: operator rollback / escalation (results/rollback_trials.jsonl)."""
+    rows = [json.loads(l.lstrip('﻿')) for l in open(os.path.join(ROOT, 'results', 'rollback_trials.jsonl'), encoding='utf-8-sig') if l.strip()]
+    rows = [r for r in rows if 'error' not in r]
+    g = {}
+    for r in rows:
+        g.setdefault((r['fault'], r['policy']), []).append(r)
+    for pol in ('rules', 'release_aware', 'escalate'):
+        assert len(g[('transient', pol)]) >= 5 and all(r['restored_s'] is not None for r in g[('transient', pol)]), f'transient fault not restored under {pol}'
+    assert len(g[('bad_release', 'rules')]) >= 5 and all(r['restored_s'] is None for r in g[('bad_release', 'rules')]), 'restart-only must not recover a bad release'
+    assert all(r['restored_s'] is not None and r['restored_s'] < 120 and r['actions'][0] == 'rollback' for r in g[('bad_release', 'release_aware')]) and len(g[('bad_release', 'release_aware')]) >= 5
+    assert all(r['restored_s'] is not None and r['actions'][:2] == ['restart', 'rollback'] for r in g[('bad_release', 'escalate')]) and len(g[('bad_release', 'escalate')]) >= 5
+    assert len(g[('bad_release', 'none')]) >= 3 and all(r['restored_s'] is None for r in g[('bad_release', 'none')]), 'without an operator a bad release must stay broken'
+    m = lambda k: sum(r['restored_s'] for r in g[k]) / len(g[k])   # noqa: E731
+    return (f"bad release: restart-only never recovers (0/{len(g[('bad_release', 'rules')])}), release-aware rollback {m(('bad_release', 'release_aware')):.0f} s, "
+            f"escalate restart->rollback {m(('bad_release', 'escalate')):.0f} s, no operator never; transient fault restored under all policies")
+
+
+def v_admission_policy():
+    """Extra 3: ValidatingAdmissionPolicy test on the live cluster (results/admission_policy_test.json)."""
+    j = json.load(open(os.path.join(ROOT, 'results', 'admission_policy_test.json')))
+    assert j['all_pass'] and len(j['cases']) >= 6, [c['case'] for c in j['cases'] if not c['pass']]
+    return f"{len(j['cases'])} admission cases behave as expected (unwired changes denied, wired and unrelated changes admitted); cluster {j['cluster_version']}"
+
+
 def main():
     check('V01 docker + kubectl available', v_env)
     check('V02 cluster pods Running', v_pods)
@@ -405,6 +476,10 @@ def main():
     check('V20 metamorphic probe evaluation (experimental)', v_metamorphic_data)
     check('V21 baselines, HBW/MTTC and compound faults', v_novelty_studies)
     check('V16 phases 7-13 result data (operator, probe validation, predictor, shadow gate, family)', v_later_phases_data)
+    check('V22 bit-flip fuzzing of the LSTM weights (Extra 1)', v_fuzz_data)
+    check('V23 signed golden outputs on the cluster (Extra 3)', v_signed_golden_data)
+    check('V24 operator rollback and escalation (Extra 2)', v_rollback_data)
+    check('V25 admission policy for signed golden wiring (Extra 3)', v_admission_policy)
     os.chdir(ROOT)
     npass = sum(1 for r in RES if r[1] == 'PASS')
     lines = ['# Validation report', '', f'Generated {time.strftime("%Y-%m-%d %H:%M:%S")}  |  {npass}/{len(RES)} checks PASS', '',

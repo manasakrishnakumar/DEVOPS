@@ -77,3 +77,12 @@ Companions: [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) · [IMPLEMENTATION_PHASES.m
 - Metamorphic readiness probe (X36): DONE as experimental, partly negative result - reliable for output-level faults, marginal for subtle bit flips, brittle under drift (TESTING 3.21, K42).
 
 - X37 baselines and cost-coverage, X38 HBW/MTTC metrics, X39 compound faults: DONE (TESTING 3.22-3.24).
+
+## Added 2026-10-22: the three extras now implemented
+| Extra | Status | Evidence |
+|---|---|---|
+| Random bit-flip fuzzing of the real LSTM weights | done (12,600 host trials, 4,200 in-pod) | TESTING 3.25, `results/bitflip_fuzz*.json`, V22 |
+| Richer operator actions: rollback, escalation | done (5 trials per cell, two fault classes) | TESTING 3.27, `results/rollback_trials.jsonl`, V24 |
+| Signed golden outputs (cosign) + admission policy | done (80 cluster trials, 6 admission cases) | TESTING 3.26, `results/signed_golden_trials.jsonl`, `admission_policy_test.json`, V23, V25 |
+
+Still open (future work): production key management (KMS/HSM or keyless signing with a transparency log) and pinning the public key; fuzzing of activations and of other model families; online/adaptive conformal envelope (Hajihashemi and Shen, online multi-model conformal prediction, would also allow choosing the fallback tier); a golden tolerance that adapts per layer; more trials per cell for the rollback study; a fix for `/api/baseline` (K37).

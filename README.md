@@ -12,14 +12,15 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 - Tuned probe period/threshold gave no benefit; replicas dominate recovery time.
 - A golden-output integrity check (config G4) catches the subtle bit flips that evaded every other check (20/20 caught, 0 false alarms in healthy control).
 - Deadline- and load-aware degradation (config H4) turns the delay fault from 96.8 % failed requests into 0 % failed (94 % valid degraded answers) and cuts burst p95 about 4x.
+- Bit-flip fuzzing (12,600 trials): exponent-MSB flips give 50 % wrong answers and the envelope misses 34 % of all wrong answers; the golden check misses none. Signed (cosign) golden outputs close the corrupted-at-start-up blind spot (99.9 % wrong with health OK before, 0 % wrong after) and a tampered reference or model file never becomes Ready (10/10 each). Operator rollback restores a bad release in 46 s (release-aware) / 77 s (escalate) where restart-only never recovers (0/5).
 - Honest limits: the golden check only detects change from a trusted start-up state; the guard does not help crash/hang/OOM; 5-10 trials per cell on one laptop.
 
 ## Where to start
 | File | Content |
 |---|---|
 | `PROJECT_HANDOFF.md` | overview, architecture, file map, status table, decisions, how to continue |
-| `IMPLEMENTATION_PHASES.md` | phases 0-13 with evidence and what was changed |
-| `TESTING_AND_KNOWN_ISSUES.md` | every measured result, tests, known issues (K1-K36) |
+| `IMPLEMENTATION_PHASES.md` | phases 0-15 with evidence and what was changed |
+| `TESTING_AND_KNOWN_ISSUES.md` | every measured result, tests, known issues (K1-K42) |
 | `REFERENCES_AND_LITERATURE_REVIEW.md` | 23 provided papers + web sources, gaps, traceability |
 | `EXTRAS_AND_FUTURE_WORK.md` | all additional ideas with status |
 | `NOVELTY_AND_PRIOR_ART.md` | gap-based novelty, prior art found, honest verdict |
@@ -30,7 +31,7 @@ correctness guard, graceful degradation, a silent-fault benchmark, a correctness
 ## Layout
 `monolith/` (config A) · `frontend/` + `inference-api/` + PostgreSQL (configs B/C) · `k8s/`, `monitoring/` (Minikube, Prometheus, Grafana) ·
 `chaos/` (probes, fault/load runner, DoE, operator experiments) · `analysis/` (guard ablation, invariants, predictor, twin/bandit, extras) ·
-`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (19 executed checks) · `results/` (all raw data).
+`operator/` (kopf operator) · `retrain/` · `validation/validate_all.py` (25 executed checks) · `results/` (all raw data).
 
 ## Quick check
 ```bash

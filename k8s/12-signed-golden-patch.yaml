@@ -1,0 +1,14 @@
+﻿# Strategic-merge patch: wire the inference Deployment to the signed golden outputs (ConfigMap signed-golden holds
+# golden.json, golden.json.bundle and cosign.pub).   kubectl -n climate patch deploy/inference-api --patch-file k8s/12-signed-golden-patch.yaml
+spec:
+  template:
+    spec:
+      containers:
+      - name: inference-api
+        env:
+        - {name: SIGNED_GOLDEN_DIR, value: /golden}
+        volumeMounts:
+        - {name: signed-golden, mountPath: /golden, readOnly: true}
+      volumes:
+      - name: signed-golden
+        configMap: {name: signed-golden}

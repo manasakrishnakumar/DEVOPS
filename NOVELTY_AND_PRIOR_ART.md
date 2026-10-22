@@ -34,3 +34,13 @@ The contribution is empirical and systems-level (measured study + integrated Kub
 4. **Correctness-aware probe design** - semantic readiness alone never restores; readiness + liveness restores in 36 s; partial vs strict readiness 0 % vs 81 % failed (TESTING 3.17).
 5. **Quality-aware recovery and deadline-aware degradation** - cost-blind bandit 5/20 vs quality-aware 20/20 restored; delay fault 96.8 % to 0 % failed (TESTING 3.8, 3.20).
 Not claimed as novel: golden-output check (LM-Fix, RADAR), conformal monitoring (WATCH and others), runtime SLO guard (arXiv 2607.09992), tiered fallback. The metamorphic probe is an experimental, partly negative result (TESTING 3.21).
+
+## Update 2026-10-22: the three new extras, checked against prior art (standard web search, not exhaustive)
+| Extra | Already known (cite) | What this project adds (measured) | Claim allowed |
+|---|---|---|---|
+| Bit-flip fuzzing | exponent-MSB flips are the most damaging: Bit-Flip Attack (Rakin et al., ICCV 2019) and later work; golden/checksum defences: LM-Fix (arXiv 2511.02866), RADAR | service-level wrong-answer rate seen by clients, envelope miss rate (34 % of wrong answers), golden-check detection vs harmless-alarm trade-off with a tolerance sweep, in a forecasting service | the measurement, NOT the finding that the exponent MSB dominates |
+| Signed golden outputs | model signing with a hash manifest: OpenSSF/Sigstore model signing; conformal/behavioural monitors: WATCH (arXiv 2505.04608), arXiv 2607.21623, Trusted Floors (arXiv 2607.09992) | a signed *behavioural* reference (forecasts, not only file hashes) that closes the corrupted-before-start-up blind spot, fail-closed readiness, admission policy for the wiring; no signed behavioural reference found in the searches | "to our knowledge" after a structured IEEE Xplore / Scholar search |
+| Rollback / escalation | metric-based automated rollback exists (Argo Rollouts analysis, Flagger) | operator escalation restart -> rollback -> pin tier driven by a *semantic* (answer-correctness) health signal; restart-only measured as 0/5 on a bad release | "to our knowledge"; not a new algorithm |
+
+Updated honest verdict: contribution is still empirical and systems-level. The new extras strengthen contributions 1-2 and 5 of the five-contribution list; the golden check, conformal monitoring and model signing remain cited prior work.
+Also add to the survey: Hajihashemi and Shen, Enhanced Multi-model Online Conformal Prediction (conformal sets, model selection; no health checks or recovery) and Zhang, Wan et al., SGCAD (structure-aware Granger-causality anomaly detection from metrics; no output-quality signal, no recovery). Years and full author lists to be confirmed from the PDF or IEEE record.

@@ -1,0 +1,572 @@
+{
+ "fuzz": {
+  "trials_total": 12600,
+  "cells": 42,
+  "trials_per_cell": 300,
+  "control": {
+   "trials": 300,
+   "env_false_alarms": 0,
+   "golden_false_alarms": 0,
+   "wrong": 0,
+   "errors": 0,
+   "max_dev": 0.0
+  },
+  "wrong": 1172,
+  "error_loud": 9,
+  "silent_wrong_env": 400,
+  "silent_wrong_golden": 0,
+  "golden_alarm_harmless": 5784,
+  "wrong_detected_by_env": 772,
+  "wrong_detected_by_golden": 1172,
+  "by_class": {
+   "sign": {
+    "trials": 2100,
+    "wrong": 10,
+    "error_loud": 0,
+    "env_detect": 4,
+    "golden_detect": 1589,
+    "env_detect_given_wrong": 3,
+    "golden_detect_given_wrong": 10,
+    "silent_wrong_env": 7,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 1579,
+    "wrong_ci": [
+     0.0026,
+     0.0087
+    ]
+   },
+   "exp_msb": {
+    "trials": 2100,
+    "wrong": 1054,
+    "error_loud": 9,
+    "env_detect": 881,
+    "golden_detect": 2088,
+    "env_detect_given_wrong": 728,
+    "golden_detect_given_wrong": 1054,
+    "silent_wrong_env": 326,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 1034,
+    "wrong_ci": [
+     0.4805,
+     0.5233
+    ]
+   },
+   "exp_other": {
+    "trials": 2100,
+    "wrong": 6,
+    "error_loud": 0,
+    "env_detect": 4,
+    "golden_detect": 1529,
+    "env_detect_given_wrong": 2,
+    "golden_detect_given_wrong": 6,
+    "silent_wrong_env": 4,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 1523,
+    "wrong_ci": [
+     0.0013,
+     0.0062
+    ]
+   },
+   "mant_high": {
+    "trials": 2100,
+    "wrong": 0,
+    "error_loud": 0,
+    "env_detect": 0,
+    "golden_detect": 587,
+    "env_detect_given_wrong": 0,
+    "golden_detect_given_wrong": 0,
+    "silent_wrong_env": 0,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 587,
+    "wrong_ci": [
+     0.0,
+     0.0018
+    ]
+   },
+   "mant_low": {
+    "trials": 2100,
+    "wrong": 0,
+    "error_loud": 0,
+    "env_detect": 0,
+    "golden_detect": 0,
+    "env_detect_given_wrong": 0,
+    "golden_detect_given_wrong": 0,
+    "silent_wrong_env": 0,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 0,
+    "wrong_ci": [
+     0.0,
+     0.0018
+    ]
+   },
+   "any": {
+    "trials": 2100,
+    "wrong": 102,
+    "error_loud": 0,
+    "env_detect": 56,
+    "golden_detect": 1163,
+    "env_detect_given_wrong": 39,
+    "golden_detect_given_wrong": 102,
+    "silent_wrong_env": 63,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 1061,
+    "wrong_ci": [
+     0.0402,
+     0.0586
+    ]
+   }
+  },
+  "by_flips": {
+   "1": {
+    "trials": 1800,
+    "wrong": 27,
+    "error_loud": 0,
+    "env_detect": 14,
+    "golden_detect": 467,
+    "env_detect_given_wrong": 10,
+    "golden_detect_given_wrong": 27,
+    "silent_wrong_env": 17,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 440
+   },
+   "2": {
+    "trials": 1800,
+    "wrong": 56,
+    "error_loud": 0,
+    "env_detect": 21,
+    "golden_detect": 615,
+    "env_detect_given_wrong": 11,
+    "golden_detect_given_wrong": 56,
+    "silent_wrong_env": 45,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 559
+   },
+   "4": {
+    "trials": 1800,
+    "wrong": 104,
+    "error_loud": 0,
+    "env_detect": 75,
+    "golden_detect": 842,
+    "env_detect_given_wrong": 53,
+    "golden_detect_given_wrong": 104,
+    "silent_wrong_env": 51,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 738
+   },
+   "8": {
+    "trials": 1800,
+    "wrong": 157,
+    "error_loud": 0,
+    "env_detect": 117,
+    "golden_detect": 1043,
+    "env_detect_given_wrong": 86,
+    "golden_detect_given_wrong": 157,
+    "silent_wrong_env": 71,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 886
+   },
+   "16": {
+    "trials": 1800,
+    "wrong": 226,
+    "error_loud": 1,
+    "env_detect": 184,
+    "golden_detect": 1224,
+    "env_detect_given_wrong": 142,
+    "golden_detect_given_wrong": 226,
+    "silent_wrong_env": 84,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 998
+   },
+   "32": {
+    "trials": 1800,
+    "wrong": 273,
+    "error_loud": 1,
+    "env_detect": 245,
+    "golden_detect": 1359,
+    "env_detect_given_wrong": 203,
+    "golden_detect_given_wrong": 273,
+    "silent_wrong_env": 70,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 1086
+   },
+   "64": {
+    "trials": 1800,
+    "wrong": 329,
+    "error_loud": 7,
+    "env_detect": 289,
+    "golden_detect": 1406,
+    "env_detect_given_wrong": 267,
+    "golden_detect_given_wrong": 329,
+    "silent_wrong_env": 62,
+    "silent_wrong_golden": 0,
+    "golden_alarm_harmless": 1077
+   }
+  },
+  "golden_sweep": {
+   "rows": [
+    {
+     "tolerance": 0.002,
+     "wrong_detected": 1172,
+     "wrong": 1172,
+     "harmless_alarm": 5784,
+     "harmless": 11419,
+     "detect_pct": 100.0,
+     "harmless_alarm_pct": 50.7
+    },
+    {
+     "tolerance": 0.005,
+     "wrong_detected": 1172,
+     "wrong": 1172,
+     "harmless_alarm": 4869,
+     "harmless": 11419,
+     "detect_pct": 100.0,
+     "harmless_alarm_pct": 42.6
+    },
+    {
+     "tolerance": 0.01,
+     "wrong_detected": 1172,
+     "wrong": 1172,
+     "harmless_alarm": 4138,
+     "harmless": 11419,
+     "detect_pct": 100.0,
+     "harmless_alarm_pct": 36.2
+    },
+    {
+     "tolerance": 0.02,
+     "wrong_detected": 1172,
+     "wrong": 1172,
+     "harmless_alarm": 3465,
+     "harmless": 11419,
+     "detect_pct": 100.0,
+     "harmless_alarm_pct": 30.3
+    },
+    {
+     "tolerance": 0.05,
+     "wrong_detected": 1172,
+     "wrong": 1172,
+     "harmless_alarm": 2431,
+     "harmless": 11419,
+     "detect_pct": 100.0,
+     "harmless_alarm_pct": 21.3
+    },
+    {
+     "tolerance": 0.1,
+     "wrong_detected": 1172,
+     "wrong": 1172,
+     "harmless_alarm": 1582,
+     "harmless": 11419,
+     "detect_pct": 100.0,
+     "harmless_alarm_pct": 13.9
+    },
+    {
+     "tolerance": 0.2,
+     "wrong_detected": 1172,
+     "wrong": 1172,
+     "harmless_alarm": 979,
+     "harmless": 11419,
+     "detect_pct": 100.0,
+     "harmless_alarm_pct": 8.6
+    },
+    {
+     "tolerance": 0.5,
+     "wrong_detected": 1147,
+     "wrong": 1172,
+     "harmless_alarm": 382,
+     "harmless": 11419,
+     "detect_pct": 97.9,
+     "harmless_alarm_pct": 3.3
+    },
+    {
+     "tolerance": 1.0,
+     "wrong_detected": 988,
+     "wrong": 1172,
+     "harmless_alarm": 117,
+     "harmless": 11419,
+     "detect_pct": 84.3,
+     "harmless_alarm_pct": 1.0
+    },
+    {
+     "tolerance": 2.0,
+     "wrong_detected": 684,
+     "wrong": 1172,
+     "harmless_alarm": 6,
+     "harmless": 11419,
+     "detect_pct": 58.4,
+     "harmless_alarm_pct": 0.1
+    }
+   ],
+   "control_max_dev": 0.0,
+   "default_tolerance": 0.002
+  },
+  "in_pod": {
+   "sign": {
+    "host": {
+     "trials": 2100,
+     "wrong": 10
+    },
+    "pod": {
+     "trials": 700,
+     "wrong": 3,
+     "silent_wrong_env": 3,
+     "silent_wrong_golden": 0
+    }
+   },
+   "exp_msb": {
+    "host": {
+     "trials": 2100,
+     "wrong": 1054
+    },
+    "pod": {
+     "trials": 700,
+     "wrong": 345,
+     "silent_wrong_env": 112,
+     "silent_wrong_golden": 0
+    }
+   },
+   "exp_other": {
+    "host": {
+     "trials": 2100,
+     "wrong": 6
+    },
+    "pod": {
+     "trials": 700,
+     "wrong": 3,
+     "silent_wrong_env": 2,
+     "silent_wrong_golden": 0
+    }
+   },
+   "mant_high": {
+    "host": {
+     "trials": 2100,
+     "wrong": 0
+    },
+    "pod": {
+     "trials": 700,
+     "wrong": 0,
+     "silent_wrong_env": 0,
+     "silent_wrong_golden": 0
+    }
+   },
+   "mant_low": {
+    "host": {
+     "trials": 2100,
+     "wrong": 0
+    },
+    "pod": {
+     "trials": 700,
+     "wrong": 0,
+     "silent_wrong_env": 0,
+     "silent_wrong_golden": 0
+    }
+   },
+   "any": {
+    "host": {
+     "trials": 2100,
+     "wrong": 102
+    },
+    "pod": {
+     "trials": 700,
+     "wrong": 30,
+     "silent_wrong_env": 20,
+     "silent_wrong_golden": 0
+    }
+   },
+   "all": {
+    "host": {
+     "trials": 12600,
+     "wrong": 1172
+    },
+    "pod": {
+     "trials": 4200,
+     "wrong": 381,
+     "silent_wrong_env": 137,
+     "silent_wrong_golden": 0
+    }
+   },
+   "control": {
+    "trials": 100,
+    "env_false_alarms": 0,
+    "golden_false_alarms": 0,
+    "wrong": 0,
+    "errors": 0,
+    "max_dev": 0.0
+   }
+  }
+ },
+ "signed": {
+  "C0": {
+   "trials": 20,
+   "wrong_pct": 0.0,
+   "fallback_pct": 0.0,
+   "correct_pct": 99.9,
+   "degraded_pct": 0.0,
+   "failed_pct": 0.1,
+   "semantic_ok_true": 20,
+   "semantic_ok_false": 0,
+   "semantic_unavailable": 0,
+   "sources": [
+    "signed"
+   ],
+   "wrong_trials": 0
+  },
+  "C1": {
+   "trials": 20,
+   "wrong_pct": 99.9,
+   "fallback_pct": 0.0,
+   "correct_pct": 0.0,
+   "degraded_pct": 0.0,
+   "failed_pct": 0.1,
+   "semantic_ok_true": 20,
+   "semantic_ok_false": 0,
+   "semantic_unavailable": 0,
+   "sources": [
+    "startup"
+   ],
+   "wrong_trials": 20
+  },
+  "C2": {
+   "trials": 20,
+   "wrong_pct": 0.0,
+   "fallback_pct": 99.9,
+   "correct_pct": 0.0,
+   "degraded_pct": 0.0,
+   "failed_pct": 0.1,
+   "semantic_ok_true": 0,
+   "semantic_ok_false": 20,
+   "semantic_unavailable": 0,
+   "sources": [
+    "signed"
+   ],
+   "wrong_trials": 0
+  },
+  "C3": {
+   "trials": 10,
+   "new_pod_never_ready": 10,
+   "old_pod_correct_pct": 100.0,
+   "reasons": [
+    "503 {\"ready\":false,\"reason\":\"signed golden outputs rejected: digest in bundle does not match golden.json\"}"
+   ]
+  },
+  "C4": {
+   "trials": 10,
+   "new_pod_never_ready": 10,
+   "old_pod_correct_pct": 100.0,
+   "reasons": [
+    "503 {\"ready\":false,\"reason\":\"model file hash differs from the signed manifest: lstm/lstm_rainfall.h5\"}"
+   ]
+  }
+ },
+ "rollback": {
+  "transient|rules": {
+   "trials": 5,
+   "restored": 5,
+   "median_s": 31.2,
+   "mean_s": 30.5,
+   "mean_failed_pct": 0.6,
+   "actions": [
+    "restart"
+   ],
+   "times": [
+    31.2,
+    32.8,
+    29.2,
+    31.2,
+    28.0
+   ]
+  },
+  "transient|release_aware": {
+   "trials": 5,
+   "restored": 5,
+   "median_s": 29.4,
+   "mean_s": 29.4,
+   "mean_failed_pct": 0.3,
+   "actions": [
+    "restart"
+   ],
+   "times": [
+    29.4,
+    30.8,
+    27.8,
+    31.2,
+    28.0
+   ]
+  },
+  "transient|escalate": {
+   "trials": 5,
+   "restored": 5,
+   "median_s": 30.2,
+   "mean_s": 30.6,
+   "mean_failed_pct": 0.6,
+   "actions": [
+    "restart"
+   ],
+   "times": [
+    30.2,
+    32.0,
+    28.4,
+    30.2,
+    32.2
+   ]
+  },
+  "bad_release|none": {
+   "trials": 3,
+   "restored": 0,
+   "median_s": null,
+   "mean_s": null,
+   "mean_failed_pct": 0.3,
+   "actions": [],
+   "times": []
+  },
+  "bad_release|rules": {
+   "trials": 5,
+   "restored": 0,
+   "median_s": null,
+   "mean_s": null,
+   "mean_failed_pct": 2.2,
+   "actions": [
+    "restart",
+    "restart",
+    "restart",
+    "restart",
+    "restart",
+    "restart"
+   ],
+   "times": []
+  },
+  "bad_release|release_aware": {
+   "trials": 5,
+   "restored": 5,
+   "median_s": 45.8,
+   "mean_s": 46.2,
+   "mean_failed_pct": 0.4,
+   "actions": [
+    "rollback"
+   ],
+   "times": [
+    45.8,
+    47.0,
+    44.6,
+    48.4,
+    45.2
+   ]
+  },
+  "bad_release|escalate": {
+   "trials": 5,
+   "restored": 5,
+   "median_s": 77.4,
+   "mean_s": 77.4,
+   "mean_failed_pct": 0.6,
+   "actions": [
+    "restart",
+    "rollback"
+   ],
+   "times": [
+    79.2,
+    75.0,
+    77.4,
+    76.8,
+    78.4
+   ]
+  }
+ }
+}

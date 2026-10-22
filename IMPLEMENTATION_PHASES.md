@@ -206,3 +206,11 @@ Metamorphic readiness probe built, calibrated and tested (TESTING 3.21; experime
 
 ## 15. Five strongest contributions (2026-10-17)
 Baseline/cost-coverage study, healthy-but-wrong and MTTC metrics, compound-fault study done (TESTING 3.22-3.24); novelty reframed as five measured contributions (NOVELTY_AND_PRIOR_ART.md). Validation 21 checks.
+
+## 16. Phase 15 (done 2026-10-22): bit-flip fuzzing, signed golden outputs, rollback/escalation
+- **Fuzzing** (`analysis/bitflip_fuzz.py`): 12,600 trials on the host and 4,200 in a pod of the production image; exponent-MSB flips cause 50.2 % wrong answers, the envelope misses 34 % of the wrong answers, the golden check misses none but alarms on harmless flips; tolerance sweep recommends 0.2 history-std (TESTING 3.25).
+- **Signed golden outputs** (`inference-api/signed_golden.py`, `make_signed_golden.py`, `chaos/release_signed_golden.ps1`): cosign-signed reference outputs + model-file hashes; fail-closed readiness; ValidatingAdmissionPolicy; 80 cluster trials (TESTING 3.26).
+- **Rollback and escalation** (`operator/forecast_operator.py` policies `release_aware`, `escalate`): bad release 0/5 under restart-only, 5/5 under release_aware (46 s) and escalate (77 s) (TESTING 3.27).
+- Files added: `inference-api/signed_golden.py`, `make_signed_golden.py`, `tests/test_signed_golden.py` (+ cosign sample fixture), `chaos/hostclient.py`, `run_signed_golden.py`, `run_rollback.py`, `release_signed_golden.ps1`, `run_fuzz_in_pod.ps1`, `test_admission_policy.py`, `analysis/bitflip_fuzz.py`, `summarize_new_extras.py`, `k8s/12-signed-golden-patch.yaml`, `k8s/policy/vap-require-signed-golden.yaml`; changed: `inference-api/app.py`, `Dockerfile` (cryptography), `operator/forecast_operator.py`, `operator/deploy.yaml`, `validation/validate_all.py` (V22-V25).
+- Images: `climate-inference:14`, `forecast-operator:4`. Validation: 25/25 checks PASS from the Desktop copy; live browser check 46/48 pages (TESTING K37).
+- Process notes (what went wrong and was fixed): laptop sleep killed the cluster once (rebuilt, keep-awake used); a rollback run was invalidated by a harness flaw and re-run; a signed-golden re-run once omitted the tampered-file paths and was re-run; transport resets were handled with a retrying client.

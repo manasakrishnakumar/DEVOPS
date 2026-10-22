@@ -1,0 +1,51 @@
+{
+ "policy": "require-signed-golden",
+ "namespace": "climate",
+ "cluster_version": "v1.37.0",
+ "cases": [
+  {
+   "case": "remove SIGNED_GOLDEN_DIR env var from inference-api",
+   "expected": "denied",
+   "got": "denied",
+   "pass": true,
+   "message": "error: failed to patch env update to pod template: deployments.apps \"inference-api\" is forbidden: ValidatingAdmissionPolicy 'require-signed-golden' with binding 'require-signed-golden-climate' denied request: inference-api must set SIGNED_G"
+  },
+  {
+   "case": "remove the signed-golden ConfigMap volume (and its mount)",
+   "expected": "denied",
+   "got": "denied",
+   "pass": true,
+   "message": "The deployments \"inference-api\" is invalid: : ValidatingAdmissionPolicy 'require-signed-golden' with binding 'require-signed-golden-climate' denied request: inference-api must mount the signed-golden ConfigMap"
+  },
+  {
+   "case": "point the volume at a different ConfigMap",
+   "expected": "denied",
+   "got": "denied",
+   "pass": true,
+   "message": "The deployments \"inference-api\" is invalid: : ValidatingAdmissionPolicy 'require-signed-golden' with binding 'require-signed-golden-climate' denied request: inference-api must mount the signed-golden ConfigMap"
+  },
+  {
+   "case": "unrelated change that keeps the wiring (extra env var)",
+   "expected": "admitted",
+   "got": "admitted",
+   "pass": true,
+   "message": "deployment.apps/inference-api env updated (server dry run)"
+  },
+  {
+   "case": "change the corruption env var (what the rollback experiment does)",
+   "expected": "admitted",
+   "got": "admitted",
+   "pass": true,
+   "message": "deployment.apps/inference-api env updated (server dry run)"
+  },
+  {
+   "case": "another Deployment without the wiring (policy must not touch it)",
+   "expected": "admitted",
+   "got": "admitted",
+   "pass": true,
+   "message": "deployment.apps/unrelated-probe created (server dry run)"
+  }
+ ],
+ "all_pass": true,
+ "method": "kubectl --dry-run=server (admission runs, nothing is stored)"
+}

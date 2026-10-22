@@ -13,3 +13,12 @@
 9. Check: `python validation/validate_all.py` (expects the cluster up and results present).
 10. Experiments: `chaos/run.py` (faults/load), `chaos/run_operator.py`, `chaos/validate_probe.py`, `analysis/collect_telemetry.py`, `analysis/shadow_gate_cluster.py`, `analysis/phase12_cluster.py`, `chaos/run_family.py`, `analysis/extras_cluster.py` (set `INFER_TAG`).
 Windows notes: use `python -X utf8` (training code prints an emoji); `kubectl cp` needs a relative source path; keep the laptop awake and plugged in (Docker stops on sleep); detached PowerShell scripts are used for long runs; avoid killing processes with patterns that match your own command line.
+
+## Additions 2026-10-22 (signed golden outputs, operator rollback, fuzzing)
+1. Install **cosign** (`winget install Sigstore.Cosign`) and `pip install cryptography==42.0.8` (also in the inference image).
+2. Images to build and load into minikube: `climate-inference:14` (inference-api), `forecast-operator:4` (operator), plus the frontend image as before.
+3. Create a signing key **outside the repository** (`cosign generate-key-pair`, set `COSIGN_PASSWORD`); never commit `cosign.key`. Run `chaos/release_signed_golden.ps1 -Publish` (builds `golden.json`, signs it, checks it with `cosign verify-blob`, creates ConfigMap `signed-golden`), then apply `k8s/12-signed-golden-patch.yaml`.
+4. Optional enforcement: `kubectl apply -f k8s/policy/vap-require-signed-golden.yaml` (needs Kubernetes 1.30+); test with `python chaos/test_admission_policy.py` (server-side dry runs).
+5. Operator: `kubectl apply -f operator/deploy.yaml` (CRD now allows policies rules, bandit, release_aware, escalate).
+6. Experiments: `python analysis/bitflip_fuzz.py --trials 300`, `chaos/run_fuzz_in_pod.ps1`, `python chaos/run_signed_golden.py` (set `GOLD_GOOD`, `GOLD_TAMPER`, `GOLD_WRONGHASH` to the three release folders), `python chaos/run_rollback.py`, then `python analysis/summarize_new_extras.py` and `python validation/validate_all.py` (25 checks).
+7. Windows note: experiments that replace pods use the `minikube service inference-api-np --url` tunnel, not `kubectl port-forward`.
